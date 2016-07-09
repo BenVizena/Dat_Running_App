@@ -16,6 +16,7 @@ import android.widget.TableLayout;
 import android.widget.Toast;
 
 import static android.R.attr.onClick;
+import static android.R.attr.orderInCategory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,11 +33,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+
         addMainButtons();
 
 
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,10 +56,20 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+
+        ///////////////////////////////////////commented out to remove options menu from toolbar
+        // if you want the toolbar menu thing back, add these lines into menu_main.xml right below
+        // tools:context....
+        //        <item
+        //        android:id="@+id/action_settings"
+        //        android:orderInCategory="100"
+        //        android:title="@string/action_settings"
+        //        app:showAsAction="never" />
+
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+     //   if (id == R.id.action_settings) {
+     //       return true;
+     //   }
 
         return super.onOptionsItemSelected(item);
     }
