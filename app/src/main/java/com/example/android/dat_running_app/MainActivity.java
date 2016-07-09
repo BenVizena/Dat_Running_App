@@ -1,5 +1,6 @@
 package com.example.android.dat_running_app;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,7 +15,14 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import static android.R.attr.onClick;
+
 public class MainActivity extends AppCompatActivity {
+
+    ImageButton run_ib;
+    ImageButton runwear_ib;
+    ImageButton settings_ib;
+    ImageButton stats_ib;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        addMainButtons();
 
 
 
@@ -49,5 +58,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addMainButtons(){
+
+        run_ib=(ImageButton) findViewById(R.id.go_running_ib);
+        runwear_ib=(ImageButton)findViewById(R.id.runwear_ib);
+        settings_ib=(ImageButton)findViewById(R.id.setting_ib);
+        stats_ib=(ImageButton)findViewById(R.id.stats_ib);
+
+        run_ib.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View arg0){
+                Toast.makeText(MainActivity.this, "Go Running Button was clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        runwear_ib.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View arg0){
+                Toast.makeText(MainActivity.this, "Runwear Button was clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        settings_ib.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View arg0){
+                Toast.makeText(MainActivity.this, "Settings Button was clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        stats_ib.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View arg0){
+                Toast.makeText(MainActivity.this, "Stats Button was clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
