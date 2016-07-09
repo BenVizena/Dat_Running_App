@@ -44,36 +44,38 @@
         android:stretchColumns="TRUE"
         android:gravity="center">
 
-            <TableRow
-                android:id="@+id/tableRow1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dip"
-                android:gravity="center">
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dip"
+            android:paddingBottom="0dp"
+            android:gravity="center">
 
-                <ImageButton
-                    android:id="@+id/go_running_ib"
-                    android:layout_height="175dp"
-                    android:layout_width="175dp"
-                    android:src="@drawable/go_running"
-                    android:scaleType="fitCenter"
-                 />
+            <ImageButton
+                android:id="@+id/go_running_ib"
+                android:layout_height="175dp"
+                android:layout_width="175dp"
+                android:src="@drawable/go_running"
+                android:scaleType="fitCenter"
+             />
 
-                <ImageButton
-                    android:id="@+id/stats_ib"
-                    android:layout_width="175dp"
-                    android:layout_height="175dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/stats"
-                 />
+            <ImageButton
+                android:id="@+id/stats_ib"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/stats"
+             />
 
-             </TableRow>
+        </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dip"
+            android:paddingTop="0dp"
+            android:paddingBottom="8dp"
             android:gravity="center">
 
             <ImageButton
