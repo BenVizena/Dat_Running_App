@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
 
 

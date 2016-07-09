@@ -36,6 +36,65 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <TableLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/main_page_tableLayout"
+        android:shrinkColumns="TRUE"
+        android:stretchColumns="TRUE"
+        android:gravity="center">
+
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dip"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/go_running_ib"
+                    android:layout_height="175dp"
+                    android:layout_width="175dp"
+                    android:src="@drawable/go_running"
+                    android:scaleType="fitCenter"
+                 />
+
+                <ImageButton
+                    android:id="@+id/stats_ib"
+                    android:layout_width="175dp"
+                    android:layout_height="175dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/stats"
+                 />
+
+             </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dip"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/runwear_ib"
+                android:layout_height="175dp"
+                android:layout_width="175dp"
+                android:src="@drawable/runwear"
+                android:scaleType="fitCenter"
+                />
+
+            <ImageButton
+                android:id="@+id/setting_ib"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/setting_png"
+                />
+
+        </TableRow>
+
+     </TableLayout>
 
 
 
