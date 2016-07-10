@@ -35,8 +35,8 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
         int width=dm.widthPixels;
         int height=dm.heightPixels;
 
-        getWindow().setLayout((int)(width*.8),(int)(height*.8));
-
+        getWindow().setLayout((int)(width*.8),(int)(height*.5));//was .8
+       // getWindow().setLayout(270,270);
 
     }
 
