@@ -1,5 +1,6 @@
 package com.example.android.dat_running_app;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    public void runClicked(View view){
+        startActivity(new Intent(this,RunOptionsMenuRoot.class));
     }
 
 
@@ -84,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         run_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                Toast.makeText(MainActivity.this, "Go Running Button was clicked!", Toast.LENGTH_SHORT).show();
+                runClicked(run_ib);
             }
         });
 

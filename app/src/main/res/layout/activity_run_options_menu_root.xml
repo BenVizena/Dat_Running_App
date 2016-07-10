@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:theme="@style/AppTheme.CustomTheme.FloatingActivity"
+    android:layout_height="match_parent"
+    android:id="@+id/run_options_root_menu_sv"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/run_root_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.example.android.Dat_Running_App.RunOptionsMenuRoot">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:id="@+id/top_bar_solution1"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center_horizontal"
+                android:textSize="20dp"
+                android:text="        Run Options"
+                android:textColor="#000000"
+                />
+
+
+
+
+            <Button
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="#ff0000"
+                android:gravity="center_horizontal"
+                android:onClick="goBack"
+                android:text="X"
+                android:textAlignment="gravity"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <TableLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/main_page_tableLayout"
+            android:shrinkColumns="TRUE"
+            android:stretchColumns="TRUE"
+            android:gravity="center">
+
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dip"
+                android:paddingBottom="0dp"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/freerun_ib"
+                    android:layout_height="125dp"
+                    android:layout_width="125dp"
+                    android:src="@drawable/freerun"
+                    android:scaleType="fitCenter"
+                    android:onClick="runClicked"
+                    />
+
+                <ImageButton
+                    android:id="@+id/runfortime_ib"
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/runfortime"
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
+                android:paddingBottom="8dp"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/runfordistnace_ib"
+                    android:layout_height="125dp"
+                    android:layout_width="125dp"
+                    android:src="@drawable/runfordistance"
+                    android:scaleType="fitCenter"
+                    />
+
+                <ImageButton
+                    android:id="@+id/intervalrun_ib"
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/intervalrun"
+                    />
+
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+
+
+</ScrollView>
