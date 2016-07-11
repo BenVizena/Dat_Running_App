@@ -65,7 +65,7 @@
                 android:gravity="center">
 
                 <ImageButton
-                    android:id="@+id/freerun_ib"
+                    android:id="@+id/freerunnow_ib"
                     android:layout_height="125dp"
                     android:layout_width="125dp"
                     android:src="@drawable/freerunnow"
@@ -73,7 +73,7 @@
                     />
 
                 <ImageButton
-                    android:id="@+id/runfortime_ib"
+                    android:id="@+id/freerunchangeui_ib"
                     android:layout_width="125dp"
                     android:layout_height="125dp"
                     android:scaleType="fitCenter"
