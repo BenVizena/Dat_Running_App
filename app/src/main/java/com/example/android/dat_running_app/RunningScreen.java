@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +38,13 @@ public class RunningScreen extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
+    private Location mCurrentLocation;
     private String mLatitudeText;
     private String mLongitudeText;
+    private long startTime = android.os.SystemClock.elapsedRealtime();
+    private long elapsedTime = 0;
+    private double distanceTravelled=0;
+    private double deltaD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +60,43 @@ public class RunningScreen extends AppCompatActivity implements GoogleApiClient.
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
+       // mCurrentLocation.setAltitude(0);
+
+     //   String outputString = "COORDS: "+ findViewById(R.id.txtOutput) + " /nTIME: "+elapsedTime;
+
         txtOutput = (TextView) findViewById(R.id.txtOutput);
+        Log.d("DEBUG","preRun");
+  //      runUpdater();
+
+        Thread t = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(100);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                update();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        };
+
+        t.start();
+
 
 
     }
+
+
+
 
     @Override
     protected void onStart() {
@@ -89,17 +128,54 @@ public class RunningScreen extends AppCompatActivity implements GoogleApiClient.
             return;
         }
         Log.d("DEBUG","PASSED ONCONNECTED CHECK");
+
+
+
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            Log.d("DEBUG", "current location: " + mLastLocation.toString());
-            mLatitudeText =""+mLastLocation.getLatitude();
-            mLongitudeText=""+mLastLocation.getLongitude();
+
+
+
+        if (mCurrentLocation != null) {
+            Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
+            mLatitudeText =""+mCurrentLocation.getLatitude();
+            mLongitudeText=""+mCurrentLocation.getLongitude();
             //  LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             txtOutput.setText(mLatitudeText+" "+mLongitudeText);
         }
+
+        Log.d("DEBUG","startLocationUpdates");
         startLocationUpdates();
 
 
+    }
+
+    public double getDeltaD(){
+        double lat1 = mLastLocation.getLatitude();
+        double lon1 = mLastLocation.getLongitude();
+        double lat2 = mCurrentLocation.getLatitude();
+        double lon2 = mCurrentLocation.getLongitude();
+
+        double R = 6371; // km
+        double dLat = (lat2-lat1)*Math.PI/180;
+        double dLon = (lon2-lon1)*Math.PI/180;
+        lat1 = lat1*Math.PI/180;
+        lat2 = lat2*Math.PI/180;
+
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double d = R * c * 1000;
+/*
+        Log.d("distance log: ","dist betn "+
+                d + " " +
+                mLastLocation.getLatitude()+ " " +
+                mLastLocation.getLongitude() + " " +
+                mCurrentLocation.getLatitude() + " " +
+                mCurrentLocation.getLongitude()
+        );
+*/
+        return d;
     }
 
     public void permissionRequest(){
@@ -158,10 +234,79 @@ public class RunningScreen extends AppCompatActivity implements GoogleApiClient.
     }
 
 
+    public void update(){
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Log.d("DEBUG","bottom one");
+            permissionRequest();
+        }
+
+        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
+            //   Log.d("DEBUG","PASSED ONCONNECTED CHECK -1");
+
+            return;
+        }
+        //  Log.d("DEBUG","PASSED ONCONNECTED CHECK");
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(mLastLocation == null){
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            Log.d("DEBUG","well... i'm there");
+        }
+
+        else{
+
+            if (mLastLocation != null && mCurrentLocation != null)
+                deltaD = getDeltaD();
+
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            distanceTravelled+=deltaD;
+            elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
+            Log.d("DEBUG","well... i'm here");
+
+            String outputString = "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+"    "+Double.toString(mCurrentLocation.getLongitude())+" \nTIME: "+elapsedTime+"\nALTITUDE: "+mCurrentLocation.getAltitude()
+                    +"\nDISTANCE TRAVELLED: "+distanceTravelled+"\nDeltaD: "+deltaD;
+            txtOutput.setText(outputString);
+        }
+
+    }
+
+
+
     @Override
     public void onLocationChanged(Location location) {
-        Log.i(LOG_TAG, location.toString());
-        txtOutput.setText(Double.toString(location.getLatitude())+" "+Double.toString(location.getLongitude()));
+/*
+        Log.i(LOG_TAG, location.toString()+"DeltaD: "+deltaD);
+       // txtOutput.setText(Double.toString(location.getLatitude())+" "+Double.toString(location.getLongitude()));
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+           // Log.d("DEBUG","bottom one");
+            permissionRequest();
+        }
+
+        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
+         //   Log.d("DEBUG","PASSED ONCONNECTED CHECK -1");
+
+            return;
+        }
+      //  Log.d("DEBUG","PASSED ONCONNECTED CHECK");
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(mLastLocation == null)
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        else{
+
+            if (mLastLocation != null && mCurrentLocation != null)
+                deltaD = getDeltaD();
+
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
+        distanceTravelled+=deltaD;
+        elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
+
+        String outputString = "COORDS: "+ Double.toString(location.getLatitude())+"    "+Double.toString(location.getLongitude())+" \nTIME: "+elapsedTime+"\nALTITUDE: "+location.getAltitude()
+                +"\nDISTANCE TRAVELLED: "+distanceTravelled+"\nDeltaD: "+deltaD;
+        txtOutput.setText(outputString);
+*/
     }
 
     @Override
