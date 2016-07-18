@@ -20,14 +20,14 @@ import com.google.android.gms.location.LocationServices;
 
 import android.os.Handler;
 
-
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class RunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
     private final String LOG_TAG = "running! activity";
-
+    final static String MY_ACTION = "MY_ACTION";
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -40,6 +40,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
     private double distanceTravelled=0;
     private double deltaD;
     private Thread t;
+    public String outputText;
 
     private static Handler handler;
 
@@ -67,17 +68,38 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
     private void runGPS(){
         Log.d("DEBUG runGPS entry","Running this shit.");
 
+
+
         t = new Thread() {
+            int counter = 0;
+            boolean gpsStable=false;
 
             @Override
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(500);
+                        Thread.sleep(500);//500
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 update();
+                                if(deltaD==0)
+                                    counter+=1;
+                                else if(!gpsStable)
+                                    counter=0;
+                                if(counter>=5 || gpsStable){
+                                    gpsStable=true;
+                                    Intent intent = new Intent();
+                                    intent.setAction(MY_ACTION);
+
+                                    intent.putExtra("outputString",outputText);
+
+                                    sendBroadcast(intent);
+                                }
+                                else if(!gpsStable){
+                                    distanceTravelled=0;
+                                }
+
                             }
                         });
                     }
@@ -186,19 +208,40 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 distanceTravelled+=deltaD;
                 elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
-                Log.d("DEBUG","(mLastLocation && mCurrentLocation) !=null");
+
 
                 String outputString =
                         "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+"    "+Double.toString(mCurrentLocation.getLongitude())
                         +" \nTIME: "+elapsedTime+"\nALTITUDE: " +mCurrentLocation.getAltitude()
-                        +"\nDISTANCE TRAVELLED: "+distanceTravelled+"\nDeltaD: "+deltaD;
+                        +"\nDISTANCE TRAVELLED: "+distanceTravelled
+                        +"\nDeltaD: "+deltaD;
                 //txtOutput.setText(outputString);
+
+                outputText=outputString;
+                //if RunningScreen is in the foreground
+
                 Log.d("DEBUG",outputString);
             }
         }
         catch(final SecurityException ex){
             Log.d("DEBUG","Bad Permissions Setup");
         }
+    }
+
+    public long getElapsedTime(){
+        return android.os.SystemClock.elapsedRealtime()-startTime;
+    }
+
+    public Double getLatitude(){
+        return mCurrentLocation.getLatitude();
+    }
+
+    public double getLongitude(){
+        return mCurrentLocation.getLongitude();
+    }
+
+    public double getDistanceTravelled(){
+        return distanceTravelled;
     }
 
 

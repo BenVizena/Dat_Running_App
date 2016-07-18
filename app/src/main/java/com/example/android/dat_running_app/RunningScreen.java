@@ -1,11 +1,15 @@
 package com.example.android.dat_running_app;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +31,7 @@ import com.google.android.gms.location.LocationServices;
 import static android.R.attr.permission;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
+
 /**
  * Created by Ben on 7/12/2016.
  */
@@ -34,6 +39,14 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 public class RunningScreen extends AppCompatActivity{
 
     private final String LOG_TAG = "running! activity";
+
+    private double longitude=-1;
+    private double latitude=-1;
+    private long elapsedTime=0;
+    private double distanceTravelled=0;
+
+    MyReceiver myReceiver;
+    String outputString;
 
     private TextView txtOutput;
 
@@ -46,7 +59,7 @@ public class RunningScreen extends AppCompatActivity{
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-
+        outputString="";
 
         txtOutput = (TextView) findViewById(R.id.txtOutput);
         Log.d("DEBUG Running Screen","preRun");
@@ -54,24 +67,65 @@ public class RunningScreen extends AppCompatActivity{
         permissionRequest();
 
 
+
+        /*
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            Log.d("DEBUG Running Screen","ooga booga booga1!");
+            if(extras == null) {
+                outputString= null;
+                Log.d("DEBUG Running Screen","ooga booga booga2!");
+            } else {
+                outputString= extras.getString("outputString");
+                Log.d("DEBUG Running Screen","ooga booga booga3!");
+                updateTextView(outputString);
+            }
+        } else {
+            outputString= (String) savedInstanceState.getSerializable("outputString");
+            Log.d("DEBUG Running Screen","ooga booga booga4!");
+        }
+*/
+
+    }
+
+    private class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context arg0, Intent arg1) {
+            // TODO Auto-generated method stub
+
+            String outputString = arg1.getStringExtra("outputString");
+
+
+            updateTextView(outputString);
+
+        }
+
     }
 
 
     public void startService(View view){
+        myReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(RunningScreenService.MY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
+
         Intent intent = new Intent(this,RunningScreenService.class);
         startService(intent);
+
     }
 
     public void stopService(View view){
         Intent intent = new Intent(this,RunningScreenService.class);
         stopService(intent);
+        unregisterReceiver(myReceiver);
+
+
     }
 
-
-
-
-
-
+    private void updateTextView(String str){
+        txtOutput.setText(str);
+    }
 
     public void permissionRequest(){
         Log.d("DEBUG","made it to permissionRequest");
@@ -128,21 +182,8 @@ public class RunningScreen extends AppCompatActivity{
         }
     }
 
-    /*
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-        if (keyCode == KeyEvent.KEYCODE_BACK ) {
-            // make app run in background.///////////////////////////////////////////////////////
 
 
-
-
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
-*/
 
 
 
