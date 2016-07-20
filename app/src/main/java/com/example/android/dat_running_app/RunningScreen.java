@@ -48,6 +48,7 @@ public class RunningScreen extends AppCompatActivity{
     MyReceiver myReceiver;
     String outputString;
 
+
     private TextView txtOutput;
 
     @Override
