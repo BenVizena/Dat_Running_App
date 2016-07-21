@@ -28,6 +28,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.concurrent.TimeUnit;
+
 import static android.R.attr.permission;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
@@ -69,23 +71,7 @@ public class RunningScreen extends AppCompatActivity{
 
 
 
-        /*
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            Log.d("DEBUG Running Screen","ooga booga booga1!");
-            if(extras == null) {
-                outputString= null;
-                Log.d("DEBUG Running Screen","ooga booga booga2!");
-            } else {
-                outputString= extras.getString("outputString");
-                Log.d("DEBUG Running Screen","ooga booga booga3!");
-                updateTextView(outputString);
-            }
-        } else {
-            outputString= (String) savedInstanceState.getSerializable("outputString");
-            Log.d("DEBUG Running Screen","ooga booga booga4!");
-        }
-*/
+
 
     }
 
@@ -96,14 +82,33 @@ public class RunningScreen extends AppCompatActivity{
             // TODO Auto-generated method stub
 
             String outputString = arg1.getStringExtra("outputString");
+            String[] delimedString=outputString.split("\n");
+
+            if(delimedString.length==1)
+                updateTextView(outputString);
+            else {
+                outputString = delimedString[0] + "\n" + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4];
+                updateTextView(outputString);
+            }
 
 
-            updateTextView(outputString);
 
         }
 
     }
 
+    private String formatTime(String s){
+        long millis = Long.parseLong(s);
+
+        String hmsm = String.format("%02d:%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1),
+                TimeUnit.MILLISECONDS.toMillis(millis)  % TimeUnit.SECONDS.toMillis(1));
+
+
+
+        return "TIME: "+hmsm;
+    }
 
     public void startService(View view){
         myReceiver = new MyReceiver();

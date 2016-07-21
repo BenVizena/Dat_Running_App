@@ -59,7 +59,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
 
         Log.d("DEBUG","onCreate()");
-        runGPS();
+        waitForStableGPS();
 
 
 
@@ -72,34 +72,74 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
 
         t = new Thread() {
-            int counter = 0;
-            boolean gpsStable=false;
 
             @Override
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(1000);//500
+                        Thread.sleep(100);//500
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 update();
-                                if(deltaD==0)
+
+                                Intent intent = new Intent();
+                                intent.setAction(MY_ACTION);
+                                intent.putExtra("outputString",outputText);
+                                sendBroadcast(intent);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        };
+
+        t.start();
+    }
+
+    private void waitForStableGPS(){
+        Log.d("DEBUG","starting waitForStableGPS()");
+        t = new Thread() {
+            int counter = 0;
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(100);//500
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                update();
+
+                                if(deltaD==0){
+                                    Log.d("DEBUG","getting gps signal");
                                     counter+=1;
-                                else if(!gpsStable)
+                                }
+                                else{
+                                    Log.d("DEBUG","getting gps signal");
                                     counter=0;
-                                if(counter>=5 || gpsStable){
-                                    gpsStable=true;
-                                    Intent intent = new Intent();
-                                    intent.setAction(MY_ACTION);
-
-                                    intent.putExtra("outputString",outputText);
-
-                                    sendBroadcast(intent);
                                 }
-                                else if(!gpsStable){
-                                    distanceTravelled=0;
+                                if(counter>=5){
+                                    Log.d("DEBUG","gps signal acquired");
+                                    t.interrupt();
+                                    startTime = android.os.SystemClock.elapsedRealtime();
+                                    elapsedTime=0;
+                                    runGPS();
                                 }
+
+                                distanceTravelled=0;
+
+                                Intent intent = new Intent();
+                                intent.setAction(MY_ACTION);
+
+                                intent.putExtra("outputString","GETTING GPS SIGNAL");
+
+                                sendBroadcast(intent);
+                                Log.d("DEBUG","intent broadcasted");
+
 
                             }
                         });
@@ -198,7 +238,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
                 outputText =
                         "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+"    "+Double.toString(mCurrentLocation.getLongitude())
-                        +" \nTIME: "+elapsedTime+"\nALTITUDE: " +mCurrentLocation.getAltitude()
+                        +" \n"+elapsedTime+"\nALTITUDE: " +mCurrentLocation.getAltitude()
                         +"\nDISTANCE TRAVELLED: "+distanceTravelled
                         +"\nDeltaD: "+deltaD;
                 //txtOutput.setText(outputString);
