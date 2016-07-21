@@ -40,7 +40,8 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
     private double distanceTravelled=0;
     private double deltaD;
     private Thread t;
-    public String outputText;
+    private String outputText;
+    private boolean stable;
 
     private static Handler handler;
 
@@ -78,7 +79,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(500);//500
+                        Thread.sleep(1000);//500
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -121,13 +122,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d("DEBUG","onConnected");
-        // Here, thisActivity is the current activity
- /*
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("DEBUG","PERMISSION CHECK IN SERVICE IDK WHAT THIS DOES");
-            new RunningScreen().permissionRequest();
-        }
-*/
+
         if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
             Log.d("DEBUG","PERMISSION CHECK IN SERVICE ON CONNECTED");
 
@@ -144,7 +139,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
         if (mCurrentLocation != null) {
             Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
-            mLatitudeText =""+mCurrentLocation.getLatitude();
+            mLatitudeText =""+mCurrentLocation.getLatitude();//these are useless
             mLongitudeText=""+mCurrentLocation.getLongitude();
             //  LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             //txtOutput.setText(mLatitudeText+" "+mLongitudeText);
@@ -172,16 +167,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                 Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = R * c * 1000;
-/*
-        Log.d("distance log: ","dist betn "+
-                d + " " +
-                mLastLocation.getLatitude()+ " " +
-                mLastLocation.getLongitude() + " " +
-                mCurrentLocation.getLatitude() + " " +
-                mCurrentLocation.getLongitude()
-        );
 
-*/
         if(d>=.22352)
             return d;
         else
@@ -210,17 +196,17 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                 elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
 
 
-                String outputString =
+                outputText =
                         "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+"    "+Double.toString(mCurrentLocation.getLongitude())
                         +" \nTIME: "+elapsedTime+"\nALTITUDE: " +mCurrentLocation.getAltitude()
                         +"\nDISTANCE TRAVELLED: "+distanceTravelled
                         +"\nDeltaD: "+deltaD;
                 //txtOutput.setText(outputString);
 
-                outputText=outputString;
+                //outputText=outputString;
                 //if RunningScreen is in the foreground
 
-                Log.d("DEBUG",outputString);
+                Log.d("DEBUG",outputText);
             }
         }
         catch(final SecurityException ex){
@@ -248,39 +234,6 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
     @Override
     public void onLocationChanged(Location location) {
-/*
-        Log.i(LOG_TAG, location.toString()+"DeltaD: "+deltaD);
-       // txtOutput.setText(Double.toString(location.getLatitude())+" "+Double.toString(location.getLongitude()));
-
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-           // Log.d("DEBUG","bottom one");
-            permissionRequest();
-        }
-
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
-         //   Log.d("DEBUG","PASSED ONCONNECTED CHECK -1");
-
-            return;
-        }
-      //  Log.d("DEBUG","PASSED ONCONNECTED CHECK");
-        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if(mLastLocation == null)
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        else{
-
-            if (mLastLocation != null && mCurrentLocation != null)
-                deltaD = getDeltaD();
-
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-        distanceTravelled+=deltaD;
-        elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
-
-        String outputString = "COORDS: "+ Double.toString(location.getLatitude())+"    "+Double.toString(location.getLongitude())+" \nTIME: "+elapsedTime+"\nALTITUDE: "+location.getAltitude()
-                +"\nDISTANCE TRAVELLED: "+distanceTravelled+"\nDeltaD: "+deltaD;
-        txtOutput.setText(outputString);
-*/
     }
 
     @Override
@@ -302,7 +255,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
         // Create the location request
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(800)
+                .setInterval(500)
                 .setFastestInterval(500);
 
 
