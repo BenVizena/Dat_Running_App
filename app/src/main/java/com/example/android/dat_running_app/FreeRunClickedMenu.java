@@ -55,6 +55,11 @@ public class FreeRunClickedMenu extends AppCompatActivity{
       //  Toast.makeText(FreeRunClickedMenu.this, "ChangeUI Button was clicked!", Toast.LENGTH_SHORT).show();
     }
 
+    public void freeRunChangeUIClicked(View view){
+        Intent intent = new Intent(this,FreeRunChangeUI.class);
+        startActivity(intent);
+    }
+
     public void addMainButtons(){
 
         freeRunNow_ib=(ImageButton) findViewById(R.id.freerunnow_ib);
@@ -71,7 +76,7 @@ public class FreeRunClickedMenu extends AppCompatActivity{
         changeUI_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                Toast.makeText(FreeRunClickedMenu.this, "ChangeUI Button was clicked!", Toast.LENGTH_SHORT).show();
+                freeRunChangeUIClicked(changeUI_ib);
             }
         });
 

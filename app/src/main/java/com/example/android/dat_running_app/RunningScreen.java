@@ -1,11 +1,14 @@
 package com.example.android.dat_running_app;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,9 +19,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +41,21 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
+import static android.R.attr.alignmentMode;
+import static android.R.attr.layout_alignBottom;
+import static android.R.attr.layout_alignParentBottom;
 import static android.R.attr.permission;
+import static android.R.interpolator.linear;
+import static android.R.style.Theme;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static android.os.Build.VERSION_CODES.M;
+import static android.support.v7.appcompat.R.attr.actionBarSize;
+import static android.support.v7.appcompat.R.attr.colorPrimary;
+import static com.example.android.dat_running_app.R.id.txtOutput;
+import static com.example.android.dat_running_app.R.style.AppTheme;
 
 
 /**
@@ -51,21 +75,143 @@ public class RunningScreen extends AppCompatActivity{
     String outputString;
 
 
-    private TextView txtOutput;
+//    private TextView txtOutput;
+    private int txtOutputId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_runningscreen);
-        Toolbar runningToolbar = (Toolbar) findViewById(R.id.runningToolbar);
-        setSupportActionBar(runningToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+
+        RelativeLayout myLayout = new RelativeLayout(this);//////////////////////////////start relative layout
+
+        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams q = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams r = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+
+    //    ((RelativeLayout)myLayout).setGravity(Gravity.BOTTOM);
+
+        Window window = this.getWindow();////////////////////////////////////////////////make status bar correct color
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+
+        Toolbar runningToolBar = new Toolbar(this);/////////////////////////////////////make new toolbar
+        runningToolBar.generateViewId();
+        int toolBarId = runningToolBar.getId();
+
+  //      TextView spaceTaker = new TextView(this);
+
+
+
+        int paddingOffset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -42, getResources().getDisplayMetrics());////////////////make title for toolbar
+        TextView myTitle = new TextView(this);
+        myTitle.setText("RUNNING!");
+        myTitle.setLayoutParams(new Toolbar.LayoutParams(-1, -1));
+        myTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP,26);
+        myTitle.setTextColor(ContextCompat.getColor(this,android.R.color.black));
+        myTitle.setPadding(paddingOffset,0,0,0);
+        myTitle.setGravity(Gravity.CENTER);//////////////////////////////////////////////////////////////////////////////////////////////////////end toolbar title stuff
+
+        LinearLayout sps = new LinearLayout(this);
+        sps.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        myLayout.addView(sps,lp);
+
+
+        final Button startButton = new Button(this);/////////////////////////////////////////////////////////////////////////////////////////////////////make start button
+        startButton.generateViewId();
+        startButton.setId((int)android.os.SystemClock.elapsedRealtime());
+        int startButtonId=startButton.getId();
+        startButton.setText("start");
+        startButton.setBackgroundColor(Color.GREEN);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startService(startButton);
+            }
+        });
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+        param.gravity=Gravity.BOTTOM;
+        startButton.setLayoutParams(param);
+        sps.addView(startButton);////////////////////////////////////////////////////////////////////////////////////////////////////////////////end start button
+
+
+        final Button endButton = new Button(this);/////////////////////////////////////////////////////////////////////////////////////////////////////make end button
+        endButton.generateViewId();
+        endButton.setId((int)android.os.SystemClock.elapsedRealtime());
+        int endButtonId=endButton.getId();
+        endButton.setText("stop");
+        endButton.setBackgroundColor(Color.RED);
+        endButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopService(endButton);
+            }
+        });
+
+        endButton.setLayoutParams(param);
+        sps.addView(endButton);////////////////////////////////////////////////////////////////////////////////////////////////////////////////end end button
+
+        TextView txtOutput=new TextView(this);////////////////////////////////////////////////////////////////////////////////////////////begin txtOutput
+        //txtOutput.generateViewId();
+       // txtOutput.setId((int)android.os.SystemClock.elapsedRealtime()+123123);
+      //  int txtOutputId=txtOutput.getId();
+        txtOutput.setId(txtOutput.generateViewId());
+        txtOutputId=txtOutput.getId();
+        Log.d("TXTOUTPUT IDDDDDDDD",txtOutput.getId()+"");
+        q.addRule(RelativeLayout.CENTER_IN_PARENT);
+        txtOutput.setLayoutParams(q);
+        txtOutput.setText("HELLO");
+        myLayout.addView(txtOutput);///////////////////////////////////////////////////////////////////////////////////////////////////////////end txtOutput
+
+
+        TextView commsTest=new TextView(this);////////////////////////////////////////////////////////////////////////////////////////////begin txtOutput
+        //txtOutput.generateViewId();
+        // txtOutput.setId((int)android.os.SystemClock.elapsedRealtime()+123123);
+        //  int txtOutputId=txtOutput.getId();
+        commsTest.setId(txtOutput.generateViewId());
+       // txtOutputId=txtOutput.getId();
+      //  Log.d("TXTOUTPUT IDDDDDDDD",txtOutput.getId()+"");
+        r.addRule(RelativeLayout.CENTER_VERTICAL);
+        r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        txtOutput.setLayoutParams(r);
+        txtOutput.setText(""+FreeRunChangeUI.showTotalDistance());
+        myLayout.addView(commsTest);
+
+
+
+
+        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, getResources().getDisplayMetrics());//////////////////////set up toolbar
+        Toolbar.LayoutParams params = new Toolbar.LayoutParams(-1, height);
+        runningToolBar.setLayoutParams(params);
+        runningToolBar.setElevation(20);
+        runningToolBar.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));///////////////////////////////////////////////////end toolbar setup
+
+
+
+        myLayout.addView(runningToolBar);
+        runningToolBar.addView(myTitle);
+
+
+
+        setContentView(myLayout);
+
+ //       setContentView(R.layout.activity_runningscreen);
+ //       Toolbar runningToolbar = (Toolbar) findViewById(R.id.runningToolbar);
+  //      setSupportActionBar(runningToolbar);
+  //      getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
 
 
         outputString="";
 
-        txtOutput = (TextView) findViewById(R.id.txtOutput);
-        Log.d("DEBUG Running Screen","preRun");
+ //       txtOutput = (TextView) findViewById(R.id.txtOutput);
+        Log.d("DEBUG Running Screen",startButtonId+" "+endButtonId);
 
         permissionRequest();
 
@@ -74,6 +220,9 @@ public class RunningScreen extends AppCompatActivity{
 
 
     }
+
+
+
 
     private class MyReceiver extends BroadcastReceiver {
 
@@ -84,6 +233,7 @@ public class RunningScreen extends AppCompatActivity{
             String outputString = arg1.getStringExtra("outputString");
             String[] delimedString=outputString.split("\n");
 
+            Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
             if(delimedString.length==1)
                 updateTextView(outputString);
             else {
@@ -130,7 +280,24 @@ public class RunningScreen extends AppCompatActivity{
     }
 
     private void updateTextView(String str){
-        txtOutput.setText(str);
+ //       try{
+ //       Log.d("DEBUG","SDFJKLSDFJLSKDJFSDKLFJSDLKFJSKLDFJSLDKFJSKDLFJSLKDFJSLKFJ"+str);
+        TextView output = new TextView(this);
+        try {
+            output = (TextView) findViewById(txtOutputId);
+            Log.d("TXTOUTPUT IDDDDDDDDDDDD","ID: "+output.getId());
+//        Log.d("sdkfsklfdjsklfjfkl",txtOutput.toString()+"");
+            output.setText(str);
+        }
+        catch(NullPointerException e){
+            Log.d("TXTOUTPUT","NULL");
+        }
+
+
+ //       catch(NullPointerException e){
+
+//        }
+
     }
 
     public void permissionRequest(){
