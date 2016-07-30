@@ -51,16 +51,16 @@
             android:layout_marginTop="8dp"
             android:textSize="24dp"/>
 
-        <com.example.android.dat_running_app.ToggleableRadioButton
+        <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_below="@+id/freeRunChangeUIToolbar"
-            android:id="@+id/showTimeRadioButton">
+            android:id="@+id/showTimeCheckBox">
 
-        </com.example.android.dat_running_app.ToggleableRadioButton>
+        </CheckBox>
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,16 +72,26 @@
             android:layout_marginTop="8dp"
             android:textSize="24dp"/>
 
-        <com.example.android.dat_running_app.ToggleableRadioButton
+        <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
-            android:layout_below="@+id/showTimeRadioButton"
-            android:id="@+id/showDistanceRadioButton">
+            android:layout_below="@+id/showTimeCheckBox"
+            android:id="@+id/showDistanceCheckBox">
 
-        </com.example.android.dat_running_app.ToggleableRadioButton>
+        </CheckBox>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/confirmFreeRunUIButton"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="commitChanges"
+            android:text="ok"/>
 
 
 
