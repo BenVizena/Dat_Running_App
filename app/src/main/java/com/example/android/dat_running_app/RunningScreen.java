@@ -40,6 +40,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
@@ -54,15 +61,18 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static android.os.Build.VERSION_CODES.M;
 import static android.support.v7.appcompat.R.attr.actionBarSize;
 import static android.support.v7.appcompat.R.attr.colorPrimary;
+import static com.example.android.dat_running_app.R.id.map;
 import static com.example.android.dat_running_app.R.id.txtOutput;
 import static com.example.android.dat_running_app.R.style.AppTheme;
+import static com.google.android.gms.analytics.internal.zzy.a;
+import static com.google.android.gms.analytics.internal.zzy.g;
 
 
 /**
  * Created by Ben on 7/12/2016.
  */
 
-public class RunningScreen extends AppCompatActivity{
+public class RunningScreen extends AppCompatActivity implements OnMapReadyCallback{
 
     private final String LOG_TAG = "running! activity";
 
@@ -70,6 +80,8 @@ public class RunningScreen extends AppCompatActivity{
     private double latitude=-1;
     private long elapsedTime=0;
     private double distanceTravelled=0;
+    private GoogleMap gMap;
+    private Marker m;
 
     MyReceiver myReceiver;
     String outputString;
@@ -83,7 +95,7 @@ public class RunningScreen extends AppCompatActivity{
         super.onCreate(savedInstanceState);
 
 
-
+/*
         RelativeLayout myLayout = new RelativeLayout(this);//////////////////////////////start relative layout
 
         RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -156,6 +168,23 @@ public class RunningScreen extends AppCompatActivity{
         endButton.setLayoutParams(param);
         sps.addView(endButton);////////////////////////////////////////////////////////////////////////////////////////////////////////////////end end button
 
+        final Button startMapButton = new Button(this);/////////////////////////////////////////////////////////////////////////////////////////////////////make temp map button
+        startMapButton.generateViewId();
+        startMapButton.setId((int)android.os.SystemClock.elapsedRealtime());
+        int startMapButtonId=startMapButton.getId();
+        startMapButton.setText("start map");
+        startMapButton.setBackgroundColor(Color.YELLOW);
+        startMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RunningScreen.this, FreeRunMapsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        startMapButton.setLayoutParams(param);
+        sps.addView(startMapButton);////////////////////////////////////////////////////////////////////////////////////////////////////////////////end temp map button
+
         TextView txtOutput=new TextView(this);////////////////////////////////////////////////////////////////////////////////////////////begin txtOutput
         //txtOutput.generateViewId();
        // txtOutput.setId((int)android.os.SystemClock.elapsedRealtime()+123123);
@@ -196,14 +225,18 @@ public class RunningScreen extends AppCompatActivity{
         myLayout.addView(runningToolBar);
         runningToolBar.addView(myTitle);
 
+        */
 
-
-        setContentView(myLayout);
+        setContentView(R.layout.activity_runningscreen);
 
  //       setContentView(R.layout.activity_runningscreen);
  //       Toolbar runningToolbar = (Toolbar) findViewById(R.id.runningToolbar);
   //      setSupportActionBar(runningToolbar);
   //      getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
 
 
@@ -211,7 +244,7 @@ public class RunningScreen extends AppCompatActivity{
         outputString="";
 
  //       txtOutput = (TextView) findViewById(R.id.txtOutput);
-        Log.d("DEBUG Running Screen",startButtonId+" "+endButtonId);
+ //       Log.d("DEBUG Running Screen",startButtonId+" "+endButtonId);
 
         permissionRequest();
 
@@ -221,7 +254,28 @@ public class RunningScreen extends AppCompatActivity{
 
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gMap = googleMap;
+//        LatLng llStart = new LatLng()
+ //       googleMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
 
+    private void updateMarker(double lat, double lng){
+        LatLng latLng = new LatLng(lat,lng);
+        try{
+            m.remove();
+        }catch(NullPointerException e){
+
+        }
+
+        MarkerOptions mo = new MarkerOptions().position(latLng);
+        m = gMap.addMarker(mo);
+        m.setPosition(latLng);
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,18));
+//        gMap.animateCamera(CameraUpdateFactory.zoomIn());
+//        gMap.animateCamera(CameraUpdateFactory.zoomTo(15),10000,null);//middle was 2000
+    }
 
 
     private class MyReceiver extends BroadcastReceiver {
@@ -233,11 +287,21 @@ public class RunningScreen extends AppCompatActivity{
             String outputString = arg1.getStringExtra("outputString");
             String[] delimedString=outputString.split("\n");
 
-            Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
-            if(delimedString.length==1)
+           Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
+            if(delimedString.length==1){
+                String[] delimedStringWithCoords = outputString.split(",");
+                double lat = Double.parseDouble(delimedStringWithCoords[1]);
+                double lng = Double.parseDouble(delimedStringWithCoords[2]);
+                updateMarker(lat,lng);
+
                 updateTextView(outputString);
-            else {
+            }
+             else {
                 outputString = delimedString[0] + "\n" + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4];
+                String[] coords = delimedString[0].split(" ");
+                double lat = Double.parseDouble(coords[1]);
+                double lng = Double.parseDouble(coords[2]);
+                updateMarker(lat,lng);
                 updateTextView(outputString);
             }
 
@@ -265,13 +329,14 @@ public class RunningScreen extends AppCompatActivity{
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(RunningScreenService.MY_ACTION);
         registerReceiver(myReceiver, intentFilter);
-
+        Log.d("SDKLFJSL","!!!!MADE IT HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         Intent intent = new Intent(this,RunningScreenService.class);
         startService(intent);
 
     }
 
     public void stopService(View view){
+  //      myReceiver = new MyReceiver();
         Intent intent = new Intent(this,RunningScreenService.class);
         stopService(intent);
         unregisterReceiver(myReceiver);
@@ -284,7 +349,7 @@ public class RunningScreen extends AppCompatActivity{
  //       Log.d("DEBUG","SDFJKLSDFJLSKDJFSDKLFJSDLKFJSKLDFJSLDKFJSKDLFJSLKDFJSLKFJ"+str);
         TextView output = new TextView(this);
         try {
-            output = (TextView) findViewById(txtOutputId);
+            output = (TextView) findViewById(txtOutput);
             Log.d("TXTOUTPUT IDDDDDDDDDDDD","ID: "+output.getId());
 //        Log.d("sdkfsklfdjsklfjfkl",txtOutput.toString()+"");
             output.setText(str);

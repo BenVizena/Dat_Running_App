@@ -135,7 +135,12 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                                 Intent intent = new Intent();
                                 intent.setAction(MY_ACTION);
 
-                                intent.putExtra("outputString","GETTING GPS SIGNAL");
+                                try{
+                                    intent.putExtra("outputString","GETTING GPS SIGNAL,"+mLastLocation.getLatitude()+","+mLastLocation.getLongitude());
+                                }catch(NullPointerException e){
+
+                                }
+
 
                                 sendBroadcast(intent);
                                 Log.d("DEBUG","intent broadcasted");
@@ -235,14 +240,18 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                 distanceTravelled+=deltaD;
                 elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
 
+                try{
+
 
                 outputText =
-                        "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+"    "+Double.toString(mCurrentLocation.getLongitude())
+                        "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+" "+Double.toString(mCurrentLocation.getLongitude())
                         +" \n"+elapsedTime+"\nALTITUDE: " +mCurrentLocation.getAltitude()
                         +"\nDISTANCE TRAVELLED: "+distanceTravelled
                         +"\nDeltaD: "+deltaD;
                 //txtOutput.setText(outputString);
-
+                }catch(NullPointerException e){
+                    outputText="";
+                }
                 //outputText=outputString;
                 //if RunningScreen is in the foreground
 
