@@ -23,6 +23,8 @@ import android.os.Handler;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.google.android.gms.analytics.internal.zzy.d;
+
 
 public class RunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
@@ -42,6 +44,14 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
     private Thread t;
     private String outputText;
     private boolean stable;
+
+    private final int THREAD_MILLI = 100;
+
+    private double velocity=0;
+    private int velocityCounter=0;
+    private final int MAX_VELOCITY_COUNTER=10;
+    private Location startVelocityLocation;
+    private Location endVelocityLocation;
 
     private static Handler handler;
 
@@ -77,7 +87,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(100);//500
+                        Thread.sleep(THREAD_MILLI);//500
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -108,7 +118,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(100);//500
+                        Thread.sleep(THREAD_MILLI);//500
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -124,6 +134,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                                 }
                                 if(counter>=5){
                                     Log.d("DEBUG","gps signal acquired");
+                                    stable = true;
                                     t.interrupt();
                                     startTime = android.os.SystemClock.elapsedRealtime();
                                     elapsedTime=0;
@@ -196,11 +207,11 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
     }
 
-    private double getDeltaD(){
-        double lat1 = mLastLocation.getLatitude();
-        double lon1 = mLastLocation.getLongitude();
-        double lat2 = mCurrentLocation.getLatitude();
-        double lon2 = mCurrentLocation.getLongitude();
+    private double getDeltaD(Location start, Location end){
+        double lat1 = start.getLatitude();
+        double lon1 = start.getLongitude();
+        double lat2 = end.getLatitude();
+        double lon2 = end.getLongitude();
 
         double R = 6371; // km
         double dLat = (lat2-lat1)*Math.PI/180;
@@ -220,6 +231,33 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
     }
 
 
+    private void findVelocity(){
+        Log.d("STATUS","ENTERING POTENTIAL SNAFU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! VelocityCounter: "+velocityCounter +" STABLE: "+stable);
+        if(velocityCounter==0 && stable){
+            try{startVelocityLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            velocityCounter++;
+                Log.d("STATUS","AVOIDED SNAFU 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+            catch(final SecurityException e){Log.d("STATUS","COAXED INTO A SNAFU 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");}
+        }
+        else if(velocityCounter>=MAX_VELOCITY_COUNTER){
+            try{endVelocityLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                double distanceTravelled = getDeltaD(startVelocityLocation,endVelocityLocation);
+                int deltaT = THREAD_MILLI * 10/1000;//time 10 for the ten update intervals and div 1000 for milli to seconds conversion
+                if(distanceTravelled/deltaT<.1)
+                    velocity = 0;
+                else
+                    velocity = distanceTravelled/deltaT;
+                velocityCounter=0;
+                Log.d("STATUS","NOT IN A SNAFU2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+            catch(final SecurityException e){Log.d("STATUS","COAXED INTO A SNAFU2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");}
+        }
+        else if(stable) {
+            velocityCounter++;
+            Log.d("STATUS","EXITING A SNAFU HEAVY SITUATION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+    }
 
     private void update(){
 
@@ -234,7 +272,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
             else{
 
                 if (mCurrentLocation != null)
-                    deltaD = getDeltaD();
+                    deltaD = getDeltaD(mLastLocation,mCurrentLocation);
 
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 distanceTravelled+=deltaD;
@@ -242,12 +280,14 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
                 try{
 
+                    findVelocity();
 
                 outputText =
                         "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+" "+Double.toString(mCurrentLocation.getLongitude())
                         +" \n"+elapsedTime+"\nALTITUDE: " +mCurrentLocation.getAltitude()
                         +"\nDISTANCE TRAVELLED: "+distanceTravelled
-                        +"\nDeltaD: "+deltaD;
+                        +"\nDeltaD: "+deltaD
+                        +"\nVelocity: "+velocity;
                 //txtOutput.setText(outputString);
                 }catch(NullPointerException e){
                     outputText="";

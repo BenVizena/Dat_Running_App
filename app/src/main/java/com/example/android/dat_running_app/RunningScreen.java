@@ -66,6 +66,7 @@ import static com.example.android.dat_running_app.R.id.txtOutput;
 import static com.example.android.dat_running_app.R.style.AppTheme;
 import static com.google.android.gms.analytics.internal.zzy.a;
 import static com.google.android.gms.analytics.internal.zzy.g;
+import static com.google.android.gms.analytics.internal.zzy.n;
 
 
 /**
@@ -285,25 +286,29 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
             // TODO Auto-generated method stub
 
             String outputString = arg1.getStringExtra("outputString");
-            String[] delimedString=outputString.split("\n");
 
-           Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
-            if(delimedString.length==1){
-                String[] delimedStringWithCoords = outputString.split(",");
-                double lat = Double.parseDouble(delimedStringWithCoords[1]);
-                double lng = Double.parseDouble(delimedStringWithCoords[2]);
-                updateMarker(lat,lng);
+            try {
+                String[] delimedString = outputString.split("\n");
+                Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
+                if(delimedString.length==1){
+                    String[] delimedStringWithCoords = outputString.split(",");
+                    double lat = Double.parseDouble(delimedStringWithCoords[1]);
+                    double lng = Double.parseDouble(delimedStringWithCoords[2]);
+                    updateMarker(lat,lng);
 
-                updateTextView(outputString);
-            }
-             else {
-                outputString = delimedString[0] + "\n" + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4];
-                String[] coords = delimedString[0].split(" ");
-                double lat = Double.parseDouble(coords[1]);
-                double lng = Double.parseDouble(coords[2]);
-                updateMarker(lat,lng);
-                updateTextView(outputString);
-            }
+                    updateTextView(outputString);
+                }
+                else {
+                    outputString = delimedString[0] + "\n" + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4] + "\n" + delimedString[5];
+                    String[] coords = delimedString[0].split(" ");
+                    double lat = Double.parseDouble(coords[1]);
+                    double lng = Double.parseDouble(coords[2]);
+                    updateMarker(lat,lng);
+                    updateTextView(outputString);
+                }
+            }catch(NullPointerException e){}
+
+
 
 
 
