@@ -20,13 +20,8 @@ import com.google.android.gms.location.LocationServices;
 
 import android.os.Handler;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
-import static com.google.android.gms.analytics.internal.zzy.d;
-
-
-public class RunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
+public class FreeRunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
     private final String LOG_TAG = "running! activity";
     final static String MY_ACTION = "MY_ACTION";
@@ -293,7 +288,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                     outputText="";
                 }
                 //outputText=outputString;
-                //if RunningScreen is in the foreground
+                //if FreeRunningScreen is in the foreground
 
  //               Log.d("DEBUG",outputText);
             }
@@ -352,7 +347,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
         // Here, thisActivity is the current activity
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d("DEBUG","bottom one");
-            new RunningScreen().permissionRequest();
+            new FreeRunningScreen().permissionRequest();
         }
 
 
@@ -369,14 +364,14 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-        Toast.makeText(RunningScreenService.this, "service started", Toast.LENGTH_LONG).show();
+        Toast.makeText(FreeRunningScreenService.this, "service started", Toast.LENGTH_LONG).show();
         mGoogleApiClient.connect();
         return START_STICKY;
     }
 
     @Override
     public void onDestroy(){
-        Toast.makeText(RunningScreenService.this, "service destroyed", Toast.LENGTH_LONG).show();
+        Toast.makeText(FreeRunningScreenService.this, "service destroyed", Toast.LENGTH_LONG).show();
         t.interrupt();
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();

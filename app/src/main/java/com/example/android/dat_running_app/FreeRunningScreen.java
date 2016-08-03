@@ -1,45 +1,18 @@
 package com.example.android.dat_running_app;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Messenger;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -48,33 +21,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
-import static android.R.attr.alignmentMode;
-import static android.R.attr.layout_alignBottom;
-import static android.R.attr.layout_alignParentBottom;
-import static android.R.attr.permission;
-import static android.R.interpolator.linear;
-import static android.R.style.Theme;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static android.os.Build.VERSION_CODES.M;
-import static android.support.v7.appcompat.R.attr.actionBarSize;
-import static android.support.v7.appcompat.R.attr.colorPrimary;
-import static com.example.android.dat_running_app.R.id.map;
 import static com.example.android.dat_running_app.R.id.txtOutput;
-import static com.example.android.dat_running_app.R.style.AppTheme;
-import static com.google.android.gms.analytics.internal.zzy.a;
-import static com.google.android.gms.analytics.internal.zzy.g;
-import static com.google.android.gms.analytics.internal.zzy.n;
-import static com.google.android.gms.analytics.internal.zzy.t;
 
 
 /**
  * Created by Ben on 7/12/2016.
  */
 
-public class RunningScreen extends AppCompatActivity implements OnMapReadyCallback{
+public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCallback{
 
     private final String LOG_TAG = "running! activity";
 
@@ -179,7 +135,7 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
         startMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RunningScreen.this, FreeRunMapsActivity.class);
+                Intent intent = new Intent(FreeRunningScreen.this, FreeRunMapsActivity.class);
                 startActivity(intent);
             }
         });
@@ -297,6 +253,15 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
         return ""+result;
     }
 
+    private String getSpeed(String speed, boolean metric){
+        String delimedSpeed[] = speed.split(" ");
+        double dubSpeed = Double.parseDouble(delimedSpeed[1]);
+        if(metric)
+            return ((double)(dubSpeed*3.6))+"";
+        else
+            return ((double)(dubSpeed*2.23694)+"");
+    }
+
 
     private class MyReceiver extends BroadcastReceiver {
 
@@ -318,13 +283,16 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
                     updateTextView(outputString);
                 }
                 else {//0 is coords, 1 is time (m,m,s,ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s)
-                    outputString = delimedString[0] + "\nTIME: " + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4] + "\n" + delimedString[5];
+                    outputString = delimedString[0] + "\nTIME: " + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4];
                     String[] coords = delimedString[0].split(" ");
+                    String speedKmHr = getSpeed(delimedString[5],true);
+                    String speedMiHr = getSpeed(delimedString[5],false);
                     String timeToFinishKm=formatTime(milliToFinish(delimedString[5],true));
                     String timeToFinishMile=formatTime(milliToFinish(delimedString[5],false));
  //                   Log.d("dels5",delimedString[5]);
  //                   Log.d("MMTTKMWTF",milliToFinish(delimedString[5],true));
-                    outputString += "\nTime To Finish Km: "+timeToFinishKm + "\nTime To Finish Mile: "+timeToFinishMile;
+                    outputString += "\nSpeed (km/hr): "+speedKmHr+"\nSpeed (mi/hr): "+speedMiHr;
+                    outputString += "\nPace (Km): "+timeToFinishKm + "\nPace (Mi): "+timeToFinishMile;
                     double lat = Double.parseDouble(coords[1]);
                     double lng = Double.parseDouble(coords[2]);
                     updateMarker(lat,lng);
@@ -365,17 +333,17 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
     public void startService(View view){
         myReceiver = new MyReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(RunningScreenService.MY_ACTION);
+        intentFilter.addAction(FreeRunningScreenService.MY_ACTION);
         registerReceiver(myReceiver, intentFilter);
         Log.d("SDKLFJSL","!!!!MADE IT HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        Intent intent = new Intent(this,RunningScreenService.class);
+        Intent intent = new Intent(this,FreeRunningScreenService.class);
         startService(intent);
 
     }
 
     public void stopService(View view){
   //      myReceiver = new MyReceiver();
-        Intent intent = new Intent(this,RunningScreenService.class);
+        Intent intent = new Intent(this,FreeRunningScreenService.class);
         stopService(intent);
         unregisterReceiver(myReceiver);
 
@@ -438,7 +406,7 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("DEBUG","permission granted!");
-               //     Intent intent = new Intent(this,RunningScreen.class);
+               //     Intent intent = new Intent(this,FreeRunningScreen.class);
                //     startActivity(intent);
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.

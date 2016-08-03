@@ -11,11 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.RadioButton;
-import android.widget.Toast;
-
-import static android.R.attr.button;
-import static com.example.android.dat_running_app.RunningScreenService.MY_ACTION;
 
 /**
  * Created by Ben on 7/24/2016.

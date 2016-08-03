@@ -3,24 +3,9 @@ package com.example.android.dat_running_app;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.content.Intent;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.Toast;
-
-import static com.example.android.dat_running_app.R.id.freerun_ib;
-import static com.example.android.dat_running_app.R.id.freerunnow_ib;
-import static com.example.android.dat_running_app.R.id.intervalrun_ib;
-import static com.example.android.dat_running_app.R.id.runfortime_ib;
 
 /**
  * Created by Ben on 7/11/2016.
@@ -50,7 +35,7 @@ public class FreeRunClickedMenu extends AppCompatActivity{
     }
 
     public void freeRunNowClicked(View view){
-        Intent intent = new Intent(this,RunningScreen.class);
+        Intent intent = new Intent(this,FreeRunningScreen.class);
         startActivity(intent);
       //  Toast.makeText(FreeRunClickedMenu.this, "ChangeUI Button was clicked!", Toast.LENGTH_SHORT).show();
     }
