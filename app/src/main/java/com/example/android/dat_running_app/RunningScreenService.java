@@ -232,11 +232,11 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
 
 
     private void findVelocity(){
-        Log.d("STATUS","ENTERING POTENTIAL SNAFU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! VelocityCounter: "+velocityCounter +" STABLE: "+stable);
+//        Log.d("STATUS","ENTERING POTENTIAL SNAFU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! VelocityCounter: "+velocityCounter +" STABLE: "+stable);
         if(velocityCounter==0 && stable){
             try{startVelocityLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             velocityCounter++;
-                Log.d("STATUS","AVOIDED SNAFU 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+ //               Log.d("STATUS","AVOIDED SNAFU 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
             catch(final SecurityException e){Log.d("STATUS","COAXED INTO A SNAFU 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");}
         }
@@ -249,13 +249,13 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                 else
                     velocity = distanceTravelled/deltaT;
                 velocityCounter=0;
-                Log.d("STATUS","NOT IN A SNAFU2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+ //               Log.d("STATUS","NOT IN A SNAFU2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
             catch(final SecurityException e){Log.d("STATUS","COAXED INTO A SNAFU2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");}
         }
         else if(stable) {
             velocityCounter++;
-            Log.d("STATUS","EXITING A SNAFU HEAVY SITUATION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//            Log.d("STATUS","EXITING A SNAFU HEAVY SITUATION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
 
@@ -267,7 +267,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation == null) {
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                Log.d("DEBUG","mLastLocation == null\n");
+ //               Log.d("DEBUG","mLastLocation == null\n");
             }
             else{
 
@@ -295,7 +295,7 @@ public class RunningScreenService extends Service implements GoogleApiClient.Con
                 //outputText=outputString;
                 //if RunningScreen is in the foreground
 
-                Log.d("DEBUG",outputText);
+ //               Log.d("DEBUG",outputText);
             }
         }
         catch(final SecurityException ex){

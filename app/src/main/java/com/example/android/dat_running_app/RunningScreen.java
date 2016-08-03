@@ -67,6 +67,7 @@ import static com.example.android.dat_running_app.R.style.AppTheme;
 import static com.google.android.gms.analytics.internal.zzy.a;
 import static com.google.android.gms.analytics.internal.zzy.g;
 import static com.google.android.gms.analytics.internal.zzy.n;
+import static com.google.android.gms.analytics.internal.zzy.t;
 
 
 /**
@@ -278,6 +279,24 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
 //        gMap.animateCamera(CameraUpdateFactory.zoomTo(15),10000,null);//middle was 2000
     }
 
+    private String milliToFinish(String speed, boolean metric){
+        String delimedSpeed[] = speed.split(" ");
+        double dubSpeed = Double.parseDouble(delimedSpeed[1]);
+//        Log.d("DUBSPEED",dubSpeed+"");
+        double milliToFin = 0;
+
+        if(metric && dubSpeed!=0) {
+            milliToFin = 1 / dubSpeed * 1000 * 1000;
+            Log.d("metric","made it here "+ milliToFin);
+        }
+        else if(dubSpeed!=0)
+            milliToFin = 1609.34 * 1000 / dubSpeed;
+
+        Long result = (Long)Math.round(milliToFin);
+
+        return ""+result;
+    }
+
 
     private class MyReceiver extends BroadcastReceiver {
 
@@ -289,7 +308,7 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
 
             try {
                 String[] delimedString = outputString.split("\n");
-                Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
+         //       Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
                 if(delimedString.length==1){
                     String[] delimedStringWithCoords = outputString.split(",");
                     double lat = Double.parseDouble(delimedStringWithCoords[1]);
@@ -298,9 +317,14 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
 
                     updateTextView(outputString);
                 }
-                else {
-                    outputString = delimedString[0] + "\n" + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4] + "\n" + delimedString[5];
+                else {//0 is coords, 1 is time (m,m,s,ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s)
+                    outputString = delimedString[0] + "\nTIME: " + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4] + "\n" + delimedString[5];
                     String[] coords = delimedString[0].split(" ");
+                    String timeToFinishKm=formatTime(milliToFinish(delimedString[5],true));
+                    String timeToFinishMile=formatTime(milliToFinish(delimedString[5],false));
+ //                   Log.d("dels5",delimedString[5]);
+ //                   Log.d("MMTTKMWTF",milliToFinish(delimedString[5],true));
+                    outputString += "\nTime To Finish Km: "+timeToFinishKm + "\nTime To Finish Mile: "+timeToFinishMile;
                     double lat = Double.parseDouble(coords[1]);
                     double lng = Double.parseDouble(coords[2]);
                     updateMarker(lat,lng);
@@ -317,16 +341,25 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
     }
 
     private String formatTime(String s){
-        long millis = Long.parseLong(s);
+        String hmsm="";
+        try {
+            long millis = Long.parseLong(s);
+            hmsm = String.format("%02d:%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1),
+                    TimeUnit.MILLISECONDS.toMillis(millis) % TimeUnit.SECONDS.toMillis(1));
 
-        String hmsm = String.format("%02d:%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
-                TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
-                TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1),
-                TimeUnit.MILLISECONDS.toMillis(millis)  % TimeUnit.SECONDS.toMillis(1));
+            String delimedTime[] = hmsm.split(":");
+
+            if(delimedTime[0].equals("00"))
+                hmsm = delimedTime[1]+":"+delimedTime[2]+":"+delimedTime[3];
+
+        }catch(NumberFormatException e){
+
+        }
 
 
-
-        return "TIME: "+hmsm;
+        return ""+hmsm;
     }
 
     public void startService(View view){
@@ -355,7 +388,7 @@ public class RunningScreen extends AppCompatActivity implements OnMapReadyCallba
         TextView output = new TextView(this);
         try {
             output = (TextView) findViewById(txtOutput);
-            Log.d("TXTOUTPUT IDDDDDDDDDDDD","ID: "+output.getId());
+ //           Log.d("TXTOUTPUT IDDDDDDDDDDDD","ID: "+output.getId());
 //        Log.d("sdkfsklfdjsklfjfkl",txtOutput.toString()+"");
             output.setText(str);
         }
