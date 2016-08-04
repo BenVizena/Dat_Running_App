@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.android.dat_running_app.R.id.txtOutput;
+import static com.google.android.gms.analytics.internal.zzy.e;
 
 
 /**
@@ -41,8 +42,12 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private GoogleMap gMap;
     private Marker m;
 
-    MyReceiver myReceiver;
-    String outputString;
+    private MyReceiver myReceiver;
+    private String outputString;
+    private RunDBHelper RDB;
+
+    private int dbUpdateTimer=0;
+    private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update. //was 10. 10 is probably good. //100 works for debugging purposes.
 
 
 //    private TextView txtOutput;
@@ -52,145 +57,9 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-/*
-        RelativeLayout myLayout = new RelativeLayout(this);//////////////////////////////start relative layout
-
-        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams q = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams r = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-
-    //    ((RelativeLayout)myLayout).setGravity(Gravity.BOTTOM);
-
-        Window window = this.getWindow();////////////////////////////////////////////////make status bar correct color
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
-
-        Toolbar runningToolBar = new Toolbar(this);/////////////////////////////////////make new toolbar
-        runningToolBar.generateViewId();
-        int toolBarId = runningToolBar.getId();
-
-  //      TextView spaceTaker = new TextView(this);
-
-
-
-        int paddingOffset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -42, getResources().getDisplayMetrics());////////////////make title for toolbar
-        TextView myTitle = new TextView(this);
-        myTitle.setText("RUNNING!");
-        myTitle.setLayoutParams(new Toolbar.LayoutParams(-1, -1));
-        myTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP,26);
-        myTitle.setTextColor(ContextCompat.getColor(this,android.R.color.black));
-        myTitle.setPadding(paddingOffset,0,0,0);
-        myTitle.setGravity(Gravity.CENTER);//////////////////////////////////////////////////////////////////////////////////////////////////////end toolbar title stuff
-
-        LinearLayout sps = new LinearLayout(this);
-        sps.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        myLayout.addView(sps,lp);
-
-
-        final Button startButton = new Button(this);/////////////////////////////////////////////////////////////////////////////////////////////////////make start button
-        startButton.generateViewId();
-        startButton.setId((int)android.os.SystemClock.elapsedRealtime());
-        int startButtonId=startButton.getId();
-        startButton.setText("start");
-        startButton.setBackgroundColor(Color.GREEN);
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startService(startButton);
-            }
-        });
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
-        param.gravity=Gravity.BOTTOM;
-        startButton.setLayoutParams(param);
-        sps.addView(startButton);////////////////////////////////////////////////////////////////////////////////////////////////////////////////end start button
-
-
-        final Button endButton = new Button(this);/////////////////////////////////////////////////////////////////////////////////////////////////////make end button
-        endButton.generateViewId();
-        endButton.setId((int)android.os.SystemClock.elapsedRealtime());
-        int endButtonId=endButton.getId();
-        endButton.setText("stop");
-        endButton.setBackgroundColor(Color.RED);
-        endButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopService(endButton);
-            }
-        });
-
-        endButton.setLayoutParams(param);
-        sps.addView(endButton);////////////////////////////////////////////////////////////////////////////////////////////////////////////////end end button
-
-        final Button startMapButton = new Button(this);/////////////////////////////////////////////////////////////////////////////////////////////////////make temp map button
-        startMapButton.generateViewId();
-        startMapButton.setId((int)android.os.SystemClock.elapsedRealtime());
-        int startMapButtonId=startMapButton.getId();
-        startMapButton.setText("start map");
-        startMapButton.setBackgroundColor(Color.YELLOW);
-        startMapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(FreeRunningScreen.this, FreeRunMapsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        startMapButton.setLayoutParams(param);
-        sps.addView(startMapButton);////////////////////////////////////////////////////////////////////////////////////////////////////////////////end temp map button
-
-        TextView txtOutput=new TextView(this);////////////////////////////////////////////////////////////////////////////////////////////begin txtOutput
-        //txtOutput.generateViewId();
-       // txtOutput.setId((int)android.os.SystemClock.elapsedRealtime()+123123);
-      //  int txtOutputId=txtOutput.getId();
-        txtOutput.setId(txtOutput.generateViewId());
-        txtOutputId=txtOutput.getId();
-        Log.d("TXTOUTPUT IDDDDDDDD",txtOutput.getId()+"");
-        q.addRule(RelativeLayout.CENTER_IN_PARENT);
-        txtOutput.setLayoutParams(q);
-        txtOutput.setText("HELLO");
-        myLayout.addView(txtOutput);///////////////////////////////////////////////////////////////////////////////////////////////////////////end txtOutput
-
-
-        TextView commsTest=new TextView(this);////////////////////////////////////////////////////////////////////////////////////////////begin txtOutput
-        //txtOutput.generateViewId();
-        // txtOutput.setId((int)android.os.SystemClock.elapsedRealtime()+123123);
-        //  int txtOutputId=txtOutput.getId();
-        commsTest.setId(txtOutput.generateViewId());
-       // txtOutputId=txtOutput.getId();
-      //  Log.d("TXTOUTPUT IDDDDDDDD",txtOutput.getId()+"");
-        r.addRule(RelativeLayout.CENTER_VERTICAL);
-        r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        txtOutput.setLayoutParams(r);
-        txtOutput.setText(""+FreeRunChangeUI.showTotalDistance());
-        myLayout.addView(commsTest);
-
-
-
-
-        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, getResources().getDisplayMetrics());//////////////////////set up toolbar
-        Toolbar.LayoutParams params = new Toolbar.LayoutParams(-1, height);
-        runningToolBar.setLayoutParams(params);
-        runningToolBar.setElevation(20);
-        runningToolBar.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));///////////////////////////////////////////////////end toolbar setup
-
-
-
-        myLayout.addView(runningToolBar);
-        runningToolBar.addView(myTitle);
-
-        */
-
         setContentView(R.layout.activity_runningscreen);
 
- //       setContentView(R.layout.activity_runningscreen);
- //       Toolbar runningToolbar = (Toolbar) findViewById(R.id.runningToolbar);
-  //      setSupportActionBar(runningToolbar);
-  //      getSupportActionBar().setDisplayShowTitleEnabled(false);
+        RDB = new RunDBHelper(this);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -271,6 +140,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
             String outputString = arg1.getStringExtra("outputString");
 
+
             try {
                 String[] delimedString = outputString.split("\n");
          //       Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
@@ -282,7 +152,9 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     updateTextView(outputString);
                 }
-                else {//0 is coords, 1 is time (m,m,s,ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s)
+                else {//0 is coords, 1 is time (ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s), 6 is start time
+                    dbUpdateTimer+=1;
+
                     outputString = delimedString[0] + "\nTIME: " + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4];
                     String[] coords = delimedString[0].split(" ");
                     String speedKmHr = getSpeed(delimedString[5],true);
@@ -297,6 +169,12 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     double lng = Double.parseDouble(coords[2]);
                     updateMarker(lat,lng);
                     updateTextView(outputString);
+
+                    if(dbUpdateTimer>=DBUPDATELIMIT){
+                        dbUpdateTimer=0;
+                        RDB.addUpdate("freerun",delimedString[6], delimedString[1],delimedString[3],timeToFinishKm, speedKmHr,"NO CADENCE DATA", "NO ELEVATION DATA");
+                    }
+
                 }
             }catch(NullPointerException e){}
 

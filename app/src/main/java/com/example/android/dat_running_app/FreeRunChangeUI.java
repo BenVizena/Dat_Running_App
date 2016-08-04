@@ -38,49 +38,10 @@ public class FreeRunChangeUI extends AppCompatActivity {
         int height = dm.heightPixels;
 
         getWindow().setLayout((int) (width * .8), (int) (height * .5));
-/*
-        Thread t = new Thread() {
 
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(100);//500
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                refreshTotalDistance();
-                                refreshTotalTime();
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        };
-
-        t.start();
-*/
 
     }
-/*
-    public void commitChanges(){
-        commitChangesButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d("DB TAG","PRE INSERTED");
-                        boolean isInserted = frDB.addSettings(totalTime, totalDistance);
-                        if(isInserted)
-                            Log.d("DB TAG","INSERTED");
-                        else
-                            Log.d("DB TAG","NOT INSERTED");
-                    }
-                }
-        );
-    }
- */
+
     public void commitChanges(View view){
         refreshTotalTime();
         refreshTotalDistance();
@@ -106,7 +67,7 @@ public class FreeRunChangeUI extends AppCompatActivity {
             settings.moveToFirst();
 
         if(settings.getCount()==0){
-            showMessage("ERROR","NOTHING FOUND");
+            //debug slot
         }
         else{
             if((""+settings.getString(1)).equals("true")){

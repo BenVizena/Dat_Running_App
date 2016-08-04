@@ -16,12 +16,12 @@ import static android.R.attr.version;
 
 public class FreeRunDBHelper extends SQLiteOpenHelper{
 
-    public static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "dat_running_app_db.db";
-    public static final String TABLE_NAME = "freerun_settings_table";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_SHOWTIME = "SHOW_TIME";
-    public static final String COLUMN_SHOWDISTANCE = "SHOW_DISTANCE";
+    private static final String TABLE_NAME = "freerun_settings_table";
+    private static final String COLUMN_ID = "_id";
+    private static final String COLUMN_SHOWTIME = "SHOW_TIME";
+    private static final String COLUMN_SHOWDISTANCE = "SHOW_DISTANCE";
 
 
     public FreeRunDBHelper(Context context) {//, String name, SQLiteDatabase.CursorFactory factory, int version
@@ -53,7 +53,7 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
         long success = db.insert(TABLE_NAME,null,values);
         db.close();
 
-        Log.d("degub", ""+success);
+        Log.d("debug", ""+success);
 
         if(success == -1)
             return false;
