@@ -47,7 +47,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private RunDBHelper RDB;
 
     private int dbUpdateTimer=0;
-    private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update. //was 10. 10 is probably good. //100 works for debugging purposes.
+    private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update. //was 10. 10 is probably good. that is 1 update to db for every second. //100 works for debugging purposes.
 
 
 //    private TextView txtOutput;
