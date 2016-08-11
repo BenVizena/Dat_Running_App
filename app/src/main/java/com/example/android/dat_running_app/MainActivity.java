@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import static android.R.attr.onClick;
 import static android.R.attr.orderInCategory;
+import static com.google.android.gms.analytics.internal.zzy.l;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void runClicked(View view){
         startActivity(new Intent(this,RunOptionsMenuRoot.class));
+    }
+
+    public void statsClicked(View view){
+        startActivity(new Intent(this,StatsScreen.class));
     }
 
 
@@ -110,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         stats_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                Toast.makeText(MainActivity.this, "Stats Button was clicked!", Toast.LENGTH_SHORT).show();
+                statsClicked(stats_ib);
             }
         });
 
