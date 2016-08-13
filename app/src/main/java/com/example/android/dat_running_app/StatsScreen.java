@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +35,7 @@ import java.util.List;
 import static android.R.attr.colorPrimary;
 import static android.R.attr.data;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static com.google.android.gms.analytics.internal.zzy.r;
 import static com.google.android.gms.analytics.internal.zzy.v;
 
 /**
@@ -218,20 +221,38 @@ public class StatsScreen extends AppCompatActivity{
 
     private void populateRunSpinner(){
         List<String> runSpinnerList = new ArrayList<>();
-        runSpinnerList.add("RUNS");
 
-        Cursor cursor = RDB.getFRDataReverse();
+        int i=0;
 
-        if(cursor.moveToFirst()){
-            do{
-                String[] startTime = cursor.getString(2).split(" ");
-              //  String startTime = cursor.getString(2);
+        ArrayList<Long> startTimes = new ArrayList<>();
+        long increment=0;
 
-                Log.d("DATE",startTime[1]);
-                Date date = new Date(Long.parseLong(startTime[1]));
-                runSpinnerList.add(date.toString());
-            }while(cursor.moveToNext());
-        }
+            while(i<10) {
+                try {
+
+                    Cursor cursor = RDB.getFRDataReverse(increment);
+                    String[] startTime = cursor.getString(2).split(" ");
+
+                    Long epochTime = Long.parseLong(startTime[1]);
+
+                    if(!startTimes.contains(epochTime)&&epochTime>1471057640){
+                        startTimes.add(epochTime);
+                        Log.d("ADDED",""+epochTime);
+                        Date date = new Date(epochTime);
+                        String strDate = date.toString();
+                        String[] dateArray = strDate.split(" ");
+                        String spinnerFormatDate = dateArray[0]+" "+dateArray[1]+" "+dateArray[2]+" "+dateArray[5];
+                        runSpinnerList.add(spinnerFormatDate);
+                        i++;
+                    }
+                    else
+                        increment+=1;
+
+               //     Date date = new Date(Long.parseLong(startTime[1]));
+               //     runSpinnerList.add(date.toString());
+                }catch(CursorIndexOutOfBoundsException e){Log.d("EXCEPTION","CAUGHT"); i+=10;}
+                catch(SQLiteCantOpenDatabaseException d){Log.d("EXCEPTION","CAUGHT"); i+=10;};
+            }
 
 
         ArrayAdapter<String> runSpinnerDataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,runSpinnerList);

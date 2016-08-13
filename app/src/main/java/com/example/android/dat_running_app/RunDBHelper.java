@@ -101,9 +101,9 @@ public class RunDBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public Cursor getFRDataReverse(){
+    public Cursor getFRDataReverse(long start){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM "+TABLE_NAME+" ORDER BY "+COLUMN_ID+" DESC LIMIT 1";
+        String query = "SELECT * FROM "+TABLE_NAME+" ORDER BY "+COLUMN_ID+" DESC LIMIT "+start+", 1";
         Cursor result = db.rawQuery(query, null);
 
         result.moveToFirst();
