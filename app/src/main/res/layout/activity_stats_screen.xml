@@ -39,101 +39,240 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Time Interval"
-                android:paddingTop="8dp"
-                android:paddingLeft="8dp"
-                android:textSize="20dp"
-                android:gravity="center"/>
-
-            <RadioGroup
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:paddingTop="8dp"
-                android:id="@+id/graphRadioButton"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <RadioButton
-                    android:id="@+id/timeIntervalButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:gravity="center"/>
-
-                <RadioButton
-                    android:id="@+id/individualRunButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"/>
-
-
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Individual Run"
-                android:paddingTop="8dp"
-                android:textSize="20dp"
-                android:gravity="center"/>
 
 
 
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="@color/colorAccent"
-                android:layout_weight="2"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/startChart"
-                android:layout_marginEnd="56dp"
-                android:layout_marginStart="56dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-/>
+                android:orientation="vertical">
 
-        </RelativeLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Line Chart"
+                        android:paddingTop="8dp"
+                        android:paddingLeft="0dp"
+                        android:textSize="20dp"
+                        android:gravity="center_horizontal"/>
+
+                    <RadioGroup
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingTop="8dp"
+                        android:id="@+id/botGraphRadioButton"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <RadioButton
+                            android:id="@+id/lineChartButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:gravity="center_horizontal"/>
+
+                        <RadioButton
+                            android:id="@+id/barChartButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"/>
+
+
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Bar Chart"
+                        android:paddingTop="8dp"
+                        android:textSize="20dp"
+                        android:gravity="center"/>
+
+
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Time Interval"
+                        android:paddingTop="0dp"
+                        android:paddingLeft="0dp"
+                        android:textSize="20dp"
+                        android:gravity="center"/>
+
+                    <RadioGroup
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingTop="0dp"
+                        android:id="@+id/topGraphRadioButton"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <RadioButton
+                            android:id="@+id/timeIntervalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:gravity="center"
+                            android:onClick="refreshSpinners"/>
+
+                        <RadioButton
+                            android:id="@+id/individualRunButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:onClick="refreshSpinners"/>
+
+
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Individual Run"
+                        android:paddingTop="0dp"
+                        android:textSize="20dp"
+                        android:gravity="center_horizontal"/>
+
+
+
+
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/colorAccent"
+                    android:layout_weight="2"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/chartAndSpinnerRelLayout">
+
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/startChart"
+                    android:layout_marginEnd="56dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+
+                <LinearLayout
+                    android:id="@+id/xAxisLinearLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/startChart"
+                    android:paddingLeft="4dp"
+                    >
+
+                    <TextView
+                        android:id="@+id/xAxisText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="x-axis:"
+                        />
+
+                    <Spinner
+                        android:id="@+id/xAxisSpinner"
+                        android:layout_width="225dp"
+                        android:layout_height="20dp"
+                        android:entries = "@array/time_interval_x"
+                        android:prompt="@string/x_axis_spinner"
+                        android:spinnerMode="dropdown"
+                        android:layout_marginLeft="1dp"
+                        android:maxLines="1">
+
+                    </Spinner>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/yAxisLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/xAxisLinearLayout"
+                    android:paddingLeft="4dp">
+
+                    <TextView
+                        android:id="@+id/yAxisText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="y-axis:"/>
+
+                    <Spinner
+                        android:id="@+id/yAxisSpinner"
+                        android:layout_width="225dp"
+                        android:layout_height="20dp"
+                        android:entries = "@array/time_interval_y"
+                        android:prompt="@string/y_axis_spinner"
+                        android:spinnerMode="dropdown"
+                        android:layout_marginLeft="1dp"
+                        android:maxLines="1">
+
+                    </Spinner>
+
+
+
+                </LinearLayout>
+
+
+
+            </RelativeLayout>
+
+            </LinearLayout>
+        </ScrollView>
 
 
 

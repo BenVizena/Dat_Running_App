@@ -112,7 +112,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
         if(metric && dubSpeed!=0) {
             milliToFin = 1 / dubSpeed * 1000 * 1000;
-            Log.d("metric","made it here "+ milliToFin);
+  //          Log.d("metric","made it here "+ milliToFin);
         }
         else if(dubSpeed!=0)
             milliToFin = 1609.34 * 1000 / dubSpeed;
@@ -213,7 +213,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(FreeRunningScreenService.MY_ACTION);
         registerReceiver(myReceiver, intentFilter);
-        Log.d("SDKLFJSL","!!!!MADE IT HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+ //       Log.d("SDKLFJSL","!!!!MADE IT HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         Intent intent = new Intent(this,FreeRunningScreenService.class);
         startService(intent);
 
@@ -250,7 +250,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     }
 
     public void permissionRequest(){
-        Log.d("DEBUG","made it to permissionRequest");
+  //      Log.d("DEBUG","made it to permissionRequest");
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
 
@@ -266,7 +266,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         10);
 
-                Log.d("DEBUG","Requesting Permission...");
+  //              Log.d("DEBUG","Requesting Permission...");
 
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
@@ -283,7 +283,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("DEBUG","permission granted!");
+              //      Log.d("DEBUG","permission granted!");
                //     Intent intent = new Intent(this,FreeRunningScreen.class);
                //     startActivity(intent);
                     // permission was granted, yay! Do the

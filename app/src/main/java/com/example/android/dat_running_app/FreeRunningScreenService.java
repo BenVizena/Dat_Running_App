@@ -20,6 +20,8 @@ import com.google.android.gms.location.LocationServices;
 
 import android.os.Handler;
 
+import java.util.Date;
+
 
 public class FreeRunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
@@ -32,7 +34,9 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     private Location mCurrentLocation;
     private static String mLatitudeText;
     private String mLongitudeText;
-    private long startTime = android.os.SystemClock.elapsedRealtime();
+//    private long startTime = android.os.SystemClock.elapsedRealtime();
+    long startTime = new Date().getTime();
+
     private long elapsedTime = 0;
     private double distanceTravelled=0;
     private double deltaD;
@@ -60,10 +64,11 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
+        Log.d("StartTime!",""+startTime);
+  //      elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
 
 
-        Log.d("DEBUG","onCreate()");
+//        Log.d("DEBUG","onCreate()");
         waitForStableGPS();
 
 
@@ -72,7 +77,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     }
 
     private void runGPS(){
-        Log.d("DEBUG runGPS entry","Running this shit.");
+//        Log.d("DEBUG runGPS entry","Running this shit.");
 
 
 
@@ -105,7 +110,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     }
 
     private void waitForStableGPS(){
-        Log.d("DEBUG","starting waitForStableGPS()");
+  //      Log.d("DEBUG","starting waitForStableGPS()");
         t = new Thread() {
             int counter = 0;
 
@@ -120,18 +125,18 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
                                 update();
 
                                 if(deltaD==0){
-                                    Log.d("DEBUG","getting gps signal");
+  //                                  Log.d("DEBUG","getting gps signal");
                                     counter+=1;
                                 }
                                 else{
-                                    Log.d("DEBUG","getting gps signal");
+   //                                 Log.d("DEBUG","getting gps signal");
                                     counter=0;
                                 }
                                 if(counter>=5){
-                                    Log.d("DEBUG","gps signal acquired");
+ //                                  Log.d("DEBUG","gps signal acquired");
                                     stable = true;
                                     t.interrupt();
-                                    startTime = android.os.SystemClock.elapsedRealtime();
+                                    startTime = new Date().getTime();
                                     elapsedTime=0;
                                     runGPS();
                                 }
@@ -149,7 +154,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
 
                                 sendBroadcast(intent);
-                                Log.d("DEBUG","intent broadcasted");
+  //                              Log.d("DEBUG","intent broadcasted");
 
 
                             }
@@ -172,31 +177,31 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d("DEBUG","onConnected");
+ //       Log.d("DEBUG","onConnected");
 
         if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
-            Log.d("DEBUG","PERMISSION CHECK IN SERVICE ON CONNECTED");
+  //          Log.d("DEBUG","PERMISSION CHECK IN SERVICE ON CONNECTED");
 
             return;
         }
-        Log.d("DEBUG","PASSED ONCONNECTED CHECK");
+ //       Log.d("DEBUG","PASSED ONCONNECTED CHECK");
 
 
 
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        Log.d("DEBUG","Gave current and last location values");
+ //       Log.d("DEBUG","Gave current and last location values");
 
 
         if (mCurrentLocation != null) {
-            Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
+  //          Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
             mLatitudeText =""+mCurrentLocation.getLatitude();//these are useless
             mLongitudeText=""+mCurrentLocation.getLongitude();
             //  LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             //txtOutput.setText(mLatitudeText+" "+mLongitudeText);
         }
 
-        Log.d("DEBUG","startLocationUpdates");
+  //      Log.d("DEBUG","startLocationUpdates");
         startLocationUpdates();
 
 
@@ -271,7 +276,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 distanceTravelled+=deltaD;
-                elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
+                elapsedTime = new Date().getTime()-startTime;
 
                 try{
 
@@ -300,7 +305,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     }
 
     public long getElapsedTime(){
-        return android.os.SystemClock.elapsedRealtime()-startTime;
+        return new Date().getTime()-startTime;
     }
 
     public Double getLatitude(){

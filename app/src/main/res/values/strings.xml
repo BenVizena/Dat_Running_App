@@ -1,5 +1,27 @@
 <resources>
-    <string name="app_name">Dat_Running_App</string>
+    <string name="app_name">Dat Running App</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_free_run_maps">Map</string>
+
+    <string name="x_axis_spinner">X-Axis</string>
+    <string name="y_axis_spinner">Y-Axis</string>
+
+    <string-array name = "time_interval_y">
+        <item>Pace (mi)</item>
+        <item>Pace (km)</item>
+        <item>Speed (mi/hr)</item>
+        <item>Speed (km/hr)</item>
+        <item>Run Duration</item>
+        <item>Run Distance (mi)</item>
+        <item>Run Distance (km)</item>
+        <item>Calories Burned</item>
+    </string-array>
+
+    <string-array name = "time_interval_x">
+        <item>Week</item>
+        <item>Month</item>
+        <item>3 Month</item>
+        <item>Year</item>
+        <item>All Time</item>
+    </string-array>
 </resources>

@@ -64,14 +64,14 @@ public class RunDBHelper extends SQLiteOpenHelper {
 
     public boolean addUpdate(String runType, String startTime, String currentTime, String currentDistance, String currentPace, String currentSpeed, String currentCadence, String currentElevation){
         ContentValues values = new ContentValues();
-        values.put(COLUMN_RUNTYPE, runType);
-        values.put(COLUMN_STARTTIME, startTime);
-        values.put(COLUMN_CURRENTTIME, currentTime);
-        values.put(COLUMN_CURRENTDISTANCE, currentDistance);
-        values.put(COLUMN_CURRENTPACE, currentPace);
-        values.put(COLUMN_CURRENTSPEED, currentSpeed);
-        values.put(COLUMN_CURRENTCADENCE, currentCadence);
-        values.put(COLUMN_CURRENTELEVATION, currentElevation);
+        values.put(COLUMN_RUNTYPE, runType);//1
+        values.put(COLUMN_STARTTIME, startTime);//2
+        values.put(COLUMN_CURRENTTIME, currentTime);//3
+        values.put(COLUMN_CURRENTDISTANCE, currentDistance);//4
+        values.put(COLUMN_CURRENTPACE, currentPace);//5
+        values.put(COLUMN_CURRENTSPEED, currentSpeed);//6
+        values.put(COLUMN_CURRENTCADENCE, currentCadence);//7
+        values.put(COLUMN_CURRENTELEVATION, currentElevation);//8
 
         SQLiteDatabase db = getWritableDatabase();
         long success = db.insert(TABLE_NAME,null,values);
@@ -91,12 +91,22 @@ public class RunDBHelper extends SQLiteOpenHelper {
         Cursor result = db.rawQuery(query, null);
 
         result.moveToFirst();
-        while (!result.isAfterLast()) {
-            Log.d("RESULTS",".getInt(0): "+result.getInt(0)+" .getString(1): "+result.getString(1)+" .getString(2): "+result.getString(2)+" .getString(3): "+result.getString(3)+" .getString(4): "+result.getString(4));
-            result.moveToNext();
-        }
+    //    while (!result.isAfterLast()) {
+  //          Log.d("RESULTS",".getInt(0): "+result.getInt(0)+" .getString(1): "+result.getString(1)+" .getString(2): "+result.getString(2)+" .getString(3): "+result.getString(3)+" .getString(4): "+result.getString(4)
+   //         +" .getString(5): "+result.getString(5));
+  //          result.moveToNext();
+  //      }
 
 //        db.close();
+        return result;
+    }
+
+    public Cursor getFRDataReverse(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM "+TABLE_NAME+" ORDER BY "+COLUMN_ID+" DESC LIMIT 1";
+        Cursor result = db.rawQuery(query, null);
+
+        result.moveToFirst();
         return result;
     }
 }
