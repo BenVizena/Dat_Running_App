@@ -2,6 +2,7 @@ package com.example.android.dat_running_app;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
@@ -35,6 +36,7 @@ import java.util.List;
 import static android.R.attr.colorPrimary;
 import static android.R.attr.data;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static com.google.android.gms.analytics.internal.zzy.B;
 import static com.google.android.gms.analytics.internal.zzy.r;
 import static com.google.android.gms.analytics.internal.zzy.v;
 
@@ -61,7 +63,20 @@ public class StatsScreen extends AppCompatActivity{
         setSupportActionBar(statsToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        RDB = new RunDBHelper(this);
+
+        timeIntervalButton=(RadioButton)findViewById(R.id.timeIntervalButton);
+
+        if(timeIntervalButton.isChecked()){
+            populateSpinnersTimeInterval();
+            deleteRunSpinner();
+        }
+        else{
+            populateSpinnersIndividualRun();
+            addRunSpinner();
+            //               Log.d("DEBUG","INDIVIDUAL RUN SHOULD BE CHECKED");
+        }
+
+
 
         LineChart startChart = (LineChart) findViewById(R.id.startChart);
         List<Entry> entries = new ArrayList<Entry>();
@@ -83,6 +98,15 @@ public class StatsScreen extends AppCompatActivity{
         startChart.invalidate();
 
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+
+       try{
+           onCreate(new Bundle());
+       }catch(IllegalStateException e){}
     }
 
     public void refreshSpinners(View view){
@@ -226,6 +250,7 @@ public class StatsScreen extends AppCompatActivity{
 
         ArrayList<Long> startTimes = new ArrayList<>();
         long increment=0;
+        RDB = new RunDBHelper(this);
 
             while(i<10) {
                 try {
@@ -237,11 +262,11 @@ public class StatsScreen extends AppCompatActivity{
 
                     if(!startTimes.contains(epochTime)&&epochTime>1471057640){
                         startTimes.add(epochTime);
-                        Log.d("ADDED",""+epochTime);
+             //           Log.d("ADDED",""+epochTime);
                         Date date = new Date(epochTime);
                         String strDate = date.toString();
                         String[] dateArray = strDate.split(" ");
-                        String spinnerFormatDate = dateArray[0]+" "+dateArray[1]+" "+dateArray[2]+" "+dateArray[5];
+                        String spinnerFormatDate = dateArray[0]+" "+dateArray[1]+" "+dateArray[2]+" "+dateArray[5]+" "+cursor.getString(1);
                         runSpinnerList.add(spinnerFormatDate);
                         i++;
                     }
@@ -253,6 +278,8 @@ public class StatsScreen extends AppCompatActivity{
                 }catch(CursorIndexOutOfBoundsException e){Log.d("EXCEPTION","CAUGHT"); i+=10;}
                 catch(SQLiteCantOpenDatabaseException d){Log.d("EXCEPTION","CAUGHT"); i+=10;};
             }
+
+        RDB.close();
 
 
         ArrayAdapter<String> runSpinnerDataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,runSpinnerList);
