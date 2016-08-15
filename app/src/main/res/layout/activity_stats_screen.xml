@@ -84,13 +84,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="true"
-                            android:gravity="center_horizontal"/>
+                            android:gravity="center_horizontal"
+                            android:onClick="drawChart"/>
 
                         <RadioButton
                             android:id="@+id/barChartButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center_horizontal"/>
+                            android:gravity="center_horizontal"
+                            android:onClick="drawChart"/>
 
 
                     </RadioGroup>
@@ -219,6 +221,7 @@
 
                     <TextView
                         android:id="@+id/xAxisText"
+                        android:textColor="@color/colorPrimaryDark"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="x-axis:"
@@ -247,6 +250,7 @@
 
                     <TextView
                         android:id="@+id/yAxisText"
+                        android:textColor="@color/colorPrimaryDark"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="y-axis:"/>
@@ -267,9 +271,19 @@
 
                 </LinearLayout>
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="DRAW CHART"
+                    android:onClick="drawChart"/>
+
 
 
             </RelativeLayout>
+
+
 
             </LinearLayout>
         </ScrollView>

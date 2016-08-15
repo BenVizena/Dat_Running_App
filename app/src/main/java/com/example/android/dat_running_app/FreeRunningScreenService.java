@@ -284,7 +284,8 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
                 outputText =
                         "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+" "+Double.toString(mCurrentLocation.getLongitude())
-                        +" \n"+elapsedTime+"\nALTITUDE: " +mCurrentLocation.getAltitude()
+                        +" \nTime: "+elapsedTime
+                        +"\nALTITUDE: " +mCurrentLocation.getAltitude()
                         +"\nDISTANCE TRAVELLED: "+distanceTravelled
                         +"\nDeltaD: "+deltaD
                         +"\nVelocity: "+velocity

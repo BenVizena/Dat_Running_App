@@ -152,14 +152,17 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     updateTextView(outputString);
                 }
-                else {//0 is coords, 1 is time (ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s), 6 is start time
+                else {//0 is coords, 1 is time (ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s), 6 is start time (epoch)
                     dbUpdateTimer+=1;
 
-                    outputString = delimedString[0] + "\nTIME: " + formatTime(delimedString[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4];
+                    String t[] = delimedString[1].split(" ");
+
+                    outputString = delimedString[0] + "\nTIME: " + formatTime(t[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4];
                     String[] coords = delimedString[0].split(" ");
-                    String speedKmHr = getSpeed(delimedString[5],true);
+                    String speedKmHr = "Speed: "+getSpeed(delimedString[5],true);
                     String speedMiHr = getSpeed(delimedString[5],false);
                     String timeToFinishKm=formatTime(milliToFinish(delimedString[5],true));
+                    String paceKM = "Pace: "+milliToFinish(delimedString[5],true);
                     String timeToFinishMile=formatTime(milliToFinish(delimedString[5],false));
  //                   Log.d("dels5",delimedString[5]);
  //                   Log.d("MMTTKMWTF",milliToFinish(delimedString[5],true));
@@ -172,7 +175,8 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     if(dbUpdateTimer>=DBUPDATELIMIT){
                         dbUpdateTimer=0;
-                        RDB.addUpdate("freerun",delimedString[6], delimedString[1],delimedString[3],timeToFinishKm, speedKmHr,"NO CADENCE DATA", "NO ELEVATION DATA");
+                        RDB.addUpdate("freerun",  delimedString[6],   delimedString[1],  delimedString[3],     paceKM   ,   speedKmHr,   "CADENCE: 1337", "ELEVATION: 1337");
+                        //              N/A      startTime (epoch)     time (ms)          distance (m)       pace (ms)         m/s
                     }
 
                 }

@@ -9,6 +9,7 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -34,11 +36,20 @@ import java.util.Date;
 import java.util.List;
 
 import static android.R.attr.colorPrimary;
+import static android.R.attr.colorPrimaryDark;
 import static android.R.attr.data;
+import static android.R.attr.textColorPrimary;
+import static android.R.attr.x;
+import static android.R.id.primary;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static com.example.android.dat_running_app.R.id.startChart;
 import static com.google.android.gms.analytics.internal.zzy.B;
+import static com.google.android.gms.analytics.internal.zzy.g;
+import static com.google.android.gms.analytics.internal.zzy.i;
+import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.google.android.gms.analytics.internal.zzy.r;
 import static com.google.android.gms.analytics.internal.zzy.v;
+import static com.google.android.gms.analytics.internal.zzy.w;
 
 /**
  * Created by Ben on 8/11/2016.
@@ -54,6 +65,9 @@ public class StatsScreen extends AppCompatActivity{
     private Spinner yAxisSpinner;
     private Spinner runSpinner;
     LinearLayout runSpinnerLayout;
+    private LineChart chart;
+    private ArrayList<Long> startTimes;//stores the epoch time of the run start times
+    private ArrayList<String> startTimesDateHelper;//stores the human date corresponding to the epoch start times
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +87,13 @@ public class StatsScreen extends AppCompatActivity{
         else{
             populateSpinnersIndividualRun();
             addRunSpinner();
-            //               Log.d("DEBUG","INDIVIDUAL RUN SHOULD BE CHECKED");
         }
 
 
 
-        LineChart startChart = (LineChart) findViewById(R.id.startChart);
+
+
+        chart = (LineChart) findViewById(startChart);
         List<Entry> entries = new ArrayList<Entry>();
         String[] labels = {"0","1","2","3","4","5","6"};
         entries.add(new Entry(0,0));
@@ -91,11 +106,11 @@ public class StatsScreen extends AppCompatActivity{
         dataSet.setColor(R.color.colorPrimary);
         dataSet.setValueTextColor(R.color.colorAccent);
         LineData lineData = new LineData(labels,dataSet);
-        startChart.setData(lineData);
-        startChart.setDescription("");
-        startChart.getLegend().setEnabled(false);
-        startChart.animateXY(500,1000);
-        startChart.invalidate();
+        chart.setData(lineData);
+        chart.setDescription("");
+        chart.getLegend().setEnabled(false);
+        chart.animateXY(500,1000);
+        chart.invalidate();
 
 
     }
@@ -110,16 +125,18 @@ public class StatsScreen extends AppCompatActivity{
     }
 
     public void refreshSpinners(View view){
-        lineChartButton = (RadioButton) findViewById(R.id.lineChartButton);
+
         timeIntervalButton=(RadioButton)findViewById(R.id.timeIntervalButton);
 
         if(timeIntervalButton.isChecked()){
             populateSpinnersTimeInterval();
             deleteRunSpinner();
+  //          drawChart(view);
         }
         else{
             populateSpinnersIndividualRun();
             addRunSpinner();
+   //         drawChart(view);
         }
     }
 
@@ -159,7 +176,7 @@ public class StatsScreen extends AppCompatActivity{
         List<String> xAxisSpinnerList = new ArrayList<String>();
         List<String> yAxisSpinnerList = new ArrayList<String>();
 
-        xAxisSpinnerList.add("Time");
+        xAxisSpinnerList.add("Time ");//it is imperative to have a space after "Time" because of the way I determine if a selection is metric or not (which involves a split(" ").
         xAxisSpinnerList.add("Distance (mi)");
         xAxisSpinnerList.add("Distance (km)");
         xAxisSpinnerList.add("Pace (mi)");
@@ -205,10 +222,9 @@ public class StatsScreen extends AppCompatActivity{
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
         runSpinnerLayout.setPadding((int)px,0,0,(int)px);
 
-        ColorStateList txtColor = ((TextView)findViewById(R.id.xAxisText)).getTextColors();
 
         TextView textView = new TextView(this);
-        textView.setTextColor(txtColor);
+        textView.setTextColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));//txtColor
         textView.setText("focus:");
 
         runSpinnerLayout.addView(textView);
@@ -223,6 +239,8 @@ public class StatsScreen extends AppCompatActivity{
 
         //populate runSpinner
         populateRunSpinner();
+
+
 
         runSpinnerLayout.addView(runSpinner);
 
@@ -248,7 +266,8 @@ public class StatsScreen extends AppCompatActivity{
 
         int i=0;
 
-        ArrayList<Long> startTimes = new ArrayList<>();
+        startTimes = new ArrayList<>();
+        startTimesDateHelper = new ArrayList<>();
         long increment=0;
         RDB = new RunDBHelper(this);
 
@@ -267,6 +286,7 @@ public class StatsScreen extends AppCompatActivity{
                         String strDate = date.toString();
                         String[] dateArray = strDate.split(" ");
                         String spinnerFormatDate = dateArray[0]+" "+dateArray[1]+" "+dateArray[2]+" "+dateArray[5]+" "+cursor.getString(1);
+                        startTimesDateHelper.add(spinnerFormatDate);
                         runSpinnerList.add(spinnerFormatDate);
                         i++;
                     }
@@ -284,5 +304,257 @@ public class StatsScreen extends AppCompatActivity{
 
         ArrayAdapter<String> runSpinnerDataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,runSpinnerList);
         runSpinner.setAdapter(runSpinnerDataAdapter);
+    }
+
+    public void drawChart(View view){
+        lineChartButton = (RadioButton) findViewById(R.id.lineChartButton);
+        RDB = new RunDBHelper(this);
+
+        if(lineChartButton.isChecked()&&!timeIntervalButton.isChecked()){
+            List<Entry> entries = new ArrayList<Entry>();
+
+            String xAxisSelection = xAxisSpinner.getSelectedItem().toString();
+            String yAxisSelection = yAxisSpinner.getSelectedItem().toString();
+            String runSelection;
+            int index=-1;
+
+            ////////////////////////this code segment finds which index of startTimes (and by extension which run) the user has selected.
+                int tempIndex = 0;
+                while (index == -1) {
+                    if(runSpinner.getSelectedItem()!=null){
+                        runSelection = runSpinner.getSelectedItem().toString();
+                        if (startTimesDateHelper.get(tempIndex).equals(runSelection))
+                            index = tempIndex;
+                        else {
+                            tempIndex++;
+                            Log.d("StatsScreen DrawChart", "Still going...");
+                        }
+                    }
+                }
+
+            ///////////////////////
+
+
+
+            int xGetStringIndex=0;
+            int yGetStringIndex=0;//these are the indices that database.getString() will use, i.e. db.getString(yGetStringIndex);
+
+
+            Log.d("xAxisSelection log",""+xAxisSelection);
+            switch(xAxisSelection){
+                case "Run Type": xGetStringIndex=1;
+                    break;
+                case "Time ": xGetStringIndex=3;
+                    break;
+                case "Distance (km)": xGetStringIndex=4;
+                    break;
+                case "Distance (mi)": xGetStringIndex=4;
+                    break;
+                case "Pace (mi)": xGetStringIndex=5;
+                    break;
+                case "Pace (km)": xGetStringIndex=5;
+                    break;
+                case "Speed (mi/hr)": xGetStringIndex=6;
+                    break;
+                case "Speed (km/hr)": xGetStringIndex=6;
+                    break;
+                case "Cadence (strikes/min)": xGetStringIndex=7;
+                    break;
+                case "Elevation Change (ft)": xGetStringIndex=8;
+                    break;
+                case "Elevation Change (m)": xGetStringIndex=8;
+                    break;
+                default: Log.d("xAxisSelection default",""+xAxisSelection);
+            }
+
+            switch(yAxisSelection){
+                case "Run Type": yGetStringIndex=1;
+                    break;
+                case "Time ": yGetStringIndex=3;
+                    break;
+                case "Distance (km)": yGetStringIndex=4;
+                    break;
+                case "Distance (mi)": yGetStringIndex=4;
+                    break;
+                case "Pace (mi)": yGetStringIndex=5;
+                    break;
+                case "Pace (km)": yGetStringIndex=5;
+                    break;
+                case "Speed (mi/hr)": yGetStringIndex=6;
+                    break;
+                case "Speed (km/hr)": yGetStringIndex=6;
+                    break;
+                case "Cadence (strikes/min)": yGetStringIndex=7;
+                    break;
+                case "Elevation Change (ft)": yGetStringIndex=8;
+                    break;
+                case "Elevation Change (m)": yGetStringIndex=8;
+                    break;
+                default: Log.d("yAxisSelection default",""+yAxisSelection);
+            }
+
+            Cursor cursor = RDB.getFRData();//need to cycle through entries until i find the one that starts at the right time.  Then cycle through those (adding the data to the chart) until i find a run
+            //with a different start time.
+            cursor.moveToFirst();
+
+
+
+            try{
+                while(cursor.moveToNext()) {
+                    String startTimeString = startTimes.get(index)+"";
+                    String[] startTimeArray = cursor.getString(2).split(" ");
+           //         Log.d("COMPARE THINGS",startTimeArray[1]+" "+startTimeString);
+           //         Log.d("DEBUG Selections","SELECTION 1: "+xAxisSelection+" and SELECTION 2: "+yAxisSelection);
+                    String[] xChoice = xAxisSelection.split(" ");
+                    String[] yChoice = yAxisSelection.split(" ");
+
+                    boolean xMetric=false;
+                    boolean yMetric=false;
+
+
+                    try {
+                        if (xChoice[1].equals("(km)") || xChoice[1].equals("(m)") || xChoice[1].equals("(km/hr)"))
+                            xMetric = true;
+                        if (yChoice[1].equals("(km)") || yChoice[1].equals("(m)") || yChoice[1].equals("(km/hr)"))
+                            yMetric = true;
+                    }catch(ArrayIndexOutOfBoundsException e){};
+
+                    boolean rightRun=false;
+
+                    if(startTimeArray[1].equals(startTimeString)){
+                        rightRun=true;
+                        String[] xValueString = cursor.getString(xGetStringIndex).split(" ");
+                        String[] yValueString = cursor.getString(yGetStringIndex).split(" ");
+        //                Log.d("x and y cursor String","["+cursor.getString(xGetStringIndex)+", "+cursor.getString(yGetStringIndex)+"]");
+                        double xValue = 0;
+                        double yValue = 0;
+                        String[] timeStr = cursor.getString(3).split(" ");
+                        double time = Double.parseDouble(timeStr[1])/1000;
+
+
+
+                        if(xMetric==true){
+                            switch(xValueString[0]){
+                                case "DISTANCE": xValue=Double.parseDouble(xValueString[2])/1000;
+                                    break;
+                                case "Pace:": xValue = Double.parseDouble(xValueString[1]);
+                                    break;
+                                case "Speed:": xValue = Double.parseDouble(xValueString[1]);
+                                    break;
+                                case "Time:": xValue = Double.parseDouble(xValueString[1])/1000;
+                                    Log.d("IVE GOT THE NEED","FOR TIME... in metric");
+                                    break;
+                                case "CADENCE:": xValue = 42;
+                                    break;
+                                case "ELEVATION:": xValue = 42;
+                                    break;
+                                default: xValue = -9001;
+                            }
+                        }else{
+                            try {
+                                for (int p = 0; p < xValueString.length; p++)
+                                    Log.d("ARRAY THINGY X", "" + xValueString[p]);
+                                switch (xValueString[0]) {
+                                    case "DISTANCE":
+                                        xValue = Double.parseDouble(xValueString[2]) * .000621371;
+                                        break;
+                                    case "Pace:":
+                                        xValue = Double.parseDouble(xValueString[1]) * 1.60932;
+                                        break;
+                                    case "Speed:":
+                                        xValue = Double.parseDouble(xValueString[1]) * .621371;
+                                        break;
+                                    case "Time:":
+                                        xValue = Double.parseDouble(xValueString[1])/1000;
+                                        Log.d("IVE GOT THE NEED","FOR TIME");
+                                        break;
+                                    case "CADENCE:":
+                                        xValue = 42;
+                                        break;
+                                    case "ELEVATION:":
+                                        xValue = 42;
+                                        break;
+                                    default: //xValue = Double.parseDouble(xValueString[1])/1000;
+                                        Log.d("DEFAULT X", "" + xValue + " " + xValueString[0] + " " + xValueString[1]);
+                                }
+                            }catch(ArrayIndexOutOfBoundsException e){};
+                        }
+
+                        if(yMetric==true){
+                            switch(yValueString[0]){
+                                case "DISTANCE": yValue=Double.parseDouble(yValueString[2])/1000;
+                                    break;
+                                case "Pace:": yValue = Double.parseDouble(yValueString[1]);
+                                    break;
+                                case "Speed:": yValue = Double.parseDouble(yValueString[1]);
+                                    break;
+                                case "Time:": yValue = Double.parseDouble(yValueString[1])/1000;
+                                    break;
+                                case "CADENCE:": yValue = 42;
+                                    break;
+                                case "ELEVATION:": yValue = 42;
+                                    break;
+                                default: yValue = -9001;
+                            }
+                        }else{
+                            for(int p = 0;p<yValueString.length;p++)
+            //                    Log.d("ARRAY THINGY Y",""+yValueString[p]);
+                            switch(yValueString[0]){
+                                case "DISTANCE": yValue=Double.parseDouble(yValueString[2])*.000621371;
+                                    break;
+                                case "Pace:": yValue = Double.parseDouble(yValueString[1])*1.60932;
+                                    break;
+                                case "Speed:": yValue = Double.parseDouble(yValueString[1])* .621371;
+                                    break;
+                                case "Time:": yValue = Double.parseDouble(yValueString[1])/1000;
+                                    break;
+                                case "CADENCE:": yValue = 42;
+                                    break;
+                                case "ELEVATION:": yValue = 42;
+                                    break;
+                                default:// yValue = -9001;
+                                    Log.d("DEFAULT Y",""+yValue+" "+yValueString[0]+" "+yValueString[1]);
+                            }
+                        }
+
+                        entries.add(new Entry((float) yValue, (int) xValue));
+//                        Log.d("ENTRIES with casts", (float) yValue + "   " + (int) xValue);
+                        Log.d("ENTRIES without casts", yValue + " <- Y  X -> " + xValue);
+                    }else if(rightRun==true){
+                        cursor.moveToLast();
+                    }
+                }
+            }finally{cursor.close();}
+
+            String[] labels = new String[entries.size()];
+
+
+            for(int i=0;i<entries.size();i++){
+                Entry temp = entries.get(i);
+                int labelVal = temp.getXIndex();
+                labels[i]=""+labelVal;
+            }
+
+
+         //   String[] labels = {"0","1","2","3","4","5","6"};
+
+
+
+
+
+            LineDataSet dataSet = new LineDataSet(entries,"Label Place Holder");
+            dataSet.setColor(R.color.colorPrimary);
+            dataSet.setValueTextColor(R.color.colorAccent);
+            LineData lineData = new LineData(labels,dataSet);
+            chart.setData(lineData);
+            chart.setDescription("DEV BUILD");
+            chart.getLegend().setEnabled(true);
+            chart.animateXY(500,1000);
+            chart.invalidate();
+
+
+        }else{
+            //draw bar chart
+        }
     }
 }

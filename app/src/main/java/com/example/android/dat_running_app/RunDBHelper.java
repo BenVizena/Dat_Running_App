@@ -109,4 +109,18 @@ public class RunDBHelper extends SQLiteOpenHelper {
         result.moveToFirst();
         return result;
     }
+
+    public Cursor getDataByStartTimeEpoch(String startTime, long start){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "Select * from "+TABLE_NAME+" Where "+COLUMN_STARTTIME +" == " +startTime +" Order by "+COLUMN_ID;
+        Log.d("SEARCH QUERY",query);
+        Cursor result = db.rawQuery(query, null);
+
+
+
+
+        result.moveToFirst();
+
+        return result;
+    }
 }
