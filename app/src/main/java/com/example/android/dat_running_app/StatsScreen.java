@@ -34,6 +34,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static android.R.attr.colorPrimary;
 import static android.R.attr.colorPrimaryDark;
@@ -397,7 +398,7 @@ public class StatsScreen extends AppCompatActivity{
             //with a different start time.
             cursor.moveToFirst();
 
-
+            ArrayList<Long> labelList = new ArrayList<>();
 
             try{
                 while(cursor.moveToNext()) {
@@ -430,6 +431,8 @@ public class StatsScreen extends AppCompatActivity{
                         double yValue = 0;
                         String[] timeStr = cursor.getString(3).split(" ");
                         double time = Double.parseDouble(timeStr[1])/1000;
+
+
 
 
 
@@ -518,6 +521,7 @@ public class StatsScreen extends AppCompatActivity{
                         }
 
                         entries.add(new Entry((float) yValue, (int) xValue));
+                        labelList.add((long)(time*1000));
 //                        Log.d("ENTRIES with casts", (float) yValue + "   " + (int) xValue);
                         Log.d("ENTRIES without casts", yValue + " <- Y  X -> " + xValue);
                     }else if(rightRun==true){
@@ -526,17 +530,20 @@ public class StatsScreen extends AppCompatActivity{
                 }
             }finally{cursor.close();}
 
-            String[] labels = new String[entries.size()];
+            String[] labels = new String[labelList.size()];
 
-
+/*
             for(int i=0;i<entries.size();i++){
                 Entry temp = entries.get(i);
                 int labelVal = temp.getXIndex();
                 labels[i]=""+labelVal;
             }
+*/
 
-
-         //   String[] labels = {"0","1","2","3","4","5","6"};
+            for(int x=0;x<labelList.size();x++){
+                String temp = ""+labelList.get(x);
+                labels[x]=formatTime(temp);
+            }
 
 
 
@@ -556,5 +563,27 @@ public class StatsScreen extends AppCompatActivity{
         }else{
             //draw bar chart
         }
+    }
+
+    private String formatTime(String s){
+        String hmsm="";
+        try {
+            long millis = Long.parseLong(s);
+            hmsm = String.format("%02d:%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1),
+                    TimeUnit.MILLISECONDS.toMillis(millis) % TimeUnit.SECONDS.toMillis(1));
+
+            String delimedTime[] = hmsm.split(":");
+
+            if(delimedTime[0].equals("00"))
+                hmsm = delimedTime[1]+":"+delimedTime[2]+":"+delimedTime[3];
+
+        }catch(NumberFormatException e){
+
+        }
+
+
+        return ""+hmsm;
     }
 }
