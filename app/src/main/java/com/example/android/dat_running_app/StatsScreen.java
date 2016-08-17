@@ -47,6 +47,7 @@ import static com.example.android.dat_running_app.R.id.startChart;
 import static com.google.android.gms.analytics.internal.zzy.B;
 import static com.google.android.gms.analytics.internal.zzy.g;
 import static com.google.android.gms.analytics.internal.zzy.i;
+import static com.google.android.gms.analytics.internal.zzy.l;
 import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.google.android.gms.analytics.internal.zzy.r;
 import static com.google.android.gms.analytics.internal.zzy.v;
@@ -430,7 +431,7 @@ public class StatsScreen extends AppCompatActivity{
                         double xValue = 0;
                         double yValue = 0;
                         String[] timeStr = cursor.getString(3).split(" ");
-                        double time = Double.parseDouble(timeStr[1])/1000;
+
 
 
 
@@ -520,8 +521,8 @@ public class StatsScreen extends AppCompatActivity{
                             }
                         }
 
+                        labelList.add((long)(xValue));
                         entries.add(new Entry((float) yValue, (int) xValue));
-                        labelList.add((long)(time*1000));
 //                        Log.d("ENTRIES with casts", (float) yValue + "   " + (int) xValue);
                         Log.d("ENTRIES without casts", yValue + " <- Y  X -> " + xValue);
                     }else if(rightRun==true){
@@ -544,6 +545,8 @@ public class StatsScreen extends AppCompatActivity{
                 String temp = ""+labelList.get(x);
                 labels[x]=formatTime(temp);
             }
+
+            Log.d("DEBUG...",labelList.size()+" "+labels.length);
 
 
 
