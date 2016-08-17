@@ -24,4 +24,9 @@
         <item>Year</item>
         <item>All Time</item>
     </string-array>
+
+    <string-array name = "mikmspinner">
+        <item>mi</item>
+        <item>km</item>
+    </string-array>
 </resources>

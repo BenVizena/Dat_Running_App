@@ -69,6 +69,11 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
         //finish();//i don't really know if i want to close the window when i open the new one.
     }
 
+    private void rfdClicked(View view){
+        Intent intent = new Intent(this,RunForDistanceClickedMenu.class);
+        startActivity(intent);
+    }
+
     public void addMainButtons(){
 
         freerun_ib=(ImageButton) findViewById(R.id.freerun_ib);
@@ -93,7 +98,7 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
         runfordistance_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                Toast.makeText(RunOptionsMenuRoot.this, "Run for Distance Button was clicked!", Toast.LENGTH_SHORT).show();
+                rfdClicked(runfordistance_ib);
             }
         });
 

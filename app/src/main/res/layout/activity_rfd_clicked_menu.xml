@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/run_root_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:id="@+id/top_bar_solution1"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center_horizontal"
+                android:textSize="20dp"
+                android:text="Run For Distance Options"
+                android:textColor="#000000"
+                />
+
+
+
+
+
+        </LinearLayout>
+
+        <TableLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/main_page_tableLayout"
+            android:shrinkColumns="TRUE"
+            android:stretchColumns="TRUE"
+            android:gravity="center">
+
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dip"
+                android:paddingBottom="0dp"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/runForDistanceNow_ib"
+                    android:layout_height="125dp"
+                    android:layout_width="125dp"
+                    android:src="@drawable/freerunnow"
+                    android:scaleType="fitCenter"
+                    />
+
+                <ImageButton
+                    android:id="@+id/changeRFDUI_ib"
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/configui"
+                    />
+
+            </TableRow>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation = "horizontal"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Distance: "
+                    android:layout_gravity="bottom"
+                    android:textSize="20dp"
+                    android:paddingTop="2dp"
+                    android:paddingLeft="43dp"/>
+
+                <EditText
+                    android:layout_width="85dp"
+                    android:layout_height="40dp"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/rfdDistanceEditText"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:entries = "@array/mikmspinner"
+                    android:id="@+id/rfdUnitSpinner"
+                    android:layout_gravity="top"
+                    >
+                </Spinner>
+            </LinearLayout>
+
+
+        </TableLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
