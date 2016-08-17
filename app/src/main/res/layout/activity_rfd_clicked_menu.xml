@@ -35,13 +35,19 @@
 
 
         </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
 
         <TableLayout
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:id="@+id/main_page_tableLayout"
             android:shrinkColumns="TRUE"
             android:stretchColumns="TRUE"
+            android:layout_centerInParent="true"
             android:gravity="center">
 
             <TableRow
@@ -71,11 +77,17 @@
             </TableRow>
 
 
+
+
+
+        </TableLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation = "horizontal"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:layout_below="@id/main_page_tableLayout"
+                android:layout_alignLeft="@id/main_page_tableLayout">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -84,7 +96,7 @@
                     android:layout_gravity="bottom"
                     android:textSize="20dp"
                     android:paddingTop="2dp"
-                    android:paddingLeft="43dp"/>
+                    android:paddingLeft="4dp"/>
 
                 <EditText
                     android:layout_width="85dp"
@@ -102,9 +114,7 @@
                     >
                 </Spinner>
             </LinearLayout>
-
-
-        </TableLayout>
+        </RelativeLayout>
 
 
 
