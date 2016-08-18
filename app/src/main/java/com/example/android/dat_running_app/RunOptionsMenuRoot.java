@@ -1,5 +1,6 @@
 package com.example.android.dat_running_app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -38,6 +39,8 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
     ImageButton runfordistance_ib;
     ImageButton intervalrun_ib;
 
+    private WhichRunDBHelper wrdb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
 
 
         addMainButtons();
+
     }
 
     public void goBack(View view){
@@ -63,13 +67,15 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
     }
 
     public void freeRunClicked(View view){
+        wrdb = new WhichRunDBHelper(this);
+        wrdb.refreshRunType("FREE RUN");
         Intent intent = new Intent(this,FreeRunClickedMenu.class);
         startActivity(intent);
-
-        //finish();//i don't really know if i want to close the window when i open the new one.
     }
 
     private void rfdClicked(View view){
+        wrdb = new WhichRunDBHelper(this);
+        wrdb.refreshRunType("RUN FOR DISTANCE");
         Intent intent = new Intent(this,RunForDistanceClickedMenu.class);
         startActivity(intent);
     }

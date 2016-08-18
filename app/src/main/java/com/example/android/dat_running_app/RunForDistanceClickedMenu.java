@@ -1,10 +1,13 @@
 package com.example.android.dat_running_app;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 /**
@@ -14,6 +17,7 @@ import android.widget.ImageButton;
 public class RunForDistanceClickedMenu extends AppCompatActivity{
     ImageButton runForDistanceNow_ib;
     ImageButton changeRFDUI_ib;
+    RfdDistanceDBHelper rfdDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +48,15 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
         startActivity(intent);
     }
 
+    private String getDistanceText(){
+        EditText editText = (EditText)findViewById(R.id.rfdDistanceEditText);
+        Log.d("EDIT TEXT",editText.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        return editText.getText().toString();
+    }
+
     public void addMainButtons(){
 
+        rfdDB = new RfdDistanceDBHelper(this);
         runForDistanceNow_ib=(ImageButton) findViewById(R.id.runForDistanceNow_ib);
         changeRFDUI_ib=(ImageButton)findViewById(R.id.changeRFDUI_ib);
 
@@ -53,6 +64,9 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
         runForDistanceNow_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
+                String dist = getDistanceText();
+                Log.d("??",dist+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                rfdDB.addSettings(dist);
                 rfdNowClicked(runForDistanceNow_ib);
             }
         });

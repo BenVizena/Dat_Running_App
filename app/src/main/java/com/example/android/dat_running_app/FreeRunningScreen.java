@@ -41,10 +41,14 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private double distanceTravelled=0;
     private GoogleMap gMap;
     private Marker m;
+    private boolean rfd;
+    private String runType;//"FREE RUN", "RUN FOR DISTANCE",
 
     private MyReceiver myReceiver;
     private String outputString;
     private RunDBHelper RDB;
+    private WhichRunDBHelper WRDB;
+    private double distanceToTravel;//the distance specified in the Run For Distance menu.
 
     private int dbUpdateTimer=0;
     private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update. //was 10. 10 is probably good. that is 1 update to db for every second. //100 works for debugging purposes.
@@ -60,6 +64,13 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.activity_runningscreen);
 
         RDB = new RunDBHelper(this);
+        runType = new WhichRunDBHelper(this).getRunType();
+
+        if(runType.equals("RUN FOR DISTANCE")){
+            String distString = new RfdDistanceDBHelper(this).getRunDistance();
+            Log.d("DEBUG","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+distString);
+            distanceToTravel=Double.parseDouble(distString);
+        }
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -104,6 +115,10 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 //        gMap.animateCamera(CameraUpdateFactory.zoomTo(15),10000,null);//middle was 2000
     }
 
+
+    /*
+        Used to determine pace, i.e. milliseconds until you finish 1 km.
+     */
     private String milliToFinish(String speed, boolean metric){
         String delimedSpeed[] = speed.split(" ");
         double dubSpeed = Double.parseDouble(delimedSpeed[1]);
@@ -122,6 +137,9 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         return ""+result;
     }
 
+    /*
+        turns speed in m/s to km/hr or mi/hr
+     */
     private String getSpeed(String speed, boolean metric){
         String delimedSpeed[] = speed.split(" ");
         double dubSpeed = Double.parseDouble(delimedSpeed[1]);
@@ -164,8 +182,6 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     String timeToFinishKm=formatTime(milliToFinish(delimedString[5],true));
                     String paceKM = "Pace: "+milliToFinish(delimedString[5],true);
                     String timeToFinishMile=formatTime(milliToFinish(delimedString[5],false));
- //                   Log.d("dels5",delimedString[5]);
- //                   Log.d("MMTTKMWTF",milliToFinish(delimedString[5],true));
                     outputString += "\nSpeed (km/hr): "+speedKmHr+"\nSpeed (mi/hr): "+speedMiHr;
                     outputString += "\nPace (Km): "+timeToFinishKm + "\nPace (Mi): "+timeToFinishMile;
                     double lat = Double.parseDouble(coords[1]);
@@ -175,8 +191,15 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     if(dbUpdateTimer>=DBUPDATELIMIT){
                         dbUpdateTimer=0;
-                        RDB.addUpdate("freerun",  delimedString[6],   delimedString[1],  delimedString[3],     paceKM   ,   speedKmHr,   "CADENCE: 1337", "ELEVATION: 1337");
+                        RDB.addUpdate(runType,  delimedString[6],   delimedString[1],  delimedString[3],     paceKM   ,   speedKmHr,   "CADENCE: 1337", "ELEVATION: 1337");
                         //              N/A      startTime (epoch)     time (ms)          distance (m)       pace (ms)         m/s
+                    }
+
+                    String[] delimedDistance = delimedString[3].split(" ");
+
+                    if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0){
+                        Log.d("FINISHED","DONE DONE DONE DONE DONE"+Double.parseDouble(delimedDistance[2])+" >= "+ distanceToTravel);
+                        //stopService()
                     }
 
                 }
