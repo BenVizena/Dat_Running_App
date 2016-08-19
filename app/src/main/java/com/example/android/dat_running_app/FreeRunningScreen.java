@@ -214,6 +214,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                         goalReachedStopService();
                     }
 
+
                 }
             }catch(NullPointerException e){}
 
