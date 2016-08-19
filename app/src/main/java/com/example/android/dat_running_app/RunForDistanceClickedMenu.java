@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 /**
  * Created by Ben on 8/17/2016.
@@ -65,9 +66,14 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
             @Override
             public void onClick(View arg0){
                 String dist = getDistanceText();
-                Log.d("??",dist+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                rfdDB.addSettings(dist);
-                rfdNowClicked(runForDistanceNow_ib);
+                if(getDistanceText().length()==0)
+                    Toast.makeText(RunForDistanceClickedMenu.this, "Please enter a valid distance.", Toast.LENGTH_SHORT).show();
+                else{
+                    Log.d("??",dist+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    rfdDB.addSettings(dist);
+                    rfdNowClicked(runForDistanceNow_ib);
+                }
+
             }
         });
 

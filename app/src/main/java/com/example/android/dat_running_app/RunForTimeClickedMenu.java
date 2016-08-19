@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 /**
  * Created by Ben on 8/19/2016.
@@ -53,8 +54,17 @@ public class RunForTimeClickedMenu extends AppCompatActivity{
         EditText editTextMIN = (EditText)findViewById(R.id.rfTimeEditTextMIN);
         Log.d("EDIT TEXT",editTextHR.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         Log.d("EDIT TEXT",editTextMIN.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        int hr = Integer.parseInt(editTextHR.getText().toString());
-        int min= Integer.parseInt(editTextMIN.getText().toString());
+        int hr;
+        int min;
+        if(editTextHR.getText().toString().length()==0)
+            hr=0;
+        else
+            hr = Integer.parseInt(editTextHR.getText().toString());
+        if(editTextMIN.getText().toString().length()==0)
+            min=0;
+        else
+            min= Integer.parseInt(editTextMIN.getText().toString());
+
         long timeMillis = hr*3600*1000 + min*60*1000;
 
         return ""+timeMillis;
@@ -71,9 +81,13 @@ public class RunForTimeClickedMenu extends AppCompatActivity{
             @Override
             public void onClick(View arg0){
                 String time = getTimeText();
-                Log.d("??",time+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                rftDB.addSettings(time);
-                rftNowClicked(runForTimeNow_ib);
+                if(Long.parseLong(time) == 0)
+                    Toast.makeText(RunForTimeClickedMenu.this, "Please enter a valid time.", Toast.LENGTH_LONG).show();
+                else{
+                    Log.d("??",time+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    rftDB.addSettings(time);
+                    rftNowClicked(runForTimeNow_ib);
+                }
             }
         });
 
