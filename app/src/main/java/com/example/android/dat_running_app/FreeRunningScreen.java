@@ -199,7 +199,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0){
                         Log.d("FINISHED","DONE DONE DONE DONE DONE"+Double.parseDouble(delimedDistance[2])+" >= "+ distanceToTravel);
-                        //stopService()
+                        goalReachedStopService();
                     }
 
                 }
@@ -253,6 +253,12 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         unregisterReceiver(myReceiver);
 
 
+    }
+
+    public void goalReachedStopService(){
+        Intent intent = new Intent(this,FreeRunningScreenService.class);
+        stopService(intent);
+        unregisterReceiver(myReceiver);
     }
 
     private void updateTextView(String str){
