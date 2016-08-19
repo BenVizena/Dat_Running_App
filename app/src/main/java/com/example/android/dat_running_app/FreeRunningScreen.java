@@ -49,6 +49,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private RunDBHelper RDB;
     private WhichRunDBHelper WRDB;
     private double distanceToTravel;//the distance specified in the Run For Distance menu.
+    private long timeToRun;//the time in millis specified in the Run For Time mneu.
 
     private int dbUpdateTimer=0;
     private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update. //was 10. 10 is probably good. that is 1 update to db for every second. //100 works for debugging purposes.
@@ -70,7 +71,14 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
             String distString = new RfdDistanceDBHelper(this).getRunDistance();
             Log.d("DEBUG","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+distString);
             distanceToTravel=Double.parseDouble(distString);
-        }
+        }else
+            distanceToTravel=0;
+
+        if(runType.equals("RUN FOR TIME")){
+            String timeString = new RfTimeDBHelper(this).getRunTime();
+            timeToRun=Long.parseLong(timeString);
+        }else
+            timeToRun=0;
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -196,9 +204,13 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     }
 
                     String[] delimedDistance = delimedString[3].split(" ");
+                    String[] delimedTime = delimedString[1].split(" ");
 
-                    if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0){
-                        Log.d("FINISHED","DONE DONE DONE DONE DONE"+Double.parseDouble(delimedDistance[2])+" >= "+ distanceToTravel);
+                    if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0){;
+                        goalReachedStopService();
+                    }
+
+                    if(Long.parseLong(delimedTime[1]) >= timeToRun && timeToRun>0){
                         goalReachedStopService();
                     }
 

@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/run_root_ll"
+        android:id="@+id/run_root_llrfd"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -19,7 +19,7 @@
 
 
             <TextView
-                android:id="@+id/top_bar_solution1"
+                android:id="@+id/top_bar_solutionrfd"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_weight="1"
@@ -44,14 +44,14 @@
         <TableLayout
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:id="@+id/main_page_tableLayout"
+            android:id="@+id/main_page_tableLayoutrfd"
             android:shrinkColumns="TRUE"
             android:stretchColumns="TRUE"
             android:layout_centerInParent="true"
             android:gravity="center">
 
             <TableRow
-                android:id="@+id/tableRow1"
+                android:id="@+id/tableRowrfd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dip"
@@ -86,8 +86,8 @@
                 android:layout_height="wrap_content"
                 android:orientation = "horizontal"
                 android:layout_gravity="center"
-                android:layout_below="@id/main_page_tableLayout"
-                android:layout_alignLeft="@id/main_page_tableLayout">
+                android:layout_below="@id/main_page_tableLayoutrfd"
+                android:layout_alignLeft="@id/main_page_tableLayoutrfd">
 
                 <TextView
                     android:layout_width="wrap_content"

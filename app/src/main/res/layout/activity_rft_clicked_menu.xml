@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/run_root_llrft"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:id="@+id/top_bar_solutionrfd"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center_horizontal"
+                android:textSize="20dp"
+                android:text="Run For Distance Options"
+                android:textColor="#000000"
+                />
+
+
+
+
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+            <TableLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/main_page_tableLayoutrft"
+                android:shrinkColumns="TRUE"
+                android:stretchColumns="TRUE"
+                android:layout_centerInParent="true"
+                android:gravity="center">
+
+                <TableRow
+                    android:id="@+id/tableRowrft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dip"
+                    android:paddingBottom="0dp"
+                    android:gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/runForTimeNow_ib"
+                        android:layout_height="125dp"
+                        android:layout_width="125dp"
+                        android:src="@drawable/freerunnow"
+                        android:scaleType="fitCenter"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/changeRFTUI_ib"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/configui"
+                        />
+
+                </TableRow>
+
+
+
+
+
+            </TableLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation = "horizontal"
+                android:layout_gravity="center"
+                android:layout_below="@id/main_page_tableLayoutrft"
+                android:layout_alignLeft="@id/main_page_tableLayoutrft">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Time (hr:min)  "
+                    android:layout_gravity="bottom"
+                    android:textSize="20sp"
+                    android:paddingTop="2dp"
+                    android:paddingLeft="4dp"/>
+
+                <EditText
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/rfTimeEditTextHR"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text=":"
+                    android:paddingTop="2dp"
+                    android:layout_gravity="bottom"
+                    android:textSize="20sp"/>
+
+                <EditText
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/rfTimeEditTextMIN"/>
+
+
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

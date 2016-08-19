@@ -80,6 +80,13 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void rftClicked(View view){
+        wrdb = new WhichRunDBHelper(this);
+        wrdb.refreshRunType("RUN FOR TIME");
+        Intent intent = new Intent(this,RunForTimeClickedMenu.class);
+        startActivity(intent);
+    }
+
     public void addMainButtons(){
 
         freerun_ib=(ImageButton) findViewById(R.id.freerun_ib);
@@ -97,7 +104,7 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
         runfortime_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                Toast.makeText(RunOptionsMenuRoot.this, "Run for Time Button was clicked!", Toast.LENGTH_SHORT).show();
+                rftClicked(runfortime_ib);
             }
         });
 
