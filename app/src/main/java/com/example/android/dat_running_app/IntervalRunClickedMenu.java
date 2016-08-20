@@ -7,9 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.android.gms.vision.text.Line;
+
+import static com.google.android.gms.analytics.internal.zzy.i;
 
 /**
  * Created by Ben on 8/19/2016.
@@ -19,6 +26,8 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
     ImageButton intervalRunNow_ib;
     ImageButton changeIRUI_ib;
     IrDBHelper irDB;
+    Button addIntervalButton;
+    Button confirmButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +79,84 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
         return ""+timeMillis;
     }
 
+    private void addInterval(){
+        Spinner h1Spinner = (Spinner)findViewById(R.id.irH1Spinner);
+        Spinner h2Spinner = (Spinner)findViewById(R.id.irH2Spinner);
+
+        String h1Constraint = h1Spinner.getSelectedItem().toString();
+        String h2Constraint = h2Spinner.getSelectedItem().toString();
+
+        if(h1Constraint.length()==1 || h2Constraint.length()==1)
+            Toast.makeText(IntervalRunClickedMenu.this, "Please select a constraint for both halves of your intervals.", Toast.LENGTH_LONG).show();
+        else{
+            //stuff
+        }
+
+    }
+
+    private void confirm(){
+        Spinner h1Spinner = (Spinner)findViewById(R.id.irH1Spinner);
+        Spinner h2Spinner = (Spinner)findViewById(R.id.irH2Spinner);
+        Spinner unitSpinner=(Spinner)findViewById(R.id.irUnitSpinner);
+
+        String h1Constraint = h1Spinner.getSelectedItem().toString();
+        String h2Constraint = h2Spinner.getSelectedItem().toString();
+        String unit = unitSpinner.getSelectedItem().toString();
+
+        //database this shit
+
+        LinearLayout h1LL = (LinearLayout)findViewById(R.id.half1ConstraintLL);
+        h1LL.setVisibility(View.GONE);
+
+        LinearLayout h2LL = (LinearLayout)findViewById(R.id.half2ConstraintLL);
+        h2LL.setVisibility(View.GONE);
+
+        LinearLayout unitSpin = (LinearLayout)findViewById(R.id.irUnitSpinnerLL);
+        unitSpin.setVisibility(View.GONE);
+
+        Button confirm = (Button)findViewById(R.id.irConfirmedButton);
+        confirm.setVisibility(View.GONE);
+
+
+
+        Button add = (Button)findViewById(R.id.addIntervalButton);
+        add.setVisibility(View.VISIBLE);
+
+        LinearLayout irClickedMenuDivider = (LinearLayout)findViewById(R.id.irclickedMenuDividerLL);
+        irClickedMenuDivider.setVisibility(View.VISIBLE);
+
+        if(h1Constraint.equals("Distance")&& h2Constraint.equals("Distance")){
+            LinearLayout dataEntryDD = (LinearLayout)findViewById(R.id.dataEntryLLDISTANCEDISTANCE);
+            dataEntryDD.setVisibility(View.VISIBLE);
+        }
+
+        if(h1Constraint.equals("Distance")&& h2Constraint.equals("Time")){
+            LinearLayout dataEntryDT = (LinearLayout)findViewById(R.id.dataEntryLLDISTANCETIME);
+            dataEntryDT.setVisibility(View.VISIBLE);
+        }
+
+        if(h1Constraint.equals("Time")&& h2Constraint.equals("Distance")){
+            LinearLayout dataEntryTD = (LinearLayout)findViewById(R.id.dataEntryLLTIMEDISTANCE);
+            dataEntryTD.setVisibility(View.VISIBLE);
+        }
+
+        if(h1Constraint.equals("Time")&& h2Constraint.equals("Time")){
+            LinearLayout dataEntryTT = (LinearLayout)findViewById(R.id.dataEntryLLTIMETIME);
+            dataEntryTT.setVisibility(View.VISIBLE);
+        }
+
+
+    }
+
+
+
     public void addMainButtons(){
 
         irDB = new IrDBHelper(this);
         intervalRunNow_ib=(ImageButton) findViewById(R.id.intervalRunNow_ib);
         changeIRUI_ib=(ImageButton)findViewById(R.id.changeIRUI_ib);
+        addIntervalButton=(Button)findViewById(R.id.addIntervalButton);
+        confirmButton=(Button)findViewById(R.id.irConfirmedButton);
 
 
         intervalRunNow_ib.setOnClickListener(new View.OnClickListener(){
@@ -95,6 +177,20 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
             @Override
             public void onClick(View arg0){
                 irChangeUIClicked(changeIRUI_ib);
+            }
+        });
+
+        addIntervalButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+             public void onClick(View arg0){
+                addInterval();
+            }
+        });
+
+        confirmButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View arg0){
+                confirm();
             }
         });
 

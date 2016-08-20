@@ -145,8 +145,9 @@
                     android:layout_centerHorizontal="true"
                     android:textAllCaps="false"
                     android:text="Add Interval"
-                    android:paddingTop="8dp"
-                    android:textSize="17sp"/>
+                    android:layout_marginTop="50dp"
+                    android:textSize="17sp"
+                    android:visibility="gone"/>
 
 
 
@@ -155,7 +156,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/addIntervalButton"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/irclickedMenuDividerLL"
+                    android:visibility="gone">
 
                     <View
                         android:layout_width="0dp"
@@ -172,6 +175,307 @@
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/irUnitSpinnerLL"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/half2ConstraintLL"
+                    android:layout_alignLeft="@id/main_page_tableLayoutir"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Distance Unit:       "
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+                        />
+
+                    <Spinner
+                        android:layout_width="129dp"
+                        android:layout_height="31dp"
+                        android:id="@+id/irUnitSpinner"
+                        android:entries="@array/mikmspinner">
+                    </Spinner>
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/irConfirmedButton"
+                    android:text="Confirm"
+                    android:layout_below="@id/irUnitSpinnerLL"
+                    android:layout_centerHorizontal="true"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dataEntryLLDISTANCEDISTANCE"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_below="@id/main_page_tableLayoutir"
+                    android:layout_alignLeft="@id/main_page_tableLayoutir">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Distance"
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+                        />
+
+                    <EditText
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH1DISTANCEDISTANCE"
+                        android:inputType="numberDecimal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Distance"
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+                        android:paddingLeft="10dp"
+                        />
+
+                    <EditText
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH2DISTANCEDISTANCE"
+                        android:inputType="numberDecimal"/>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dataEntryLLDISTANCETIME"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_below="@id/main_page_tableLayoutir"
+                    android:layout_alignRight="@id/main_page_tableLayoutir">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Distance"
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+                        />
+
+                    <EditText
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH1DISTANCETIME"
+                        android:inputType="numberDecimal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time "
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+                        android:paddingLeft="10dp"
+                        />
+
+
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH2DISTANCETIMEPt1"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"/>
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH2DISTANCETIMEPt2"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"/>
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH2DISTANCETIMEPt3"
+                        android:inputType="number"/>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dataEntryLLTIMEDISTANCE"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_below="@id/main_page_tableLayoutir"
+                    android:layout_alignRight="@id/main_page_tableLayoutir">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time "
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+
+                        />
+
+
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH1TIMEDISTANCEPt1"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"/>
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH1TIMEDISTANCEPt2"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"/>
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH1TIMEDISTANCEPt3"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Distance"
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+                        android:paddingLeft="10dp"
+                        />
+
+                    <EditText
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH2TIMEDISTANCE"
+                        android:inputType="numberDecimal"/>
+
+
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dataEntryLLTIMETIME"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_below="@id/main_page_tableLayoutir"
+                    android:layout_alignRight="@id/main_page_tableLayoutir">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time "
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+                        android:paddingLeft="8dp"
+                        />
+
+
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH1TIMETIMEPt1"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"/>
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH1TIMETIMEPt2"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"/>
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH1TIMETIMEPt3"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time "
+                        android:textSize="17sp"
+                        android:paddingTop="7dp"
+                        android:paddingLeft="8dp"
+                        />
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH2TIMETIMEPt1"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"/>
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH2TIMETIMEPt2"
+                        android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"/>
+
+                    <EditText
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/irH2TIMETIMEPt3"
+                        android:inputType="number"/>
+
+
+
+
 
                 </LinearLayout>
 
