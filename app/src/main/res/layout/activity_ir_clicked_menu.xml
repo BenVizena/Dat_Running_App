@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/run_root_llir"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:id="@+id/top_bar_solutionir"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center_horizontal"
+                android:textSize="20dp"
+                android:text="Interval Run Options"
+                android:textColor="#000000"
+                />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+
+                <TableLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/main_page_tableLayoutir"
+                    android:shrinkColumns="TRUE"
+                    android:stretchColumns="TRUE"
+                    android:layout_centerInParent="false"
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="8dp"
+                    android:gravity="center">
+
+                    <TableRow
+                        android:id="@+id/tableRowir"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dip"
+                        android:paddingBottom="0dp"
+                        android:gravity="center">
+
+                        <ImageButton
+                            android:id="@+id/intervalRunNow_ib"
+                            android:layout_height="125dp"
+                            android:layout_width="125dp"
+                            android:src="@drawable/freerunnow"
+                            android:scaleType="fitCenter"
+                            />
+
+                        <ImageButton
+                            android:id="@+id/changeIRUI_ib"
+                            android:layout_width="125dp"
+                            android:layout_height="125dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/configui"
+                            />
+
+                    </TableRow>
+
+
+
+
+
+                </TableLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="31dp"
+                    android:orientation = "horizontal"
+                    android:layout_gravity="center"
+                    android:id="@+id/half1ConstraintLL"
+                    android:paddingTop = "0dp"
+                    android:layout_alignLeft ="@id/main_page_tableLayoutir"
+                    android:layout_below="@id/main_page_tableLayoutir"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Half 1 Constraint: "
+                        android:layout_gravity="bottom"
+                        android:textSize="17sp"
+                        android:paddingTop="8dp"
+                        android:paddingLeft="0dp"/>
+
+                    <Spinner
+                        android:layout_width="127dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/irH1Spinner"
+                        android:entries = "@array/irConstraintSpinnerList"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="31dp"
+                    android:orientation = "horizontal"
+                    android:id="@+id/half2ConstraintLL"
+                    android:layout_gravity="center"
+                    android:layout_below="@id/half1ConstraintLL"
+                    android:layout_alignLeft="@id/main_page_tableLayoutir">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Half 2 Constraint: "
+                        android:layout_gravity="bottom"
+                        android:textSize="17sp"
+                        android:paddingTop="8dp"
+                        android:paddingLeft="0dp"/>
+
+                    <Spinner
+                        android:layout_width="127dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/irH2Spinner"
+                        android:entries = "@array/irConstraintSpinnerList"/>
+
+
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/addIntervalButton"
+                    android:layout_below="@id/half2ConstraintLL"
+                    android:layout_centerHorizontal="true"
+                    android:textAllCaps="false"
+                    android:text="Add Interval"
+                    android:paddingTop="8dp"
+                    android:textSize="17sp"/>
+
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/addIntervalButton"
+                    android:layout_marginTop="8dp">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorAccent"
+                        android:layout_weight="3"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+
+
+
+            </RelativeLayout>
+
+
+
+
+
+        </ScrollView>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

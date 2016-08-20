@@ -29,4 +29,9 @@
         <item>mi</item>
         <item>km</item>
     </string-array>
+
+    <string-array name = "irConstraintSpinnerList">
+        <item>Distance</item>
+        <item>Time</item>
+    </string-array>
 </resources>

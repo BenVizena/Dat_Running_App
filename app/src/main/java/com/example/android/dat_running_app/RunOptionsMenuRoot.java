@@ -87,6 +87,13 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void irClicked(View view){
+        wrdb = new WhichRunDBHelper(this);
+        wrdb.refreshRunType("INTERVAL RUN");
+        Intent intent = new Intent(this,IntervalRunClickedMenu.class);
+        startActivity(intent);
+    }
+
     public void addMainButtons(){
 
         freerun_ib=(ImageButton) findViewById(R.id.freerun_ib);
@@ -118,7 +125,8 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
         intervalrun_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                Toast.makeText(RunOptionsMenuRoot.this, "Interval Run Button was clicked!", Toast.LENGTH_SHORT).show();
+                irClicked(intervalrun_ib);
+             //   Toast.makeText(RunOptionsMenuRoot.this, "Interval Run Button was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
 
