@@ -103,7 +103,10 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
         String h2Constraint = h2Spinner.getSelectedItem().toString();
         String unit = unitSpinner.getSelectedItem().toString();
 
-        //database this shit
+
+        IrHalfDBHelper irHalfDBHelper = new IrHalfDBHelper(this);
+        irHalfDBHelper.addSettings(h1Constraint,h2Constraint,unit);
+
 
         LinearLayout h1LL = (LinearLayout)findViewById(R.id.half1ConstraintLL);
         h1LL.setVisibility(View.GONE);
