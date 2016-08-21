@@ -137,15 +137,25 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/half2ConstraintLL"
+                    android:text="(Time entered in h:m:s format.)"
+                    android:visibility="gone"
+                    android:textSize="12sp"
+                    android:paddingBottom="4dp"
+                    android:id="@+id/timeExplanation"/>
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/addIntervalButton"
-                    android:layout_below="@id/half2ConstraintLL"
+                    android:layout_below="@id/timeExplanation"
                     android:layout_centerHorizontal="true"
                     android:textAllCaps="false"
                     android:text="Add Interval"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="25dp"
                     android:textSize="17sp"
                     android:visibility="gone"/>
 
@@ -473,14 +483,21 @@
                         android:id="@+id/irH2TIMETIMEPt3"
                         android:inputType="number"/>
 
-
-
-
-
                 </LinearLayout>
 
 
 
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id = "@+id/addIntervalLL"
+                    android:orientation="vertical"
+                    android:layout_below="@id/irclickedMenuDividerLL"
+                    >
+
+
+                </LinearLayout>
 
             </RelativeLayout>
 

@@ -1,21 +1,26 @@
 package com.example.android.dat_running_app;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.text.Line;
 
+import static android.R.attr.id;
 import static com.google.android.gms.analytics.internal.zzy.i;
 
 /**
@@ -28,6 +33,7 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
     IrDBHelper irDB;
     Button addIntervalButton;
     Button confirmButton;
+    int numIntervals=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,19 +85,94 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
         return ""+timeMillis;
     }
 
-    private void addInterval(){
-        Spinner h1Spinner = (Spinner)findViewById(R.id.irH1Spinner);
-        Spinner h2Spinner = (Spinner)findViewById(R.id.irH2Spinner);
+    private void addIntervalDD(){//DD stands for DistanceDistance
+        LinearLayout ll = (LinearLayout)findViewById(R.id.addIntervalLL);
+        numIntervals+=1;
 
-        String h1Constraint = h1Spinner.getSelectedItem().toString();
-        String h2Constraint = h2Spinner.getSelectedItem().toString();
+        IrHalfDBHelper irHalfDBHelper = new IrHalfDBHelper(this);
+        String[] confirmedData = irHalfDBHelper.getData().split(" ");
 
-        if(h1Constraint.length()==1 || h2Constraint.length()==1)
-            Toast.makeText(IntervalRunClickedMenu.this, "Please select a constraint for both halves of your intervals.", Toast.LENGTH_LONG).show();
-        else{
-            //stuff
-        }
+        EditText h1ET = (EditText)findViewById(R.id.irH1DISTANCEDISTANCE);
+        EditText h2ET = (EditText)findViewById(R.id.irH2DISTANCEDISTANCE);
 
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 5, r.getDisplayMetrics());
+
+        TextView textView = new TextView(this);
+        textView.setTextSize(px);
+        textView.setText("Interval "+ numIntervals+":  "+h1ET.getText().toString()+confirmedData[2]+" THEN "+h2ET.getText().toString()+confirmedData[2]);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        ll.addView(textView);
+
+    }
+
+    private void addIntervalDT(){//DT stands for DistanceTime
+        LinearLayout ll = (LinearLayout)findViewById(R.id.addIntervalLL);
+        numIntervals+=1;
+
+        IrHalfDBHelper irHalfDBHelper = new IrHalfDBHelper(this);
+        String[] confirmedData = irHalfDBHelper.getData().split(" ");
+
+        EditText h1ET = (EditText)findViewById(R.id.irH1DISTANCETIME);
+        EditText h2ETpt1 = (EditText)findViewById(R.id.irH2DISTANCETIMEPt1);
+        EditText h2ETpt2 = (EditText)findViewById(R.id.irH2DISTANCETIMEPt2);
+        EditText h2ETpt3 = (EditText)findViewById(R.id.irH2DISTANCETIMEPt3);
+
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 5, r.getDisplayMetrics());
+
+        TextView textView = new TextView(this);
+        textView.setTextSize(px);
+        textView.setText("Interval "+ numIntervals+":  "+h1ET.getText().toString()+confirmedData[2]+" THEN "+h2ETpt1.getText().toString()+":"+h2ETpt2.getText().toString()+":"+h2ETpt3.getText().toString());
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        ll.addView(textView);
+
+    }
+
+    private void addIntervalTT(){
+        LinearLayout ll = (LinearLayout)findViewById(R.id.addIntervalLL);
+        numIntervals+=1;
+
+        IrHalfDBHelper irHalfDBHelper = new IrHalfDBHelper(this);
+        String[] confirmedData = irHalfDBHelper.getData().split(" ");
+
+        EditText h1ETpt1 = (EditText)findViewById(R.id.irH1TIMETIMEPt1);
+        EditText h1ETpt2 = (EditText)findViewById(R.id.irH1TIMETIMEPt2);
+        EditText h1ETpt3 = (EditText)findViewById(R.id.irH1TIMETIMEPt3);
+        EditText h2ETpt1 = (EditText)findViewById(R.id.irH2TIMETIMEPt1);
+        EditText h2ETpt2 = (EditText)findViewById(R.id.irH2TIMETIMEPt2);
+        EditText h2ETpt3 = (EditText)findViewById(R.id.irH2TIMETIMEPt3);
+
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 5, r.getDisplayMetrics());
+
+        TextView textView = new TextView(this);
+        textView.setTextSize(px);
+        textView.setText("Interval "+ numIntervals+":  "+h1ETpt1.getText().toString()+":"+h1ETpt2.getText().toString()+":"+h1ETpt3.getText().toString()+" THEN "+h2ETpt1.getText().toString()+":"+h2ETpt2.getText().toString()+":"+h2ETpt3.getText().toString());
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        ll.addView(textView);
+    }
+
+    private void addIntervalTD(){
+        LinearLayout ll = (LinearLayout)findViewById(R.id.addIntervalLL);
+        numIntervals+=1;
+
+        IrHalfDBHelper irHalfDBHelper = new IrHalfDBHelper(this);
+        String[] confirmedData = irHalfDBHelper.getData().split(" ");
+
+        EditText h1ETpt1 = (EditText)findViewById(R.id.irH1TIMEDISTANCEPt1);
+        EditText h1ETpt2 = (EditText)findViewById(R.id.irH1TIMEDISTANCEPt2);
+        EditText h1ETpt3 = (EditText)findViewById(R.id.irH1TIMEDISTANCEPt3);
+        EditText h2ET = (EditText)findViewById(R.id.irH2TIMEDISTANCE);
+
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 5, r.getDisplayMetrics());
+
+        TextView textView = new TextView(this);
+        textView.setTextSize(px);
+        textView.setText("Interval "+ numIntervals+":  "+h1ETpt1.getText().toString()+":"+h1ETpt2.getText().toString()+":"+h1ETpt3.getText().toString()+" THEN "+h2ET.getText().toString()+confirmedData[2]);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        ll.addView(textView);
     }
 
     private void confirm(){
@@ -122,6 +203,9 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
 
 
 
+        TextView explain = (TextView)findViewById(R.id.timeExplanation);
+
+
         Button add = (Button)findViewById(R.id.addIntervalButton);
         add.setVisibility(View.VISIBLE);
 
@@ -131,21 +215,33 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
         if(h1Constraint.equals("Distance")&& h2Constraint.equals("Distance")){
             LinearLayout dataEntryDD = (LinearLayout)findViewById(R.id.dataEntryLLDISTANCEDISTANCE);
             dataEntryDD.setVisibility(View.VISIBLE);
+
+            explain.setVisibility(View.INVISIBLE);
+            explain.setGravity(Gravity.CENTER_HORIZONTAL);
         }
 
         if(h1Constraint.equals("Distance")&& h2Constraint.equals("Time")){
             LinearLayout dataEntryDT = (LinearLayout)findViewById(R.id.dataEntryLLDISTANCETIME);
             dataEntryDT.setVisibility(View.VISIBLE);
+
+            explain.setVisibility(View.VISIBLE);
+            explain.setGravity(Gravity.CENTER_HORIZONTAL);
         }
 
         if(h1Constraint.equals("Time")&& h2Constraint.equals("Distance")){
             LinearLayout dataEntryTD = (LinearLayout)findViewById(R.id.dataEntryLLTIMEDISTANCE);
             dataEntryTD.setVisibility(View.VISIBLE);
+
+            explain.setVisibility(View.VISIBLE);
+            explain.setGravity(Gravity.CENTER_HORIZONTAL);
         }
 
         if(h1Constraint.equals("Time")&& h2Constraint.equals("Time")){
             LinearLayout dataEntryTT = (LinearLayout)findViewById(R.id.dataEntryLLTIMETIME);
             dataEntryTT.setVisibility(View.VISIBLE);
+
+            explain.setVisibility(View.VISIBLE);
+            explain.setGravity(Gravity.CENTER_HORIZONTAL);
         }
 
 
@@ -198,5 +294,19 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
         });
 
 
+    }
+
+    private void addInterval(){
+        IrHalfDBHelper irHalfDBHelper = new IrHalfDBHelper(this);
+        String[] confirmedData = irHalfDBHelper.getData().split(" ");
+
+        if(confirmedData[0].equals("Distance")&&confirmedData[1].equals("Distance"))
+            addIntervalDD();
+        else if(confirmedData[0].equals("Distance")&&confirmedData[1].equals("Time"))
+            addIntervalDT();
+        else if(confirmedData[0].equals("Time")&&confirmedData[1].equals("Time"))
+            addIntervalTT();
+        else if(confirmedData[0].equals("Time")&&confirmedData[1].equals("Distance"))
+            addIntervalTD();
     }
 }
