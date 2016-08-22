@@ -223,8 +223,12 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                         //              N/A      startTime (epoch)     time (ms)          distance (m)       pace (ms)         m/s
                     }
 
+
+
                     String[] delimedDistance = delimedString[3].split(" ");
                     String[] delimedTime = delimedString[1].split(" ");
+
+                    distanceTravelled = Double.parseDouble(delimedDistance[2]);
 
                     if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0){;
                         goalReachedStopService();
@@ -267,6 +271,8 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
         }
 
+
+
     }
 
 
@@ -300,23 +306,64 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         public void run();
     }
 
-    private class AsyncInterval extends AsyncTask<Long,Void,Boolean>{
+    private class AsyncInterval extends AsyncTask<String,Void,Boolean>{
 
 
         @Override
-        protected Boolean doInBackground(Long... longs) {
+        protected Boolean doInBackground(String... Strings) {
             Boolean result = false;
-            try{
-                Log.d("MADE","ASYNC MADE IT HERE");
-                Thread.sleep(longs[0]);
+            Boolean time = false;
+            String[] delimedString = Strings[0].split("");
+            String unit = delimedString[delimedString.length-1]+delimedString[delimedString.length-2];
+            Log.d("UNIT",""+unit);
 
-                MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
-                mp.start();
-                result = true;
-            }catch(InterruptedException e){
+            if(unit.equals("im") || unit.equals("mk")){
+                time=false;
+                double startDistance = distanceTravelled;
+                String distanceString="";
+                for(int i = 0;i<delimedString.length-2;i++)
+                    distanceString=distanceString+delimedString[i];
+                double distanceDouble = Double.parseDouble(distanceString);
 
+                if(unit.equals("mk")){
+                    distanceDouble*=1000;
+
+                    while(distanceTravelled<startDistance+distanceDouble){
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e1) {}
+                    }
+                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                    mp.start();
+                    result=true;
+                }
+                else{
+                    distanceDouble*=1609.34;
+                    Log.d("UNIT",distanceTravelled+"   "+distanceDouble);
+                    while(distanceTravelled<startDistance+distanceDouble){
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e1) {}
+                    }
+                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                    mp.start();
+                    result=true;
+                }
             }
-           return result;
+            else{
+                time=true;
+                try{
+                    Log.d("MADE","ASYNC MADE IT HERE");
+                    Thread.sleep(Long.parseLong(Strings[0]));
+
+                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                    mp.start();
+                    result = true;
+                }catch(InterruptedException e){
+
+                }
+            }
+            return result;
         }
     }
 
@@ -334,9 +381,10 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                         //do time things by starting a different thread.
                         Long time = getTimeFromString(delimedInterval[2]);
 
+
                         interpretedIntervalList.add("TIME "+time);
 
-                        new AsyncInterval().execute(time);
+                        new AsyncInterval().execute(time+"");
 
 
 
@@ -351,6 +399,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                         Log.d("INTERNAL THREAD", "FIRST CONTAINS A DISTANCE");
                         interpretedIntervalList.add("DISTANCE " + delimedInterval[2]);
                         //do distance things
+                        new AsyncInterval().execute(delimedInterval[2]);
 
 
 
@@ -364,7 +413,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                         interpretedIntervalList.add("TIME "+time);
 
-                        new AsyncInterval().execute(time);
+                        new AsyncInterval().execute(time+"");
 
 
 
@@ -375,6 +424,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                         Log.d("INTERNAL THREAD", "SECOND CONTAINS A DISTANCE");
                         interpretedIntervalList.add("DISTANCE "+delimedInterval[4]);
                         //do distance things
+                        new AsyncInterval().execute(delimedInterval[4]);
 
 
                     }
