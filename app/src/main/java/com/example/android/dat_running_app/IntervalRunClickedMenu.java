@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.vision.text.Line;
 
+import java.util.ArrayList;
+
 import static android.R.attr.id;
 import static com.google.android.gms.analytics.internal.zzy.i;
 
@@ -34,6 +36,7 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
     Button addIntervalButton;
     Button confirmButton;
     int numIntervals=0;
+    ArrayList<String> intervalArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +103,9 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
 
         TextView textView = new TextView(this);
         textView.setTextSize(px);
-        textView.setText("Interval "+ numIntervals+":  "+h1ET.getText().toString()+confirmedData[2]+" THEN "+h2ET.getText().toString()+confirmedData[2]);
+        String interval = "Interval "+ numIntervals+": "+h1ET.getText().toString()+confirmedData[2]+" THEN "+h2ET.getText().toString()+confirmedData[2];
+        textView.setText(interval);
+        intervalArrayList.add(interval);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         ll.addView(textView);
 
@@ -123,7 +128,9 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
 
         TextView textView = new TextView(this);
         textView.setTextSize(px);
-        textView.setText("Interval "+ numIntervals+":  "+h1ET.getText().toString()+confirmedData[2]+" THEN "+h2ETpt1.getText().toString()+":"+h2ETpt2.getText().toString()+":"+h2ETpt3.getText().toString());
+        String interval = "Interval "+ numIntervals+": "+h1ET.getText().toString()+confirmedData[2]+" THEN "+h2ETpt1.getText().toString()+":"+h2ETpt2.getText().toString()+":"+h2ETpt3.getText().toString();
+        intervalArrayList.add(interval);
+        textView.setText(interval);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         ll.addView(textView);
 
@@ -148,7 +155,9 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
 
         TextView textView = new TextView(this);
         textView.setTextSize(px);
-        textView.setText("Interval "+ numIntervals+":  "+h1ETpt1.getText().toString()+":"+h1ETpt2.getText().toString()+":"+h1ETpt3.getText().toString()+" THEN "+h2ETpt1.getText().toString()+":"+h2ETpt2.getText().toString()+":"+h2ETpt3.getText().toString());
+        String interval = "Interval "+ numIntervals+": "+h1ETpt1.getText().toString()+":"+h1ETpt2.getText().toString()+":"+h1ETpt3.getText().toString()+" THEN "+h2ETpt1.getText().toString()+":"+h2ETpt2.getText().toString()+":"+h2ETpt3.getText().toString();
+        textView.setText(interval);
+        intervalArrayList.add(interval);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         ll.addView(textView);
     }
@@ -170,7 +179,9 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
 
         TextView textView = new TextView(this);
         textView.setTextSize(px);
-        textView.setText("Interval "+ numIntervals+":  "+h1ETpt1.getText().toString()+":"+h1ETpt2.getText().toString()+":"+h1ETpt3.getText().toString()+" THEN "+h2ET.getText().toString()+confirmedData[2]);
+        String interval = "Interval "+ numIntervals+": "+h1ETpt1.getText().toString()+":"+h1ETpt2.getText().toString()+":"+h1ETpt3.getText().toString()+" THEN "+h2ET.getText().toString()+confirmedData[2];
+        textView.setText(interval);
+        intervalArrayList.add(interval);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         ll.addView(textView);
     }
@@ -201,7 +212,8 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
         Button confirm = (Button)findViewById(R.id.irConfirmedButton);
         confirm.setVisibility(View.GONE);
 
-
+        IntervalDBHelper imdb = new IntervalDBHelper(this);
+        imdb.clearTable();
 
         TextView explain = (TextView)findViewById(R.id.timeExplanation);
 
@@ -247,7 +259,16 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
 
     }
 
-
+    private boolean addIntervalsToDB(){
+        if(intervalArrayList.size()==0)
+            return false;
+        else{
+            IntervalDBHelper imdb = new IntervalDBHelper(this);
+            for(int x=0;x<intervalArrayList.size();x++)
+                imdb.addSettings(intervalArrayList.get(x));
+            return true;
+        }
+    }
 
     public void addMainButtons(){
 
@@ -261,12 +282,11 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
         intervalRunNow_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                String time = getIntervalText();
-                if(Long.parseLong(time) == 0)
+//                String time = getIntervalText();
+                boolean success = addIntervalsToDB();
+                if(success==false)
                     Toast.makeText(IntervalRunClickedMenu.this, "Please enter a valid time.", Toast.LENGTH_LONG).show();
                 else{
-                    Log.d("??",time+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    irDB.addSettings(time);
                     irNowClicked(intervalRunNow_ib);
                 }
             }

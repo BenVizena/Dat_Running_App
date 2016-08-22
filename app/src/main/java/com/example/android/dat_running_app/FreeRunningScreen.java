@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,10 +25,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static com.example.android.dat_running_app.R.id.txtOutput;
 import static com.google.android.gms.analytics.internal.zzy.e;
+import static com.google.android.gms.analytics.internal.zzy.r;
+import static com.google.android.gms.analytics.internal.zzy.t;
+import static com.google.android.gms.analytics.internal.zzy.v;
 
 
 /**
@@ -43,13 +53,18 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private Marker m;
     private boolean rfd;
     private String runType;//"FREE RUN", "RUN FOR DISTANCE",
+    private boolean irStarted;
+    private ArrayList<String> intervalList;
+    private IntervalDBHelper imdb;
 
     private MyReceiver myReceiver;
+//    private MyReceiver myReceiverIR;
     private String outputString;
     private RunDBHelper RDB;
     private WhichRunDBHelper WRDB;
     private double distanceToTravel;//the distance specified in the Run For Distance menu.
     private long timeToRun;//the time in millis specified in the Run For Time mneu.
+    private ArrayList<String> interpretedIntervalList;
 
     private int dbUpdateTimer=0;
     private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update. //was 10. 10 is probably good. that is 1 update to db for every second. //100 works for debugging purposes.
@@ -79,6 +94,11 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
             timeToRun=Long.parseLong(timeString);
         }else
             timeToRun=0;
+
+        irStarted=false;
+        interpretedIntervalList = new ArrayList<>();
+
+        intervalList = new ArrayList<>();
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -208,10 +228,33 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0){;
                         goalReachedStopService();
+                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                        mp.start();
                     }
 
                     if(Long.parseLong(delimedTime[1]) >= timeToRun && timeToRun>0){
                         goalReachedStopService();
+                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                        mp.start();
+                    }
+
+                    if(runType.equals("INTERVAL RUN") && irStarted==false){
+                        irStarted=true;
+                        /*
+                        myReceiverIR = new MyReceiver();
+                        IntentFilter intentFilterIR = new IntentFilter();
+                        intentFilterIR.addAction(IntervalRunService.MY_ACTION);
+                        registerReceiver(myReceiverIR,intentFilterIR);
+                        Intent intentIR = new Intent(FreeRunningScreen.this,IntervalRunService.class);
+                        startService(intentIR);
+                         */
+
+                        populateIntervalList();
+                        Log.d("MADE","SIZE: "+intervalList.size());
+                        interpretIntervals();
+
+
+
                     }
 
 
@@ -224,6 +267,136 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
         }
 
+    }
+
+
+
+    private boolean isTime(String maybeTime){
+ //       Log.d("DelimedLength",""+maybeTime);
+        String[] delimedMaybeTime = maybeTime.split(":");
+ //       Log.d("DelimedLength",""+delimedMaybeTime.length);
+        if(delimedMaybeTime.length==3)
+            return true;
+        else
+            return false;
+    }
+
+    private Long getTimeFromString(String timeString){
+        String[] delimedTime = timeString.split(":");
+
+        long hr = Long.parseLong(delimedTime[0]);
+        hr=hr*3600*1000;
+
+        long min = Long.parseLong(delimedTime[1]);
+        min=min*60*1000;
+
+        long sec = Long.parseLong(delimedTime[2]);
+        sec=sec*1000;
+
+        return hr+min+sec;
+    }
+
+    public interface Runnable{
+        public void run();
+    }
+
+    private class AsyncInterval extends AsyncTask<Long,Void,Boolean>{
+
+
+        @Override
+        protected Boolean doInBackground(Long... longs) {
+            Boolean result = false;
+            try{
+                Log.d("MADE","ASYNC MADE IT HERE");
+                Thread.sleep(longs[0]);
+
+                MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                mp.start();
+                result = true;
+            }catch(InterruptedException e){
+
+            }
+           return result;
+        }
+    }
+
+    private void interpretIntervals(){
+            boolean locked = false;
+   //         int counter=0;
+            for (int x = 0; x < intervalList.size(); x++) {
+      //          while(counter<intervalList.size()*3){
+                    String[] delimedInterval = intervalList.get(x).split(" ");
+                    //           Log.d("IMPORTANT", ""+intervalList.get(x));
+
+                    if (isTime(delimedInterval[2]) && !locked) {
+                        locked=true;
+                        Log.d("INTERNAL THREAD", "FIRST CONTAINS A TIME");
+                        //do time things by starting a different thread.
+                        Long time = getTimeFromString(delimedInterval[2]);
+
+                        interpretedIntervalList.add("TIME "+time);
+
+                        new AsyncInterval().execute(time);
+
+
+
+            //            MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+             //           mp.start();
+
+                        locked = false;
+              //          counter+=1;
+
+
+                    } else {
+                        Log.d("INTERNAL THREAD", "FIRST CONTAINS A DISTANCE");
+                        interpretedIntervalList.add("DISTANCE " + delimedInterval[2]);
+                        //do distance things
+
+
+
+                    }
+
+                    if (isTime(delimedInterval[4]) && !locked) {
+                        locked=true;
+                        Log.d("INTERNAL THREAD", "FIRST CONTAINS A TIME");
+                        //do time things by starting a different thread.
+                        Long time = getTimeFromString(delimedInterval[4]);
+
+                        interpretedIntervalList.add("TIME "+time);
+
+                        new AsyncInterval().execute(time);
+
+
+
+                        locked = false;
+              //          counter+=1;
+
+                    } else {
+                        Log.d("INTERNAL THREAD", "SECOND CONTAINS A DISTANCE");
+                        interpretedIntervalList.add("DISTANCE "+delimedInterval[4]);
+                        //do distance things
+
+
+                    }
+         //       }
+
+            }
+
+    }
+
+
+
+    private void populateIntervalList(){
+        imdb = new IntervalDBHelper(this);
+        Cursor dataCursor = imdb.getDataCursor();
+
+        try {
+            do {
+                intervalList.add(dataCursor.getString(1));
+            }while(dataCursor.moveToNext());
+        } finally {
+            dataCursor.close();
+        }
     }
 
     private String formatTime(String s){
@@ -257,6 +430,19 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         Intent intent = new Intent(this,FreeRunningScreenService.class);
         startService(intent);
 
+        RDB = new RunDBHelper(this);
+        runType = new WhichRunDBHelper(this).getRunType();
+
+        /*
+        if(runType.equals("INTERVAL RUN")){
+            myReceiverIR = new MyReceiver();
+            IntentFilter intentFilterIR = new IntentFilter();
+            intentFilterIR.addAction(IntervalRunService.MY_ACTION);
+            registerReceiver(myReceiverIR,intentFilterIR);
+            Intent intentIR = new Intent(this,IntervalRunService.class);
+            startService(intentIR);
+        }
+*/
     }
 
     public void stopService(View view){
@@ -264,7 +450,11 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         Intent intent = new Intent(this,FreeRunningScreenService.class);
         stopService(intent);
         unregisterReceiver(myReceiver);
-
+/*
+        Intent intentIR = new Intent(this,IntervalRunService.class);
+        stopService(intentIR);
+        unregisterReceiver(myReceiverIR);
+*/
 
     }
 
