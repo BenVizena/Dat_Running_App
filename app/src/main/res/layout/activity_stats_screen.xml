@@ -434,6 +434,27 @@
                     android:background="@color/colorPrimary"
                     android:layout_below="@id/distanceSplitsTV"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:id="@+id/totalDistanceTV"
+                    android:layout_toRightOf="@id/distanceTravelledTV"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginLeft="4dp"
+                    android:text=""/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:id="@+id/avgSpeedTV"
+                    android:layout_toRightOf="@id/averageSpeedTV"
+                    android:layout_below="@id/totalDistanceTV"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:text=""/>
+
 
             </RelativeLayout>
 

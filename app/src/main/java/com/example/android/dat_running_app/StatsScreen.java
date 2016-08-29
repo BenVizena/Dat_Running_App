@@ -50,6 +50,8 @@ import static com.google.android.gms.analytics.internal.zzy.i;
 import static com.google.android.gms.analytics.internal.zzy.l;
 import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.google.android.gms.analytics.internal.zzy.r;
+import static com.google.android.gms.analytics.internal.zzy.s;
+import static com.google.android.gms.analytics.internal.zzy.u;
 import static com.google.android.gms.analytics.internal.zzy.v;
 import static com.google.android.gms.analytics.internal.zzy.w;
 
@@ -70,6 +72,7 @@ public class StatsScreen extends AppCompatActivity{
     private LineChart chart;
     private ArrayList<Long> startTimes;//stores the epoch time of the run start times
     private ArrayList<String> startTimesDateHelper;//stores the human date corresponding to the epoch start times
+    private double distanceTravelled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -309,6 +312,8 @@ public class StatsScreen extends AppCompatActivity{
     }
 
     public void drawChart(View view){
+        double sumOfSpeed=0;
+        double numUpdates=0;
         lineChartButton = (RadioButton) findViewById(R.id.lineChartButton);
         RDB = new RunDBHelper(this);
 
@@ -340,6 +345,8 @@ public class StatsScreen extends AppCompatActivity{
 
             int xGetStringIndex=0;
             int yGetStringIndex=0;//these are the indices that database.getString() will use, i.e. db.getString(yGetStringIndex);
+
+
 
 
             Log.d("xAxisSelection log",""+xAxisSelection);
@@ -403,6 +410,8 @@ public class StatsScreen extends AppCompatActivity{
 
             try{
                 while(cursor.moveToNext()) {
+
+
                     String startTimeString = startTimes.get(index)+"";
                     String[] startTimeArray = cursor.getString(2).split(" ");
            //         Log.d("COMPARE THINGS",startTimeArray[1]+" "+startTimeString);
@@ -421,10 +430,19 @@ public class StatsScreen extends AppCompatActivity{
                             yMetric = true;
                     }catch(ArrayIndexOutOfBoundsException e){};
 
-                    boolean rightRun=false;
+             //       boolean rightRun=false;
 
                     if(startTimeArray[1].equals(startTimeString)){
-                        rightRun=true;
+
+
+                            String tempDist[] = cursor.getString(4).split(" ");
+                            distanceTravelled=Double.parseDouble(tempDist[2]);
+
+                            String partialSpeedStr[] = cursor.getString(6).split(" ");
+                            sumOfSpeed = Double.parseDouble(partialSpeedStr[1]);
+                            numUpdates+=1;
+
+                 //       rightRun=true;
                         String[] xValueString = cursor.getString(xGetStringIndex).split(" ");
                         String[] yValueString = cursor.getString(yGetStringIndex).split(" ");
         //                Log.d("x and y cursor String","["+cursor.getString(xGetStringIndex)+", "+cursor.getString(yGetStringIndex)+"]");
@@ -525,11 +543,16 @@ public class StatsScreen extends AppCompatActivity{
                         entries.add(new Entry((float) yValue, (int) xValue));
 //                        Log.d("ENTRIES with casts", (float) yValue + "   " + (int) xValue);
                         Log.d("ENTRIES without casts", yValue + " <- Y  X -> " + xValue);
-                    }else if(rightRun==true){
-                        cursor.moveToLast();
+          //          }else if(rightRun==true){
+          //              cursor.moveToLast();
                     }
                 }
-            }finally{cursor.close();}
+            }finally{
+                cursor.close();
+                updateTotalDistanceTV();
+                double avgSpeed = sumOfSpeed/numUpdates;
+                updateAvgSpeed(avgSpeed);
+            }
 
             String[] labels = new String[labelList.size()];
 
@@ -566,6 +589,17 @@ public class StatsScreen extends AppCompatActivity{
         }else{
             //draw bar chart
         }
+    }
+
+    private void updateTotalDistanceTV(){
+        TextView textView = (TextView) findViewById(R.id.totalDistanceTV);
+        textView.setText(""+distanceTravelled);
+
+    }
+
+    private void updateAvgSpeed(double s){
+        TextView textView = (TextView) findViewById(R.id.avgSpeedTV);
+        textView.setText(""+s);
     }
 
     private String formatTime(String s){
