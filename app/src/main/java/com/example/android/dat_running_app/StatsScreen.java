@@ -298,7 +298,7 @@ public class StatsScreen extends AppCompatActivity{
                //     Date date = new Date(Long.parseLong(startTime[1]));
                //     runSpinnerList.add(date.toString());
                 }catch(CursorIndexOutOfBoundsException e){Log.d("EXCEPTION","CAUGHT"); i+=10;}
-                catch(SQLiteCantOpenDatabaseException d){Log.d("EXCEPTION","CAUGHT"); i+=10;};
+                catch(SQLiteCantOpenDatabaseException d){Log.d("EXCEPTION","CAUGHT CAN'T OPEN"); i+=10;};
             }
 
         RDB.close();
