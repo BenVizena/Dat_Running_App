@@ -283,6 +283,165 @@
 
             </RelativeLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorAccent"
+                        android:layout_weight="2"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="metric"
+                        android:paddingTop="0dp"
+                        android:paddingLeft="0dp"
+                        android:textSize="20dp"
+                        android:gravity="center"/>
+
+                    <RadioGroup
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingTop="0dp"
+                        android:id="@+id/metricCustomaryRadioButton"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <RadioButton
+                            android:id="@+id/metricRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:gravity="center"
+                            android:onClick="refreshSpinners"/>
+
+                        <RadioButton
+                            android:id="@+id/customaryRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:onClick="refreshSpinners"/>
+
+
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="customary"
+                        android:paddingTop="0dp"
+                        android:textSize="20dp"
+                        android:gravity="center_horizontal"/>
+
+
+
+
+
+                </LinearLayout>
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="17sp"
+                    android:text="distance travelled:"
+                    android:id="@+id/distanceTravelledTV"/>
+
+                <TextView
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="17sp"
+                    android:text="average speed:"
+                    android:id="@+id/averageSpeedTV"
+                    android:layout_below="@id/distanceTravelledTV"/>
+
+                <TextView
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="17sp"
+                    android:text="average cadence:"
+                    android:id="@+id/averageCadenceTV"
+                    android:layout_below="@id/averageSpeedTV"/>
+
+                <TextView
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="17sp"
+                    android:text="calories burned:"
+                    android:id="@+id/calsBurnedTV"
+                    android:layout_below="@id/averageCadenceTV"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/distanceSplitsTV"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:text="Mile Splits"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_below="@id/calsBurnedTV"
+                    android:layout_centerHorizontal="false"/>
+
+                <View
+                    android:layout_width="100dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_below="@id/distanceSplitsTV"/>
+
+
+            </RelativeLayout>
+
+
+
+
+
+
 
 
             </LinearLayout>
