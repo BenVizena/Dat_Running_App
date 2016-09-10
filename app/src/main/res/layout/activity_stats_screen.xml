@@ -388,9 +388,20 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:textSize="17sp"
+                    android:text="average pace:"
+                    android:id="@+id/avgPaceTV"
+                    android:layout_below="@id/distanceTravelledTV"/>
+
+                <TextView
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="17sp"
                     android:text="average speed:"
                     android:id="@+id/averageSpeedTV"
-                    android:layout_below="@id/distanceTravelledTV"/>
+                    android:layout_below="@id/avgPaceTV"/>
 
                 <TextView
                     android:textColor="@color/colorPrimaryDark"
@@ -413,6 +424,8 @@
                     android:text="calories burned:"
                     android:id="@+id/calsBurnedTV"
                     android:layout_below="@id/averageCadenceTV"/>
+
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -448,9 +461,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
-                    android:id="@+id/avgSpeedTV"
+                    android:id="@+id/avgPaceNumTV"
                     android:layout_toRightOf="@id/averageSpeedTV"
                     android:layout_below="@id/totalDistanceTV"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:text=""/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:id="@+id/avgSpeedNumTV"
+                    android:layout_toRightOf="@id/averageSpeedTV"
+                    android:layout_below="@id/avgPaceNumTV"
                     android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text=""/>

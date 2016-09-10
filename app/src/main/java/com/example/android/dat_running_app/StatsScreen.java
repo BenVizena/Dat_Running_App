@@ -289,8 +289,10 @@ public class StatsScreen extends AppCompatActivity{
              //           Log.d("ADDED",""+epochTime);
                         Date date = new Date(epochTime);
                         String strDate = date.toString();
+                        Log.d("date", strDate);
                         String[] dateArray = strDate.split(" ");
-                        String spinnerFormatDate = dateArray[0]+" "+dateArray[1]+" "+dateArray[2]+" "+dateArray[5]+" "+cursor.getString(1);
+                        String spinnerFormatDate = dateArray[0]+" "+dateArray[1]+" "+dateArray[2]+" "+dateArray[5]+" "+dateArray[3]+" "+cursor.getString(1);//dateArray[3] needs to be here to
+                                                                                                                                                            // differentiate the start times.
                         startTimesDateHelper.add(spinnerFormatDate);
                         runSpinnerList.add(spinnerFormatDate);
                         i++;
@@ -330,8 +332,11 @@ public class StatsScreen extends AppCompatActivity{
                 while (index == -1) {
                     if(runSpinner.getSelectedItem()!=null){
                         runSelection = runSpinner.getSelectedItem().toString();
-                        if (startTimesDateHelper.get(tempIndex).equals(runSelection))
+                        if (startTimesDateHelper.get(tempIndex).equals(runSelection)){
                             index = tempIndex;
+
+                        }
+
                         else {
                             tempIndex++;
                             Log.d("StatsScreen DrawChart", "Still going...");
@@ -439,7 +444,8 @@ public class StatsScreen extends AppCompatActivity{
                             distanceTravelled=Double.parseDouble(tempDist[2]);
 
                             String partialSpeedStr[] = cursor.getString(6).split(" ");
-                            sumOfSpeed = Double.parseDouble(partialSpeedStr[1]);
+                            sumOfSpeed += Double.parseDouble(partialSpeedStr[1]);
+                            Log.d("PLS",""+Double.parseDouble(partialSpeedStr[1])+" "+sumOfSpeed+" "+numUpdates+1);
                             numUpdates+=1;
 
                  //       rightRun=true;
@@ -550,8 +556,10 @@ public class StatsScreen extends AppCompatActivity{
             }finally{
                 cursor.close();
                 updateTotalDistanceTV();
-                double avgSpeed = sumOfSpeed/numUpdates;
+                double avgSpeed = sumOfSpeed/numUpdates;//i think that this is in meters per second
+                Log.d("sumOfSpeed",""+sumOfSpeed);
                 updateAvgSpeed(avgSpeed);
+                updateAvgPaceTV(formatTime((int)(1/avgSpeed*1000*1000)+""));//time it takes to finish a km
             }
 
             String[] labels = new String[labelList.size()];
@@ -598,7 +606,12 @@ public class StatsScreen extends AppCompatActivity{
     }
 
     private void updateAvgSpeed(double s){
-        TextView textView = (TextView) findViewById(R.id.avgSpeedTV);
+        TextView textView = (TextView) findViewById(R.id.avgSpeedNumTV);
+        textView.setText(""+s);
+    }
+
+    private void updateAvgPaceTV(String s){
+        TextView textView = (TextView) findViewById(R.id.avgPaceNumTV);
         textView.setText(""+s);
     }
 
@@ -617,7 +630,7 @@ public class StatsScreen extends AppCompatActivity{
                 hmsm = delimedTime[1]+":"+delimedTime[2]+":"+delimedTime[3];
 
         }catch(NumberFormatException e){
-
+            Log.d("NME",s);
         }
 
 
