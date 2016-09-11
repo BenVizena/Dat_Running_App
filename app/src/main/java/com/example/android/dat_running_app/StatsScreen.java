@@ -30,6 +30,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.google.android.gms.vision.text.Line;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,12 +40,15 @@ import java.util.concurrent.TimeUnit;
 import static android.R.attr.colorPrimary;
 import static android.R.attr.colorPrimaryDark;
 import static android.R.attr.data;
+import static android.R.attr.format;
 import static android.R.attr.textColorPrimary;
 import static android.R.attr.x;
+import static android.R.attr.y;
 import static android.R.id.primary;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static com.example.android.dat_running_app.R.id.startChart;
 import static com.google.android.gms.analytics.internal.zzy.B;
+import static com.google.android.gms.analytics.internal.zzy.d;
 import static com.google.android.gms.analytics.internal.zzy.g;
 import static com.google.android.gms.analytics.internal.zzy.i;
 import static com.google.android.gms.analytics.internal.zzy.l;
@@ -289,7 +293,7 @@ public class StatsScreen extends AppCompatActivity{
              //           Log.d("ADDED",""+epochTime);
                         Date date = new Date(epochTime);
                         String strDate = date.toString();
-                        Log.d("date", strDate);
+       //                 Log.d("date", strDate);
                         String[] dateArray = strDate.split(" ");
                         String spinnerFormatDate = dateArray[0]+" "+dateArray[1]+" "+dateArray[2]+" "+dateArray[5]+" "+dateArray[3]+" "+cursor.getString(1);//dateArray[3] needs to be here to
                                                                                                                                                             // differentiate the start times.
@@ -334,12 +338,10 @@ public class StatsScreen extends AppCompatActivity{
                         runSelection = runSpinner.getSelectedItem().toString();
                         if (startTimesDateHelper.get(tempIndex).equals(runSelection)){
                             index = tempIndex;
-
                         }
-
                         else {
                             tempIndex++;
-                            Log.d("StatsScreen DrawChart", "Still going...");
+      //                      Log.d("StatsScreen DrawChart", "Still going...");
                         }
                     }
                 }
@@ -354,7 +356,7 @@ public class StatsScreen extends AppCompatActivity{
 
 
 
-            Log.d("xAxisSelection log",""+xAxisSelection);
+   //         Log.d("xAxisSelection log",""+xAxisSelection);
             switch(xAxisSelection){
                 case "Run Type": xGetStringIndex=1;
                     break;
@@ -412,9 +414,14 @@ public class StatsScreen extends AppCompatActivity{
             cursor.moveToFirst();
 
             ArrayList<Long> labelList = new ArrayList<>();
+            ArrayList<String> splits = new ArrayList<>();
+            int splitCounter=1;//increments after each time a multiple of 1km is reached. used in recording of mile splits.
 
             try{
                 while(cursor.moveToNext()) {
+
+                    double currentDistance=0;
+
 
 
                     String startTimeString = startTimes.get(index)+"";
@@ -445,7 +452,7 @@ public class StatsScreen extends AppCompatActivity{
 
                             String partialSpeedStr[] = cursor.getString(6).split(" ");
                             sumOfSpeed += Double.parseDouble(partialSpeedStr[1]);
-                            Log.d("PLS",""+Double.parseDouble(partialSpeedStr[1])+" "+sumOfSpeed+" "+numUpdates+1);
+               //             Log.d("PLS",""+Double.parseDouble(partialSpeedStr[1])+" "+sumOfSpeed+" "+numUpdates+1);
                             numUpdates+=1;
 
                  //       rightRun=true;
@@ -463,14 +470,15 @@ public class StatsScreen extends AppCompatActivity{
 
                         if(xMetric==true){
                             switch(xValueString[0]){
-                                case "DISTANCE": xValue=Double.parseDouble(xValueString[2])/1000;
+                                case "DISTANCE":
+                                    xValue=Double.parseDouble(xValueString[2])/1000;
                                     break;
                                 case "Pace:": xValue = Double.parseDouble(xValueString[1]);
                                     break;
                                 case "Speed:": xValue = Double.parseDouble(xValueString[1]);
                                     break;
                                 case "Time:": xValue = Double.parseDouble(xValueString[1])/1000;
-                                    Log.d("IVE GOT THE NEED","FOR TIME... in metric");
+                  //                  Log.d("IVE GOT THE NEED","FOR TIME... in metric");
                                     break;
                                 case "CADENCE:": xValue = 42;
                                     break;
@@ -480,8 +488,8 @@ public class StatsScreen extends AppCompatActivity{
                             }
                         }else{
                             try {
-                                for (int p = 0; p < xValueString.length; p++)
-                                    Log.d("ARRAY THINGY X", "" + xValueString[p]);
+                     //           for (int p = 0; p < xValueString.length; p++)
+                     //               Log.d("ARRAY THINGY X", "" + xValueString[p]);
                                 switch (xValueString[0]) {
                                     case "DISTANCE":
                                         xValue = Double.parseDouble(xValueString[2]) * .000621371;
@@ -494,7 +502,7 @@ public class StatsScreen extends AppCompatActivity{
                                         break;
                                     case "Time:":
                                         xValue = Double.parseDouble(xValueString[1])/1000;
-                                        Log.d("IVE GOT THE NEED","FOR TIME");
+                          //              Log.d("IVE GOT THE NEED","FOR TIME");
                                         break;
                                     case "CADENCE:":
                                         xValue = 42;
@@ -510,7 +518,8 @@ public class StatsScreen extends AppCompatActivity{
 
                         if(yMetric==true){
                             switch(yValueString[0]){
-                                case "DISTANCE": yValue=Double.parseDouble(yValueString[2])/1000;
+                                case "DISTANCE":
+                                    yValue=Double.parseDouble(yValueString[2])/1000;
                                     break;
                                 case "Pace:": yValue = Double.parseDouble(yValueString[1]);
                                     break;
@@ -528,7 +537,8 @@ public class StatsScreen extends AppCompatActivity{
                             for(int p = 0;p<yValueString.length;p++)
             //                    Log.d("ARRAY THINGY Y",""+yValueString[p]);
                             switch(yValueString[0]){
-                                case "DISTANCE": yValue=Double.parseDouble(yValueString[2])*.000621371;
+                                case "DISTANCE":
+                                    yValue=Double.parseDouble(yValueString[2])*.000621371;
                                     break;
                                 case "Pace:": yValue = Double.parseDouble(yValueString[1])*1.60932;
                                     break;
@@ -545,39 +555,55 @@ public class StatsScreen extends AppCompatActivity{
                             }
                         }
 
+                        currentDistance+=Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000;
+                        Log.d("MYDISTANCE",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000);
+
+
+                        if(currentDistance >= splitCounter){
+                            if(splits.size()>0){
+                                long t1 = Long.parseLong(cursor.getString(3).split(" ")[1]);
+                                long t2 = 0;
+                                for(int x=0;x<splits.size();x++){
+                                    t2+=Long.parseLong(splits.get(x));
+                                }
+                                long t3 = t1-t2;
+                                splits.add(""+t3);
+                                Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+splitCounter);
+                            }else{
+                                splits.add(cursor.getString(3).split(" ")[1]);
+                                Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+splitCounter);
+
+                            }
+                            splitCounter++;
+                        //    currentDistance=0;
+                        }
+
+
                         labelList.add((long)(xValue));
                         entries.add(new Entry((float) yValue, (int) xValue));
-//                        Log.d("ENTRIES with casts", (float) yValue + "   " + (int) xValue);
-                        Log.d("ENTRIES without casts", yValue + " <- Y  X -> " + xValue);
-          //          }else if(rightRun==true){
-          //              cursor.moveToLast();
                     }
                 }
             }finally{
                 cursor.close();
                 updateTotalDistanceTV();
                 double avgSpeed = sumOfSpeed/numUpdates;//i think that this is in meters per second
-                Log.d("sumOfSpeed",""+sumOfSpeed);
+ //               Log.d("sumOfSpeed",""+sumOfSpeed);
                 updateAvgSpeed(avgSpeed);
                 updateAvgPaceTV(formatTime((int)(1/avgSpeed*1000*1000)+""));//time it takes to finish a km
+                updateSplits(splits);
+                splitCounter=1;
             }
 
             String[] labels = new String[labelList.size()];
 
-/*
-            for(int i=0;i<entries.size();i++){
-                Entry temp = entries.get(i);
-                int labelVal = temp.getXIndex();
-                labels[i]=""+labelVal;
-            }
-*/
+
 
             for(int x=0;x<labelList.size();x++){
                 String temp = ""+labelList.get(x);
                 labels[x]=formatTime(temp);
             }
 
-            Log.d("DEBUG...",labelList.size()+" "+labels.length);
+ //           Log.d("DEBUG...",labelList.size()+" "+labels.length);
 
 
 
@@ -601,18 +627,38 @@ public class StatsScreen extends AppCompatActivity{
 
     private void updateTotalDistanceTV(){
         TextView textView = (TextView) findViewById(R.id.totalDistanceTV);
-        textView.setText(""+distanceTravelled);
+        textView.setText(""+distanceTravelled+" km");
 
     }
 
     private void updateAvgSpeed(double s){
         TextView textView = (TextView) findViewById(R.id.avgSpeedNumTV);
-        textView.setText(""+s);
+        textView.setText(""+s + " m/s");
     }
 
     private void updateAvgPaceTV(String s){
         TextView textView = (TextView) findViewById(R.id.avgPaceNumTV);
         textView.setText(""+s);
+    }
+
+    private void updateSplits(ArrayList<String> s){
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.splitsLL);
+        linearLayout.removeAllViews();
+
+        TextView splitsTV = (TextView)findViewById(R.id.distanceSplitsTV);
+
+        if(s.size()==0)
+            splitsTV.setVisibility(View.INVISIBLE);
+        else
+            splitsTV.setVisibility(View.VISIBLE);
+
+        for(int x=0;x<s.size();x++){
+            TextView tv = new TextView(this);
+            tv.setText(formatTime(s.get(x)));
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,17);
+            linearLayout.addView(tv);
+        }
+        s.clear();
     }
 
     private String formatTime(String s){
@@ -630,7 +676,7 @@ public class StatsScreen extends AppCompatActivity{
                 hmsm = delimedTime[1]+":"+delimedTime[2]+":"+delimedTime[3];
 
         }catch(NumberFormatException e){
-            Log.d("NME",s);
+            Log.d("EXCEPTION","Number format exception in formatTime() in StatsScreen"+s);
         }
 
 

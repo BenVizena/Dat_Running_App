@@ -33,11 +33,18 @@ public class RunDBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_CURRENTSPEED = "CURRENT_SPEED";
     private static final String COLUMN_CURRENTCADENCE="CURRENT_CADENCE";
     private static final String COLUMN_CURRENTELEVATION = "CURRENT_ELEVATION";
+    private static String DB_PATH = "";
 
 
 
     public RunDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        if(android.os.Build.VERSION.SDK_INT >= 4.2){
+            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
+        } else {
+            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+        }
+   //     this.mContext = context;
     }
 
     @Override
