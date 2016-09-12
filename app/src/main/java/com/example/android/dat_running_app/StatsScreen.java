@@ -47,9 +47,9 @@ import static android.R.attr.x;
 import static android.R.attr.y;
 import static android.R.id.primary;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-import static com.example.android.dat_running_app.R.id.lineChartButton;
+//import static com.example.android.dat_running_app.R.id.lineChartButton;
 import static com.example.android.dat_running_app.R.id.startChart;
-import static com.example.android.dat_running_app.R.id.timeIntervalButton;
+//import static com.example.android.dat_running_app.R.id.timeIntervalButton;
 import static com.google.android.gms.analytics.internal.zzy.B;
 import static com.google.android.gms.analytics.internal.zzy.d;
 import static com.google.android.gms.analytics.internal.zzy.g;
@@ -103,6 +103,9 @@ public class StatsScreen extends AppCompatActivity{
 */
         populateSpinnersIndividualRun();
         addRunSpinner();
+
+
+        chart = (LineChart) findViewById(startChart);
 
 
         Button rb = (Button)findViewById(R.id.drawChartButton);
