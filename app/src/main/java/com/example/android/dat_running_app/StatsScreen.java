@@ -68,10 +68,6 @@ import static com.google.android.gms.analytics.internal.zzy.w;
 
 public class StatsScreen extends AppCompatActivity{
     private RunDBHelper RDB;
-    Boolean lineChart;
-
-//    private RadioButton lineChartButton;
-//    private RadioButton timeIntervalButton;
     private Spinner xAxisSpinner;
     private Spinner yAxisSpinner;
     private Spinner runSpinner;
@@ -90,17 +86,6 @@ public class StatsScreen extends AppCompatActivity{
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-  //      timeIntervalButton=(RadioButton)findViewById(R.id.timeIntervalButton);
-/*
-        if(timeIntervalButton.isChecked()){
-            populateSpinnersTimeInterval();
-            deleteRunSpinner();
-        }
-        else{
-
-        }
-
-*/
         populateSpinnersIndividualRun();
         addRunSpinner();
 
@@ -123,50 +108,9 @@ public class StatsScreen extends AppCompatActivity{
        }catch(IllegalStateException e){}
     }
 
- //   public void refreshSpinners(View view){
 
-//        timeIntervalButton=(RadioButton)findViewById(timeIntervalButton);
 
- //       if(timeIntervalButton.isChecked()){
- //           populateSpinnersTimeInterval();
- //           deleteRunSpinner();
-  //          drawChart(view);
-  //      }
- //       else{
-  //      populateSpinnersIndividualRun();
-  //      addRunSpinner();
-   //         drawChart(view);
- //       }
- //   }
 
-    private void populateSpinnersTimeInterval(){
-        xAxisSpinner = (Spinner) findViewById(R.id.xAxisSpinner);
-        yAxisSpinner = (Spinner) findViewById(R.id.yAxisSpinner);
-
-        List<String> xAxisSpinnerList = new ArrayList<String>();
-        List<String> yAxisSpinnerList = new ArrayList<String>();
-
-        xAxisSpinnerList.add("Last Week");
-        xAxisSpinnerList.add("Last Month");
-        xAxisSpinnerList.add("Last Three Months");
-        xAxisSpinnerList.add("Last Year");
-        xAxisSpinnerList.add("All Time");
-
-        yAxisSpinnerList.add("Pace (mi)");
-        yAxisSpinnerList.add("Pace (km)");
-        yAxisSpinnerList.add("Speed (mi/hr)");
-        yAxisSpinnerList.add("Speed (km/hr)");
-        yAxisSpinnerList.add("Distance (mi)");
-        yAxisSpinnerList.add("Distance (km)");
-        yAxisSpinnerList.add("Duration");
-        yAxisSpinnerList.add("Calories Burned");
-
-        ArrayAdapter<String> xDataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, xAxisSpinnerList);
-        xAxisSpinner.setAdapter(xDataAdapter);
-
-        ArrayAdapter<String> yDataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, yAxisSpinnerList);
-        yAxisSpinner.setAdapter(yDataAdapter);
-    }
 
     private void populateSpinnersIndividualRun(){
         xAxisSpinner = (Spinner) findViewById(R.id.xAxisSpinner);
@@ -254,11 +198,6 @@ public class StatsScreen extends AppCompatActivity{
 
     }
 
-  //  private void deleteRunSpinner(){
-  //      try {runSpinnerLayout.removeAllViews();}
-  //      catch(NullPointerException e){}
-  //  }
-
 
     private void populateRunSpinner(){
         List<String> runSpinnerList = new ArrayList<>();
@@ -310,7 +249,6 @@ public class StatsScreen extends AppCompatActivity{
     public void drawChart(View view){
         double sumOfSpeed=0;
         double numUpdates=0;
-  //      lineChartButton = (RadioButton) findViewById(lineChartButton);
         RDB = new RunDBHelper(this);
 
         List<Entry> entries = new ArrayList<Entry>();
@@ -415,8 +353,6 @@ public class StatsScreen extends AppCompatActivity{
 
                 String startTimeString = startTimes.get(index)+"";
                 String[] startTimeArray = cursor.getString(2).split(" ");
-                //         Log.d("COMPARE THINGS",startTimeArray[1]+" "+startTimeString);
-                //         Log.d("DEBUG Selections","SELECTION 1: "+xAxisSelection+" and SELECTION 2: "+yAxisSelection);
                 String[] xChoice = xAxisSelection.split(" ");
                 String[] yChoice = yAxisSelection.split(" ");
 
