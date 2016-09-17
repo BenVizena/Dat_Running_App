@@ -66,4 +66,11 @@ public class MainSettingsDBHelper extends SQLiteOpenHelper {
         db.close();
         return result;
     }
+
+    public boolean hasMass(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "select * from "+TABLE_NAME;
+        Cursor result = db.rawQuery(query,null);
+        return result.moveToFirst();
+    }
 }

@@ -611,17 +611,24 @@ public class StatsScreen extends AppCompatActivity{
         else
             mets=23;
 
+
+
         MainSettingsDBHelper msdb = new MainSettingsDBHelper(this);
-        double mass = Double.parseDouble(msdb.getMass());
-        msdb.close();
+        if(msdb.hasMass()){
+            double mass = Double.parseDouble(msdb.getMass());
+            msdb.close();
 
-        double hours = totalTime * 2.778 * Math.pow(10,-7);
+            double hours = totalTime * 2.778 * Math.pow(10,-7);
 
-        int calsBurned = (int)Math.round(mets * mass * hours);
+            int calsBurned = (int)Math.round(mets * mass * hours);
 
-        Log.d("cals",mets+" "+mass+" "+hours);
+            Log.d("cals",mets+" "+mass+" "+hours);
 
-        textView.setText(" "+calsBurned);
+            textView.setText(" "+calsBurned);
+        }else{
+            textView.setText(" Please enter your mass or weight in the settings menu");
+        }
+
     }
 
     private void updateTotalDistanceTV(){

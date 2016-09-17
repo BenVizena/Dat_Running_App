@@ -42,7 +42,7 @@ public class MainSettings extends AppCompatActivity{
         RadioButton kgButton = (RadioButton)findViewById(R.id.kgButton);
         EditText massET = (EditText)findViewById(R.id.massET);
 
-        if(massET.getText().toString().equals("")){
+        if(massET.getText().toString().equals("") || massET.getText().toString().equals("0")){
             Toast.makeText(MainSettings.this,"Please enter a non-zero value",Toast.LENGTH_SHORT).show();
         }
         else{
