@@ -50,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this,StatsScreen.class));
     }
 
+    public void settingsClicked(View view){
+        startActivity(new Intent(this,MainSettings.class));
+    }
+
 
 
     @Override
@@ -101,14 +105,15 @@ public class MainActivity extends AppCompatActivity {
         runwear_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                Toast.makeText(MainActivity.this, "Runwear Button was clicked!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Runwear features are coming soon!", Toast.LENGTH_SHORT).show();
             }
         });
 
         settings_ib.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                Toast.makeText(MainActivity.this, "Settings Button was clicked!", Toast.LENGTH_SHORT).show();
+                settingsClicked(settings_ib);
+       //         Toast.makeText(MainActivity.this, "MainSettings Button was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
 

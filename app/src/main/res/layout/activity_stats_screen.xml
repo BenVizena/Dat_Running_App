@@ -373,6 +373,25 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:id="@+id/avgCadenceTV"
+                    android:layout_below="@id/avgSpeedNumTV"
+                    android:layout_toRightOf="@id/averageCadenceTV"
+                    android:text=""/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:id="@+id/caloriesBurnedTV"
+                    android:layout_below="@id/avgCadenceTV"
+                    android:layout_toRightOf="@id/calsBurnedTV"
+                    android:text=""/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/distanceSplitsTV"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"

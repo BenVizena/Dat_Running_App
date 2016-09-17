@@ -33,7 +33,9 @@ import java.util.concurrent.TimeUnit;
 //import static com.example.android.dat_running_app.R.id.lineChartButton;
 import static com.example.android.dat_running_app.R.id.startChart;
 import static com.example.android.dat_running_app.R.id.totalTimeDispTV;
+import static com.google.android.gms.analytics.internal.zzy.d;
 import static com.google.android.gms.analytics.internal.zzy.m;
+import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.google.android.gms.analytics.internal.zzy.s;
 //import static com.example.android.dat_running_app.R.id.timeIntervalButton;
 
@@ -529,6 +531,8 @@ public class StatsScreen extends AppCompatActivity{
             updateAvgSpeed(avgSpeed);
             double avgPaceKm = 1/avgSpeed*3600*1000;
             double avgPaceMi = avgPaceKm*1.609;
+            updateCalsBurned(avgSpeed,totalTime);
+
       //      Log.d("avgPace",(1/avgSpeed)*3600*Math.pow(10,9)+" "+formatTime((long)((1/avgSpeed)*3600*Math.pow(10,9)/1000000)+""));
 
 
@@ -571,16 +575,68 @@ public class StatsScreen extends AppCompatActivity{
         textView.setText(formatTime(s));
     }
 
+    private void updateCalsBurned(double kph,long totalTime){
+        TextView textView = (TextView)findViewById(R.id.caloriesBurnedTV);
+
+        double mph = kph * .6214;
+
+        double mets = 0;
+
+        if(mph<5)
+            mets = 6;
+        else if(mph<5.2)
+            mets = 8.3;
+        else if(mph<6)
+            mets = 9;
+        else if(mph<6.7)
+            mets = 9.8;
+        else if(mph<7)
+            mets=10.5;
+        else if(mph<7.5)
+            mets=11;
+        else if(mph<8.6)
+            mets=11.8;
+        else if(mph<9)
+            mets=12.3;
+        else if(mph<10)
+            mets=12.8;
+        else if(mph<11)
+            mets=14.5;
+        else if(mph<12)
+            mets=15;
+        else if(mph<13)
+            mets=19;
+        else if(mph<14)
+            mets=19.8;
+        else
+            mets=23;
+
+        MainSettingsDBHelper msdb = new MainSettingsDBHelper(this);
+        double mass = Double.parseDouble(msdb.getMass());
+        msdb.close();
+
+        double hours = totalTime * 2.778 * Math.pow(10,-7);
+
+        int calsBurned = (int)Math.round(mets * mass * hours);
+
+        Log.d("cals",mets+" "+mass+" "+hours);
+
+        textView.setText(" "+calsBurned);
+    }
+
     private void updateTotalDistanceTV(){
         TextView textView = (TextView) findViewById(R.id.totalDistanceTV);
         RadioButton metricRB = (RadioButton)findViewById(R.id.metricRadioButton);
         double tempDistanceTravelled = distanceTravelled/1000;
+        double miles = .621371 * tempDistanceTravelled;
+
+
         if(metricRB.isChecked()){
             textView.setText(""+tempDistanceTravelled+" km");
         }else{
-            double dist = .621371 * tempDistanceTravelled;
-            textView.setText(""+dist+ " mi");
+            textView.setText(""+miles+ " mi");
         }
+
 
 
     }
@@ -593,7 +649,7 @@ public class StatsScreen extends AppCompatActivity{
         }else{
             textView.setText(""+(.6214 * s)+" mi/hr");
         }
-
+        double mph = .6214 * s;
     }
 
     private void updateAvgPaceTV(String km, String mi){
