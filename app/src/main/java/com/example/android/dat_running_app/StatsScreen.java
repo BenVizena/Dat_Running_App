@@ -1,24 +1,17 @@
 package com.example.android.dat_running_app;
 
-import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -31,36 +24,19 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.google.android.gms.vision.text.Line;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static android.R.attr.colorPrimary;
-import static android.R.attr.colorPrimaryDark;
-import static android.R.attr.data;
-import static android.R.attr.format;
-import static android.R.attr.textColorPrimary;
-import static android.R.attr.x;
-import static android.R.attr.y;
-import static android.R.id.primary;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 //import static com.example.android.dat_running_app.R.id.lineChartButton;
 import static com.example.android.dat_running_app.R.id.startChart;
-//import static com.example.android.dat_running_app.R.id.timeIntervalButton;
-import static com.google.android.gms.analytics.internal.zzy.B;
-import static com.google.android.gms.analytics.internal.zzy.d;
-import static com.google.android.gms.analytics.internal.zzy.g;
-import static com.google.android.gms.analytics.internal.zzy.i;
-import static com.google.android.gms.analytics.internal.zzy.l;
-import static com.google.android.gms.analytics.internal.zzy.p;
-import static com.google.android.gms.analytics.internal.zzy.r;
+import static com.example.android.dat_running_app.R.id.totalTimeDispTV;
+import static com.google.android.gms.analytics.internal.zzy.m;
 import static com.google.android.gms.analytics.internal.zzy.s;
-import static com.google.android.gms.analytics.internal.zzy.u;
-import static com.google.android.gms.analytics.internal.zzy.v;
-import static com.google.android.gms.analytics.internal.zzy.w;
+//import static com.example.android.dat_running_app.R.id.timeIntervalButton;
+
 
 /**
  * Created by Ben on 8/11/2016.
@@ -109,7 +85,10 @@ public class StatsScreen extends AppCompatActivity{
     }
 
 
+    public void refreshSpinners(View view){
 
+        drawChart(view);
+    }
 
 
     private void populateSpinnersIndividualRun(){
@@ -127,8 +106,8 @@ public class StatsScreen extends AppCompatActivity{
         xAxisSpinnerList.add("Speed (mi/hr)");
         xAxisSpinnerList.add("Speed (km/hr)");
         xAxisSpinnerList.add("Cadence (strikes/min)");
-        xAxisSpinnerList.add("Elevation Change (ft)");
-        xAxisSpinnerList.add("Elevation Change (m)");
+   //     xAxisSpinnerList.add("Elevation Change (ft)");
+   //     xAxisSpinnerList.add("Elevation Change (m)");
 
         //need to add spinner with a list of all runs in last-to-first order.
 
@@ -139,8 +118,8 @@ public class StatsScreen extends AppCompatActivity{
         yAxisSpinnerList.add("Speed (mi/hr)");
         yAxisSpinnerList.add("Speed (km/hr)");
         yAxisSpinnerList.add("Cadence (strikes/min)");
-        yAxisSpinnerList.add("Elevation Change (ft)");
-        yAxisSpinnerList.add("Elevation Change (m)");
+   //     yAxisSpinnerList.add("Elevation Change (ft)");
+   //     yAxisSpinnerList.add("Elevation Change (m)");
 
         ArrayAdapter<String> xDataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, xAxisSpinnerList);
         xAxisSpinner.setAdapter(xDataAdapter);
@@ -341,8 +320,11 @@ public class StatsScreen extends AppCompatActivity{
         cursor.moveToFirst();
 
         ArrayList<Long> labelList = new ArrayList<>();
-        ArrayList<String> splits = new ArrayList<>();
-        int splitCounter=1;//increments after each time a multiple of 1km is reached. used in recording of mile splits.
+        ArrayList<String> splitsKm = new ArrayList<>();
+        ArrayList<String> splitsMi = new ArrayList<>();
+        int splitCounterKm =1;//increments after each time a multiple of 1km is reached. used in recording of km splits.
+        int splitCounterMi=1;//increments after each time a multiple of 1km is reached. used in recording of mi splits.
+        long totalTime=0;
 
         try{
             while(cursor.moveToNext()) {
@@ -359,15 +341,24 @@ public class StatsScreen extends AppCompatActivity{
                 boolean xMetric=false;
                 boolean yMetric=false;
 
+                for(int x = 0;x<yChoice.length;x++){
+                    Log.d("Metric",yChoice[x]);
+                }
 
                 try {
                     if (xChoice[1].equals("(km)") || xChoice[1].equals("(m)") || xChoice[1].equals("(km/hr)"))
                         xMetric = true;
+                }catch(ArrayIndexOutOfBoundsException e){Log.d("Metric","CaughtX");};
+
+                try {
                     if (yChoice[1].equals("(km)") || yChoice[1].equals("(m)") || yChoice[1].equals("(km/hr)"))
                         yMetric = true;
-                }catch(ArrayIndexOutOfBoundsException e){};
+                }
+                catch (ArrayIndexOutOfBoundsException e){Log.d("Metric","CaughtY");};
 
                 //       boolean rightRun=false;
+
+                Log.d("Metric",""+xMetric+" "+yMetric);
 
                 if(startTimeArray[1].equals(startTimeString)){
 
@@ -484,39 +475,69 @@ public class StatsScreen extends AppCompatActivity{
                     Log.d("MYDISTANCE",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000);
 
 
-                    if(currentDistance >= splitCounter){
-                        if(splits.size()>0){
+                    if(currentDistance >= splitCounterKm){//this finds the splits in km.  I need another split section for miles because I can't just convert these values.
+                        if(splitsKm.size()>0){
                             long t1 = Long.parseLong(cursor.getString(3).split(" ")[1]);
                             long t2 = 0;
-                            for(int x=0;x<splits.size();x++){
-                                t2+=Long.parseLong(splits.get(x));
+                            for(int x = 0; x< splitsKm.size(); x++){
+                                t2+=Long.parseLong(splitsKm.get(x));
                             }
                             long t3 = t1-t2;
-                            splits.add(""+t3);
-                            Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+splitCounter);
+                            splitsKm.add(""+t3);
+                 //           Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+ splitCounterKm);
                         }else{
-                            splits.add(cursor.getString(3).split(" ")[1]);
-                            Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+splitCounter);
+                            splitsKm.add(cursor.getString(3).split(" ")[1]);
+                  //          Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+ splitCounterKm);
 
                         }
-                        splitCounter++;
+                        splitCounterKm++;
+                        //    currentDistance=0;
+                    }
+
+                    if(currentDistance/1.609 >= splitCounterMi){//this finds the splits in mi.  I need another split section for miles because I can't just convert these values.
+                        if(splitsMi.size()>0){
+                            long t1 = Long.parseLong(cursor.getString(3).split(" ")[1]);
+                            long t2 = 0;
+                            for(int x = 0; x< splitsMi.size(); x++){
+                                t2+=Long.parseLong(splitsMi.get(x));
+                            }
+                            long t3 = t1-t2;
+                            splitsMi.add(""+t3);
+                    //        Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+ splitCounterMi);
+                        }else{
+                            splitsMi.add(cursor.getString(3).split(" ")[1]);
+                   //         Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+ splitCounterMi);
+
+                        }
+                        splitCounterMi++;
                         //    currentDistance=0;
                     }
 
 
                     labelList.add((long)(xValue));
                     entries.add(new Entry((float) yValue, (int) xValue));
+                    totalTime=Long.parseLong(cursor.getString(3).split(" ")[1]);
+                    Log.d("totalTime",""+cursor.getString(3));
                 }
             }
         }finally{
             cursor.close();
             updateTotalDistanceTV();
-            double avgSpeed = sumOfSpeed/numUpdates;//i think that this is in meters per second
-            //               Log.d("sumOfSpeed",""+sumOfSpeed);
+            updateTotalTimeTV(totalTime+"");
+            double avgSpeed = sumOfSpeed/numUpdates;//in km/hr
+                           Log.d("sumOfSpeed",""+sumOfSpeed+" "+numUpdates);
             updateAvgSpeed(avgSpeed);
-            updateAvgPaceTV(formatTime((int)(1/avgSpeed*1000*1000)+""));//time it takes to finish a km
-            updateSplits(splits);//false means that it is an individual run
-            splitCounter=1;
+            double avgPaceKm = 1/avgSpeed*3600*1000;
+            double avgPaceMi = avgPaceKm*1.609;
+      //      Log.d("avgPace",(1/avgSpeed)*3600*Math.pow(10,9)+" "+formatTime((long)((1/avgSpeed)*3600*Math.pow(10,9)/1000000)+""));
+
+
+            updateAvgPaceTV(formatTime((long)avgPaceKm+""),formatTime((long)avgPaceMi+""));//time it takes to finish a km
+
+
+            updateSplits(splitsKm, splitsMi);//false means that it is an individual run
+            splitCounterKm =1;
+            splitCounterMi=1;
         }
 
         String[] labels = new String[labelList.size()];
@@ -545,43 +566,84 @@ public class StatsScreen extends AppCompatActivity{
         chart.invalidate();
     }
 
+    private void updateTotalTimeTV(String s){
+        TextView textView = (TextView)findViewById(totalTimeDispTV);
+        textView.setText(formatTime(s));
+    }
+
     private void updateTotalDistanceTV(){
         TextView textView = (TextView) findViewById(R.id.totalDistanceTV);
-        textView.setText(""+distanceTravelled+" km");
+        RadioButton metricRB = (RadioButton)findViewById(R.id.metricRadioButton);
+        double tempDistanceTravelled = distanceTravelled/1000;
+        if(metricRB.isChecked()){
+            textView.setText(""+tempDistanceTravelled+" km");
+        }else{
+            double dist = .621371 * tempDistanceTravelled;
+            textView.setText(""+dist+ " mi");
+        }
+
 
     }
 
-    private void updateAvgSpeed(double s){
+    private void updateAvgSpeed(double s){//s is in km/hr
         TextView textView = (TextView) findViewById(R.id.avgSpeedNumTV);
-        textView.setText(""+s + " m/s");
+        RadioButton metricRB = (RadioButton)findViewById(R.id.metricRadioButton);
+        if(metricRB.isChecked()){
+            textView.setText(""+s + " km/hr");
+        }else{
+            textView.setText(""+(.6214 * s)+" mi/hr");
+        }
+
     }
 
-    private void updateAvgPaceTV(String s){
+    private void updateAvgPaceTV(String km, String mi){
         TextView textView = (TextView) findViewById(R.id.avgPaceNumTV);
-        textView.setText(""+s);
+        RadioButton metricRB = (RadioButton)findViewById(R.id.metricRadioButton);
+        if(metricRB.isChecked())
+            textView.setText(""+km+" per km");
+        else
+            textView.setText(""+mi+" per mi");
     }
 
-    private void updateSplits(ArrayList<String> s){
+    private void updateSplits(ArrayList<String> km, ArrayList<String> mi){
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.splitsLL);
         linearLayout.removeAllViews();
-
+        RadioButton metricRB = (RadioButton)findViewById(R.id.metricRadioButton);
         TextView splitsTV = (TextView)findViewById(R.id.distanceSplitsTV);
 
-        if(s.size()==0)
-            splitsTV.setVisibility(View.INVISIBLE);
-        else
-            splitsTV.setVisibility(View.VISIBLE);
+        if(metricRB.isChecked()){
+            if(km.size()==0)
+                splitsTV.setVisibility(View.INVISIBLE);
+            else
+                splitsTV.setVisibility(View.VISIBLE);
 
-        for(int x=0;x<s.size();x++){
-            TextView tv = new TextView(this);
-            tv.setText(formatTime(s.get(x)));
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,17);
-            linearLayout.addView(tv);
+            for(int x=0;x<km.size();x++){
+                TextView tv = new TextView(this);
+                tv.setText("km "+(x+1)+": "+formatTime(km.get(x)));
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,17);
+                linearLayout.addView(tv);
+            }
+            km.clear();
         }
-        s.clear();
+        else{
+            if(mi.size()==0)
+                splitsTV.setVisibility(View.INVISIBLE);
+            else
+                splitsTV.setVisibility(View.VISIBLE);
+
+            for(int x=0;x<mi.size();x++){
+                TextView tv = new TextView(this);
+                tv.setText("mile "+(x+1)+": "+formatTime(mi.get(x)));
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,17);
+                linearLayout.addView(tv);
+            }
+            mi.clear();
+        }
+
+
     }
 
-    private String formatTime(String s){
+    private String formatTime(String s){//converts milliseconds to hmsmilli format.
         String hmsm="";
         try {
             long millis = Long.parseLong(s);

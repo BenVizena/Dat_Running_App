@@ -265,7 +265,18 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginLeft="4dp"
                     android:textSize="17sp"
+                    android:text="total time:"
+                    android:id="@+id/totalTimeTV"/>
+
+                <TextView
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="17sp"
                     android:text="distance travelled:"
+                    android:layout_below="@id/totalTimeTV"
                     android:id="@+id/distanceTravelledTV"/>
 
                 <TextView
@@ -315,7 +326,15 @@
 
 
 
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:id="@+id/totalTimeDispTV"
+                    android:layout_toRightOf="@id/totalTimeTV"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="24dp"
+                    android:text=""/>
 
 
                 <TextView
@@ -324,7 +343,8 @@
                     android:textSize="17sp"
                     android:id="@+id/totalDistanceTV"
                     android:layout_toRightOf="@id/distanceTravelledTV"
-                    android:layout_marginTop="24dp"
+                    android:layout_below="@id/totalTimeDispTV"
+                    android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text=""/>
 

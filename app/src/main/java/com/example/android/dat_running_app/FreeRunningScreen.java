@@ -220,7 +220,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     if(dbUpdateTimer>=DBUPDATELIMIT){
                         dbUpdateTimer=0;
                         RDB.addUpdate(runType,  delimedString[6],   delimedString[1],  delimedString[3],     paceKM   ,   speedKmHr,   "CADENCE: 1337", "ELEVATION: 1337");
-                        //              N/A      startTime (epoch)     time (ms)          distance (m)       pace (ms)         m/s
+                        //              N/A      startTime (epoch)     time (ms)          distance (m)       pace (ms)         km/hr
                     }
 
 
