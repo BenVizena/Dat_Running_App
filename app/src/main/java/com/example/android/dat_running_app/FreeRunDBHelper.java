@@ -73,7 +73,7 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
         return result;
     }
 
-    public Cursor getFRSettings(){
+    public String getUnitSetting(){//returns true if metric, false if customary
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+ TABLE_NAME;
         Cursor result = db.rawQuery(query, null);
@@ -81,6 +81,7 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
 //           result.moveToFirst();
  //       Log.d("RESULTS",".getInt(0): "+result.getInt(0)+" .getString(1): "+result.getString(1)+" .getString(2): "+result.getString(2)+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //        db.close();
-        return result;
+        result.moveToFirst();
+        return result.getString(1);
     }
 }

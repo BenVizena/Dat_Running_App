@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -106,6 +107,13 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        FreeRunDBHelper ui = new FreeRunDBHelper(this);
+        String tempUnit = ui.getUnitSetting();
+        if(tempUnit.equals("true"))
+            metric=true;
+        else
+            metric=false;
 
 
 
@@ -297,8 +305,19 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
     private void updateDistance(String d){
         Log.d("UPDATE","D: "+d);
+        Double dd = Double.parseDouble(d);
         TextView textView = (TextView)findViewById(R.id.distanceOutputTV);
-        textView.setText(""+d);
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
+        if(metric) {
+            double km = Double.valueOf(decimalFormat.format(dd/1000));
+            textView.setText(km + " km");
+        }
+        else{
+            double mi = Double.valueOf(decimalFormat.format(dd*.000621371));
+            textView.setText(mi+" mi");
+        }
+
     }
 
     private void updatePace(String s){
@@ -309,7 +328,8 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
     private void updateCadence(String s){
         TextView textView = (TextView)findViewById(R.id.cadenceOutputTV);
-        textView.setText(s.split(" ")[1]);
+        double d = Double.parseDouble(s.split(" ")[1]);
+        textView.setText(((int)d)+" strikes/min");
     }
 
 
