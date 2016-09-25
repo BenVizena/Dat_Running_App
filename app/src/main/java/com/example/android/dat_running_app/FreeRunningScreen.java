@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,9 +31,11 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static com.example.android.dat_running_app.R.id.txtOutput;
+//import static com.example.android.dat_running_app.R.id.txtOutput;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static com.google.android.gms.analytics.internal.zzy.e;
 import static com.google.android.gms.analytics.internal.zzy.r;
+import static com.google.android.gms.analytics.internal.zzy.s;
 import static com.google.android.gms.analytics.internal.zzy.t;
 import static com.google.android.gms.analytics.internal.zzy.v;
 
@@ -68,7 +71,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
     private int dbUpdateTimer=0;
     private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update. //was 10. 10 is probably good. that is 1 update to db for every second. //100 works for debugging purposes.
-
+    private boolean metric;
 
 //    private TextView txtOutput;
     private int txtOutputId;
@@ -196,10 +199,12 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     double lng = Double.parseDouble(delimedStringWithCoords[2]);
                     updateMarker(lat,lng);
 
-                    updateTextView(outputString);
+                    updateTextView("GETTING GPS SIGNAL");
                 }
                 else {//0 is coords, 1 is time (ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s), 6 is start time (epoch), 7 is cadence
                     dbUpdateTimer+=1;
+
+
 
                     String t[] = delimedString[1].split(" ");
 
@@ -215,7 +220,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     double lat = Double.parseDouble(coords[1]);
                     double lng = Double.parseDouble(coords[2]);
                     updateMarker(lat,lng);
-                    updateTextView(outputString);
+                    updateTextView("");
 
                     if(dbUpdateTimer>=DBUPDATELIMIT){
                         dbUpdateTimer=0;
@@ -229,6 +234,16 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     String[] delimedTime = delimedString[1].split(" ");
 
                     distanceTravelled = Double.parseDouble(delimedDistance[2]);
+
+
+
+                    updateTime(delimedString[1]);
+
+                    updateDistance(delimedDistance[2]);
+                    Log.d("UPDATE","S: passed that shit");
+                    updatePace(paceKM);
+                    updateCadence(delimedString[7]);
+
 
                     if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0){;
                         goalReachedStopService();
@@ -273,6 +288,28 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
 
 
+    }
+
+    private void updateTime(String s){
+        TextView textView = (TextView)findViewById(R.id.timeOutputTV);
+        textView.setText(formatTime(s.split(" ")[1]));
+    }
+
+    private void updateDistance(String d){
+        Log.d("UPDATE","D: "+d);
+        TextView textView = (TextView)findViewById(R.id.distanceOutputTV);
+        textView.setText(""+d);
+    }
+
+    private void updatePace(String s){
+        Log.d("UPDATE","S: "+s);
+        TextView textView = (TextView)findViewById(R.id.paceOutputTV);
+        textView.setText(formatTime(s.split(" ")[1]));
+    }
+
+    private void updateCadence(String s){
+        TextView textView = (TextView)findViewById(R.id.cadenceOutputTV);
+        textView.setText(s.split(" ")[1]);
     }
 
 
@@ -483,6 +520,9 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         RDB = new RunDBHelper(this);
         runType = new WhichRunDBHelper(this).getRunType();
 
+
+        changeVisibilities();
+
         /*
         if(runType.equals("INTERVAL RUN")){
             myReceiverIR = new MyReceiver();
@@ -500,13 +540,39 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         Intent intent = new Intent(this,FreeRunningScreenService.class);
         stopService(intent);
         unregisterReceiver(myReceiver);
-/*
-        Intent intentIR = new Intent(this,IntervalRunService.class);
-        stopService(intentIR);
-        unregisterReceiver(myReceiverIR);
-*/
+
+        Intent intent2 = new Intent(this,StatsScreen.class);
+        startActivity(intent2);
+        finish();
+
 
     }
+
+    private void changeVisibilities(){
+        Button b1 = (Button)findViewById(R.id.stopButton);
+        Button b2 = (Button)findViewById(R.id.startButton);
+        b1.setVisibility(View.VISIBLE);
+        b2.setVisibility(View.GONE);
+
+        TextView tv1 = (TextView)findViewById(R.id.timeOutputMarkerTV);
+        TextView tv2 = (TextView)findViewById(R.id.timeOutputTV);
+        TextView tv3 = (TextView)findViewById(R.id.distanceOutputMarkerTV);
+        TextView tv4 = (TextView)findViewById(R.id.distanceOutputTV);
+        TextView tv5 = (TextView)findViewById(R.id.paceOutputMarkerTV);
+        TextView tv6 = (TextView)findViewById(R.id.paceOutputTV);
+        TextView tv7 = (TextView)findViewById(R.id.cadenceOutputMarkerTV);
+        TextView tv8 = (TextView)findViewById(R.id.cadenceOutputTV);
+
+        tv1.setVisibility(View.VISIBLE);
+        tv2.setVisibility(View.VISIBLE);
+        tv3.setVisibility(View.VISIBLE);
+        tv4.setVisibility(View.VISIBLE);
+        tv5.setVisibility(View.VISIBLE);
+        tv6.setVisibility(View.VISIBLE);
+        tv7.setVisibility(View.VISIBLE);
+        tv8.setVisibility(View.VISIBLE);
+    }
+
 
     public void goalReachedStopService(){
         Intent intent = new Intent(this,FreeRunningScreenService.class);
@@ -519,7 +585,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
  //       Log.d("DEBUG","SDFJKLSDFJLSKDJFSDKLFJSDLKFJSKLDFJSLDKFJSKDLFJSLKDFJSLKFJ"+str);
         TextView output = new TextView(this);
         try {
-            output = (TextView) findViewById(txtOutput);
+            output = (TextView) findViewById(R.id.outputTextView);
  //           Log.d("TXTOUTPUT IDDDDDDDDDDDD","ID: "+output.getId());
 //        Log.d("sdkfsklfdjsklfjfkl",txtOutput.toString()+"");
             output.setText(str);

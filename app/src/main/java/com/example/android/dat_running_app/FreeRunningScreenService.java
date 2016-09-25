@@ -448,9 +448,9 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
             stepLocked=false;
 
 
-        Log.d("ACCELERATION","NET: "+net+"");
-        Log.d("ACCELERATION","STEPCOUNTER:" +stepCounter+"");
-        Log.d("ACCELERATION","STEPS PER MINUTE: "+stepsPerMinute);
+ //       Log.d("ACCELERATION","NET: "+net+"");
+  //      Log.d("ACCELERATION","STEPCOUNTER:" +stepCounter+"");
+  //      Log.d("ACCELERATION","STEPS PER MINUTE: "+stepsPerMinute);
     }
 
     @Override

@@ -14,18 +14,18 @@
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:id="@+id/runningToolbar">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/runningToolbar"
+
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
@@ -47,27 +47,153 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <TextView android:text="Locations goes Here"
-            android:id="@+id/txtOutput"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@id/runningToolbar"
+            android:id="@+id/spacerView"></View>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="400dp"
+            android:background="#ffffff"
+            android:layout_below="@id/spacerView">
+
+        </View>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/outputTextView"
+            android:textSize="24sp"
+            android:layout_margin="8dp"
+            android:layout_below="@id/runningToolbar"/>
+
+        <TextView android:text="TIME: "
+            android:textSize="28sp"
+            android:id="@+id/timeOutputMarkerTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:visibility="gone"
+            android:layout_below="@+id/spacerView"/>
+
+        <TextView android:text="DISTANCE: "
+            android:textSize="28sp"
+            android:id="@+id/distanceOutputMarkerTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:visibility="gone"
+            android:layout_below="@+id/timeOutputMarkerTV"/>
+
+        <TextView android:text="PACE: "
+            android:textSize="28sp"
+            android:id="@+id/paceOutputMarkerTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:layout_marginLeft="8dp"
+            android:layout_below="@+id/distanceOutputMarkerTV"/>
+
+        <TextView android:text="CADENCE: "
+            android:textSize="28sp"
+            android:id="@+id/cadenceOutputMarkerTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:layout_marginLeft="8dp"
+            android:layout_below="@+id/paceOutputMarkerTV"/>
+
+        <TextView
+            android:id="@+id/timeOutputTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            android:visibility="gone"
+            android:layout_toRightOf="@id/timeOutputMarkerTV"
+            android:layout_below="@id/spacerView"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:id="@+id/distanceOutputTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            android:visibility="gone"
+            android:layout_toRightOf="@id/distanceOutputMarkerTV"
+            android:layout_below="@id/timeOutputTV"/>
+
+        <TextView
+            android:id="@+id/paceOutputTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="28sp"
+            android:visibility="gone"
+            android:layout_toRightOf="@id/paceOutputMarkerTV"
+            android:layout_below="@id/distanceOutputMarkerTV"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/cadenceOutputTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            android:layout_toRightOf="@id/cadenceOutputMarkerTV"
+            android:layout_below="@id/paceOutputMarkerTV"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:textColor="@color/colorPrimaryDark"/>
+
+        <Button
+            android:text="start"
+            android:background="@color/colorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/startButton"
+            android:onClick="startService"
+            android:layout_marginBottom="8dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             />
 
-        <Button
-            android:text="startService"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button2"
-            android:onClick="startService" />
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/spacerView">
 
-        <Button
-            android:text="stop service"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button3"
-            android:onClick="stopService" />
 
-    </LinearLayout>
+
+            <Button
+                android:layout_weight="1"
+                android:text="stop"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:background="@color/colorAccent"
+                android:id="@+id/stopButton"
+                android:visibility="gone"
+                android:onClick="stopService"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"/>
+
+
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
 
 
 
