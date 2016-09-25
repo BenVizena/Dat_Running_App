@@ -31,12 +31,16 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 //import static com.example.android.dat_running_app.R.id.lineChartButton;
+import static com.example.android.dat_running_app.R.id.averageCadenceTV;
+import static com.example.android.dat_running_app.R.id.avgCadenceTV;
 import static com.example.android.dat_running_app.R.id.startChart;
 import static com.example.android.dat_running_app.R.id.totalTimeDispTV;
+import static com.google.android.gms.analytics.internal.zzy.D;
 import static com.google.android.gms.analytics.internal.zzy.d;
 import static com.google.android.gms.analytics.internal.zzy.m;
 import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.google.android.gms.analytics.internal.zzy.s;
+import static java.lang.Integer.parseInt;
 //import static com.example.android.dat_running_app.R.id.timeIntervalButton;
 
 
@@ -230,6 +234,7 @@ public class StatsScreen extends AppCompatActivity{
     public void drawChart(View view){
         double sumOfSpeed=0;
         double numUpdates=0;
+        int avgCadence=0;
         RDB = new RunDBHelper(this);
 
         List<Entry> entries = new ArrayList<Entry>();
@@ -326,6 +331,7 @@ public class StatsScreen extends AppCompatActivity{
         ArrayList<String> splitsMi = new ArrayList<>();
         int splitCounterKm =1;//increments after each time a multiple of 1km is reached. used in recording of km splits.
         int splitCounterMi=1;//increments after each time a multiple of 1km is reached. used in recording of mi splits.
+        float cadenceSum=0;
         long totalTime=0;
 
         try{
@@ -367,6 +373,11 @@ public class StatsScreen extends AppCompatActivity{
 
                     String tempDist[] = cursor.getString(4).split(" ");
                     distanceTravelled=Double.parseDouble(tempDist[2]);
+
+                    String cadenceString = cursor.getString(7).split(" ")[1];
+                    numUpdates++;
+                    cadenceSum+=Float.parseFloat(cadenceString);
+             //       Log.d("cadence",cadenceString);
 
                     String partialSpeedStr[] = cursor.getString(6).split(" ");
                     sumOfSpeed += Double.parseDouble(partialSpeedStr[1]);
@@ -520,6 +531,7 @@ public class StatsScreen extends AppCompatActivity{
                     entries.add(new Entry((float) yValue, (int) xValue));
                     totalTime=Long.parseLong(cursor.getString(3).split(" ")[1]);
                     Log.d("totalTime",""+cursor.getString(3));
+                    avgCadence = (int)cadenceSum/(int)numUpdates;
                 }
             }
         }finally{
@@ -532,6 +544,7 @@ public class StatsScreen extends AppCompatActivity{
             double avgPaceKm = 1/avgSpeed*3600*1000;
             double avgPaceMi = avgPaceKm*1.609;
             updateCalsBurned(avgSpeed,totalTime);
+            updateCadence(avgCadence);
 
       //      Log.d("avgPace",(1/avgSpeed)*3600*Math.pow(10,9)+" "+formatTime((long)((1/avgSpeed)*3600*Math.pow(10,9)/1000000)+""));
 
@@ -568,6 +581,11 @@ public class StatsScreen extends AppCompatActivity{
         chart.getLegend().setEnabled(true);
         chart.animateXY(500,1000);
         chart.invalidate();
+    }
+
+    private void updateCadence(int s){
+        TextView textView = (TextView)findViewById(avgCadenceTV);
+        textView.setText(" "+s+" strikes per minute");
     }
 
     private void updateTotalTimeTV(String s){
