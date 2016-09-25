@@ -30,7 +30,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Running!"
+                    android:text="Run Screen Option!"
                     android:textSize="26dp"
 
                     android:textColor="@color/toolbarTextColor"
@@ -41,47 +41,47 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/showTimeTextView"
-            android:text="Current Time"
-            android:layout_below="@+id/freeRunChangeUIToolbar"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:textSize="24dp"/>
+            android:paddingTop="4dp"
+            android:layout_gravity="center"
+            android:layout_below="@id/freeRunChangeUIToolbar"
+            android:layout_centerHorizontal="true">
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_below="@+id/freeRunChangeUIToolbar"
-            android:id="@+id/showTimeCheckBox">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Metric"
+                android:textSize="20sp"
+                android:padding="4dp"/>
 
-        </CheckBox>
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/showDistanceTextView"
-            android:text="Distance Travelled"
-            android:layout_below="@+id/showTimeTextView"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:textSize="24dp"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/metricButton"/>
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_below="@+id/showTimeCheckBox"
-            android:id="@+id/showDistanceCheckBox">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/customaryButton"
+                    android:checked="true"/>
 
-        </CheckBox>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customary"
+                android:textSize="20sp"
+                android:padding="4dp"/>
+
+        </LinearLayout>
 
 
         <Button

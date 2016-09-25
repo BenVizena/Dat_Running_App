@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
 
 /**
  * Created by Ben on 7/24/2016.
@@ -19,8 +20,7 @@ import android.widget.CheckBox;
 public class FreeRunChangeUI extends AppCompatActivity {
     private FreeRunDBHelper frDB;
     private Button commitChangesButton;
-    private static boolean totalTime;
-    private static boolean totalDistance;
+    private static boolean metric;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,6 @@ public class FreeRunChangeUI extends AppCompatActivity {
 
         frDB = new FreeRunDBHelper(this);
         commitChangesButton = (Button)findViewById(R.id.confirmFreeRunUIButton);
-        getSettings();
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -43,83 +42,20 @@ public class FreeRunChangeUI extends AppCompatActivity {
     }
 
     public void commitChanges(View view){
-        refreshTotalTime();
-        refreshTotalDistance();
-        boolean isInserted = frDB.addSettings(totalTime, totalDistance);
-        Log.d("THIS IS SENT",""+totalTime+" "+totalDistance+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        if(isInserted)
-            Log.d("DB TAG","INSERTED");
+        RadioButton metricRadioButton = (RadioButton)findViewById(R.id.metricButton);
+        if(metricRadioButton.isChecked())
+            frDB.addSetting("true");
         else
-            Log.d("DB TAG","NOT INSERTED");
+            frDB.addSetting("false");
         Intent intent = new Intent(this,FreeRunClickedMenu.class);
         startActivity(intent);
+        finish();
 
     }
 
-    public void getSettings(){
-        Cursor settings = frDB.getFRSettings();
-        CheckBox stt;
-        stt = (CheckBox)findViewById(R.id.showTimeCheckBox);
-        CheckBox std;
-        std = (CheckBox) findViewById(R.id.showDistanceCheckBox);
 
-        if (!settings.moveToFirst())
-            settings.moveToFirst();
 
-        if(settings.getCount()==0){
-            //debug slot
-        }
-        else{
-            if((""+settings.getString(1)).equals("true")){
-                totalTime=true;
-                stt.toggle();
-            }
-            else if(stt.isChecked()){
-                totalTime=false;
-                stt.toggle();
-                Log.d("TOGGLE","TIME OFF");
-            }
-            if(settings.getString(2).equals("true")){
-                totalDistance=true;
-                std.toggle();
-            }
-            else if(std.isChecked()){
-                totalDistance=false;
-                std.toggle();
-                Log.d("TOGGLE","DISTANCE OFF");
-            }
-         //   showMessage("DATA","TOTALTIME:"+totalTime+" "+"TOTALDISTANCE: "+totalDistance);
 
-        }
-    }
-
-    private void refreshTotalTime(){
-        CheckBox stt;
-        stt = (CheckBox) findViewById(R.id.showTimeCheckBox);
-        if(stt.isChecked())
-            totalTime=true;
-        else{
-            totalTime=false;
-        }
-
-    }
-
-    private void refreshTotalDistance(){
-        CheckBox std;
-        std = (CheckBox) findViewById(R.id.showDistanceCheckBox);
-        if(std.isChecked())
-            totalDistance=true;
-        else
-            totalDistance=false;
-    }
-
-    public static boolean showTotalTime(){
-        return totalTime;
-    }
-
-    public static boolean showTotalDistance(){
-        return totalDistance;
-    }
 
 
     public void showMessage(String title, String message){

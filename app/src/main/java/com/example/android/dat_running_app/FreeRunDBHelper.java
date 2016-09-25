@@ -18,10 +18,9 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "dat_running_app_db.db";
-    private static final String TABLE_NAME = "freerun_settings_table";
+    private static final String TABLE_NAME = "runningscreen_settings_table";
     private static final String COLUMN_ID = "_id";
-    private static final String COLUMN_SHOWTIME = "SHOW_TIME";
-    private static final String COLUMN_SHOWDISTANCE = "SHOW_DISTANCE";
+    private static final String COLUMN_METRIC = "METRIC";
 
 
     public FreeRunDBHelper(Context context) {//, String name, SQLiteDatabase.CursorFactory factory, int version
@@ -32,8 +31,7 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String query = "CREATE TABLE " + TABLE_NAME + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_SHOWTIME + " TEXT, " +
-                COLUMN_SHOWDISTANCE + " TEXT " +
+                COLUMN_METRIC + " TEXT " +
                 ")";
         sqLiteDatabase.execSQL(query);
     }
@@ -44,11 +42,17 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-    public boolean addSettings(boolean showTotalTime, boolean showTotalDistance){
+    public boolean addSetting(String metricBool){//metricBool is either the String "true" or "false"
+        ContentValues v = new ContentValues();
+        v.put(COLUMN_METRIC,""+"true");
+        SQLiteDatabase dbt = getWritableDatabase();
+        long tempSuccess = dbt.insert(TABLE_NAME,null,v);
+        dbt.close();
+        //the above db entry is to ensure that i don't try to delete on an empty database.
+
         deleteRow();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_SHOWTIME,""+showTotalTime);
-        values.put(COLUMN_SHOWDISTANCE,""+showTotalDistance);
+        values.put(COLUMN_METRIC,""+metricBool);
         SQLiteDatabase db = getWritableDatabase();
         long success = db.insert(TABLE_NAME,null,values);
         db.close();

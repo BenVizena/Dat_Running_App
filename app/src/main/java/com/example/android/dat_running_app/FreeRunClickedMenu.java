@@ -37,12 +37,14 @@ public class FreeRunClickedMenu extends AppCompatActivity{
     public void freeRunNowClicked(View view){
         Intent intent = new Intent(this,FreeRunningScreen.class);
         startActivity(intent);
+        finish();
       //  Toast.makeText(FreeRunClickedMenu.this, "ChangeUI Button was clicked!", Toast.LENGTH_SHORT).show();
     }
 
     public void freeRunChangeUIClicked(View view){
         Intent intent = new Intent(this,FreeRunChangeUI.class);
         startActivity(intent);
+        finish();
     }
 
     public void addMainButtons(){
