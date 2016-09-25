@@ -398,7 +398,7 @@ public class StatsScreen extends AppCompatActivity{
                             case "Time:": xValue = Double.parseDouble(xValueString[1])/1000;
                                 //                  Log.d("IVE GOT THE NEED","FOR TIME... in metric");
                                 break;
-                            case "CADENCE:": xValue = 42;
+                            case "Cadence:": xValue = Double.parseDouble(xValueString[1]);
                                 break;
                             case "ELEVATION:": xValue = 42;
                                 break;
@@ -422,8 +422,8 @@ public class StatsScreen extends AppCompatActivity{
                                     xValue = Double.parseDouble(xValueString[1])/1000;
                                     //              Log.d("IVE GOT THE NEED","FOR TIME");
                                     break;
-                                case "CADENCE:":
-                                    xValue = 42;
+                                case "Cadence:":
+                                    xValue = Double.parseDouble(xValueString[1]);;
                                     break;
                                 case "ELEVATION:":
                                     xValue = 42;
@@ -445,7 +445,7 @@ public class StatsScreen extends AppCompatActivity{
                                 break;
                             case "Time:": yValue = Double.parseDouble(yValueString[1])/1000;
                                 break;
-                            case "CADENCE:": yValue = 42;
+                            case "Cadence:": yValue = Double.parseDouble(yValueString[1]);;
                                 break;
                             case "ELEVATION:": yValue = 42;
                                 break;
@@ -464,7 +464,7 @@ public class StatsScreen extends AppCompatActivity{
                                     break;
                                 case "Time:": yValue = Double.parseDouble(yValueString[1])/1000;
                                     break;
-                                case "CADENCE:": yValue = 42;
+                                case "Cadence:": yValue = Double.parseDouble(yValueString[1]);;
                                     break;
                                 case "ELEVATION:": yValue = 42;
                                     break;

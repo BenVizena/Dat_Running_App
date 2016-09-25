@@ -320,7 +320,8 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
                         +"\nDISTANCE TRAVELLED: "+distanceTravelled
                         +"\nDeltaD: "+deltaD
                         +"\nVelocity: "+velocity
-                        +"\nStartTime: "+startTime;
+                        +"\nStartTime: "+startTime
+                        +"\nCadence: "+stepsPerMinute;
                 //txtOutput.setText(outputString);
                 }catch(NullPointerException e){
                     outputText="";
@@ -439,7 +440,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
         double accZ = Double.parseDouble(sensorEvent.values[2]+"");
         double net = Math.sqrt(accX*accX+accY*accY+accZ+accZ);// accX+accY+accZ;
 
-        if(!stepLocked && net>12){
+        if(!stepLocked && net>10){
             stepCounter++;
             stepLocked=true;
         }

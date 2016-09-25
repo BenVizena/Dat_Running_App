@@ -198,7 +198,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     updateTextView(outputString);
                 }
-                else {//0 is coords, 1 is time (ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s), 6 is start time (epoch)
+                else {//0 is coords, 1 is time (ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s), 6 is start time (epoch), 7 is cadence
                     dbUpdateTimer+=1;
 
                     String t[] = delimedString[1].split(" ");
@@ -219,8 +219,8 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     if(dbUpdateTimer>=DBUPDATELIMIT){
                         dbUpdateTimer=0;
-                        RDB.addUpdate(runType,  delimedString[6],   delimedString[1],  delimedString[3],     paceKM   ,   speedKmHr,   "CADENCE: 1337", "ELEVATION: 1337");
-                        //              N/A      startTime (epoch)     time (ms)          distance (m)       pace (ms)         km/hr
+                        RDB.addUpdate(runType,  delimedString[6],   delimedString[1],  delimedString[3],     paceKM   ,   speedKmHr,            delimedString[7],               "ELEVATION: 1337");
+                        //              N/A      startTime (epoch)     time (ms)          distance (m)       pace (ms)         km/hr       cadence (strikes per minute)          no longer a thing
                     }
 
 
