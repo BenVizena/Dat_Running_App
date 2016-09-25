@@ -2,8 +2,13 @@ package com.example.android.dat_running_app;
 
 import android.Manifest;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,8 +27,12 @@ import android.os.Handler;
 
 import java.util.Date;
 
+import static com.google.android.gms.analytics.internal.zzy.a;
+import static com.google.android.gms.analytics.internal.zzy.l;
+import static com.google.android.gms.analytics.internal.zzy.n;
 
-public class FreeRunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
+
+public class FreeRunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, SensorEventListener{
 
     private final String LOG_TAG = "running! activity";
     final static String MY_ACTION = "MY_ACTION";
@@ -52,7 +61,17 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     private Location startVelocityLocation;
     private Location endVelocityLocation;
 
+    private int stepCounter=0;//number of steps in a step interval.
+    private int stepInterval=0;//when this number is 100, the current steps per minute will update. e.g. after 10 seconds we will update the current steps per minute.
+    private double stepsPerMinute = 0;//last steps per minute reading.
+    private boolean stepLocked = false;//forces the accelerometer to wait between steps.  Otherwise it records several steps for each step because the acceleration is higher than the threshold for more than an instant.
+ //   private int numSteps = 0; //number of steps in the current interval.
+
+
     private static Handler handler;
+
+    private SensorManager mSensorManager;
+    private Sensor mAcceleration;
 
     @Override
     public void onCreate(){
@@ -63,6 +82,9 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         Log.d("StartTime!",""+startTime);
   //      elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
@@ -282,6 +304,15 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
                     findVelocity();
 
+
+                    if(stepInterval>=100){
+                        stepsPerMinute = stepCounter*6;
+                        stepInterval=0;
+                        stepCounter=0;
+                    }else{
+                        stepInterval++;
+                    }
+
                 outputText =
                         "COORDS: "+ Double.toString(mCurrentLocation.getLatitude())+" "+Double.toString(mCurrentLocation.getLongitude())
                         +" \nTime: "+elapsedTime
@@ -373,6 +404,9 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     public int onStartCommand(Intent intent, int flags, int startId){
         Toast.makeText(FreeRunningScreenService.this, "service started", Toast.LENGTH_LONG).show();
         mGoogleApiClient.connect();
+
+        mSensorManager.registerListener(this,mAcceleration,SensorManager.SENSOR_DELAY_GAME);
+
         return START_STICKY;
     }
 
@@ -384,6 +418,10 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
             mGoogleApiClient.disconnect();
         }
 
+        mSensorManager.unregisterListener(this);
+
+
+
     }
 
     @Nullable
@@ -393,6 +431,29 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     }
 
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        double accX = Double.parseDouble(sensorEvent.values[0]+"");
+        double accY = Double.parseDouble(sensorEvent.values[1]+"");
+        double accZ = Double.parseDouble(sensorEvent.values[2]+"");
+        double net = Math.sqrt(accX*accX+accY*accY+accZ+accZ);// accX+accY+accZ;
+
+        if(!stepLocked && net>12){
+            stepCounter++;
+            stepLocked=true;
+        }
+        if(stepLocked && net<5)
+            stepLocked=false;
 
 
+        Log.d("ACCELERATION","NET: "+net+"");
+        Log.d("ACCELERATION","STEPCOUNTER:" +stepCounter+"");
+        Log.d("ACCELERATION","STEPS PER MINUTE: "+stepsPerMinute);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
 }
