@@ -46,7 +46,7 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
     }
 
     public void rfdChangeUIClicked(View view){
-        Intent intent = new Intent(this,FreeRunChangeUI.class);
+        Intent intent = new Intent(this,RFDChangeUI.class);
         startActivity(intent);
         finish();
     }

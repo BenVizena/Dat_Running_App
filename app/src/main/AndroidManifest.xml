@@ -87,6 +87,24 @@
             android:theme="@style/AppTheme.CustomTheme.FloatingActivity">
             />
         </activity>
+        <activity
+            android:name=".RFDChangeUI"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.CustomTheme.FloatingActivity">
+            />
+        </activity>
+        <activity
+            android:name=".RFTChangeUI"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.CustomTheme.FloatingActivity">
+            />
+        </activity>
+        <activity
+            android:name=".IRChangeUI"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.CustomTheme.FloatingActivity">
+            />
+        </activity>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

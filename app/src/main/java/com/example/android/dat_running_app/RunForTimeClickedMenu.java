@@ -46,7 +46,7 @@ public class RunForTimeClickedMenu extends AppCompatActivity{
     }
 
     public void rftChangeUIClicked(View view){
-        Intent intent = new Intent(this,FreeRunChangeUI.class);
+        Intent intent = new Intent(this,RFTChangeUI.class);
         startActivity(intent);
         finish();
     }

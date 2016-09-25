@@ -64,7 +64,7 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
     }
 
     public void irChangeUIClicked(View view){
-        Intent intent = new Intent(this,FreeRunChangeUI.class);
+        Intent intent = new Intent(this,IRChangeUI.class);
         startActivity(intent);
         finish();
     }
