@@ -41,12 +41,14 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
     public void rfdNowClicked(View view){
         Intent intent = new Intent(this,FreeRunningScreen.class);
         startActivity(intent);
+        finish();
         //  Toast.makeText(FreeRunClickedMenu.this, "ChangeUI Button was clicked!", Toast.LENGTH_SHORT).show();
     }
 
     public void rfdChangeUIClicked(View view){
         Intent intent = new Intent(this,FreeRunChangeUI.class);
         startActivity(intent);
+        finish();
     }
 
     private String getDistanceText(){

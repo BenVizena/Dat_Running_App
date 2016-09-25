@@ -59,12 +59,14 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
     public void irNowClicked(View view){
         Intent intent = new Intent(this,FreeRunningScreen.class);
         startActivity(intent);
+        finish();
         //  Toast.makeText(FreeRunClickedMenu.this, "ChangeUI Button was clicked!", Toast.LENGTH_SHORT).show();
     }
 
     public void irChangeUIClicked(View view){
         Intent intent = new Intent(this,FreeRunChangeUI.class);
         startActivity(intent);
+        finish();
     }
 
     private String getIntervalText(){
