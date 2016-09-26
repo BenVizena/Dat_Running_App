@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -13,8 +14,11 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -39,6 +43,7 @@ import static com.google.android.gms.analytics.internal.zzy.r;
 import static com.google.android.gms.analytics.internal.zzy.s;
 import static com.google.android.gms.analytics.internal.zzy.t;
 import static com.google.android.gms.analytics.internal.zzy.v;
+import static com.google.android.gms.cast.internal.zzl.pa;
 
 
 /**
@@ -126,7 +131,20 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         permissionRequest();
 
 
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
 
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 248, r.getDisplayMetrics());
+
+        View view = (View)findViewById(R.id.spacerView);
+        ViewGroup.LayoutParams p = view.getLayoutParams();
+        p.height=(int)(height-px);//height*.65
+        p.width=width;
+        view.setLayoutParams(p);
 
 
     }
