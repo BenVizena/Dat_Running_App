@@ -572,13 +572,13 @@ public class StatsScreen extends AppCompatActivity{
 
 
 
-        LineDataSet dataSet = new LineDataSet(entries,"Label Place Holder");
+        LineDataSet dataSet = new LineDataSet(entries,"Dat Running Chart");
         dataSet.setColor(R.color.colorPrimary);
         dataSet.setValueTextColor(R.color.colorAccent);
         LineData lineData = new LineData(labels,dataSet);
         chart.setData(lineData);
-        chart.setDescription("DEV BUILD");
-        chart.getLegend().setEnabled(true);
+        chart.setDescription("");
+        chart.getLegend().setEnabled(false);
         chart.animateXY(500,1000);
         chart.invalidate();
     }
