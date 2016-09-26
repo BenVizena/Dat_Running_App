@@ -34,7 +34,7 @@ import static com.google.android.gms.analytics.internal.zzy.n;
 
 public class FreeRunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, SensorEventListener{
 
-    private final String LOG_TAG = "running! activity";
+ //   private final String LOG_TAG = "running! activity";
     final static String MY_ACTION = "MY_ACTION";
 
     private GoogleApiClient mGoogleApiClient;
@@ -86,7 +86,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        Log.d("StartTime!",""+startTime);
+   //     Log.d("StartTime!",""+startTime);
   //      elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
 
 
@@ -260,7 +260,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
             velocityCounter++;
  //               Log.d("STATUS","AVOIDED SNAFU 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-            catch(final SecurityException e){Log.d("STATUS","COAXED INTO A SNAFU 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");}
+            catch(final SecurityException e){}
         }
         else if(velocityCounter>=MAX_VELOCITY_COUNTER){
             try{endVelocityLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -273,7 +273,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
                 velocityCounter=0;
  //               Log.d("STATUS","NOT IN A SNAFU2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-            catch(final SecurityException e){Log.d("STATUS","COAXED INTO A SNAFU2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");}
+            catch(final SecurityException e){}
         }
         else if(stable) {
             velocityCounter++;
@@ -333,7 +333,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
             }
         }
         catch(final SecurityException ex){
-            Log.d("DEBUG","Bad Permissions Setup");
+  //          Log.d("DEBUG","Bad Permissions Setup");
         }
     }
 
@@ -370,7 +370,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i(LOG_TAG, "GoogleApiClient connection has failed");
+  //      Log.i(LOG_TAG, "GoogleApiClient connection has failed");
     }
 
 
@@ -385,7 +385,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
         // Here, thisActivity is the current activity
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("DEBUG","bottom one");
+   //         Log.d("DEBUG","bottom one");
             new FreeRunningScreen().permissionRequest();
         }
 

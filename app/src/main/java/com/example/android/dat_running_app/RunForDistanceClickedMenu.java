@@ -53,7 +53,7 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
 
     private String getDistanceText(){
         EditText editText = (EditText)findViewById(R.id.rfdDistanceEditText);
-        Log.d("EDIT TEXT",editText.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//        Log.d("EDIT TEXT",editText.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return editText.getText().toString();
     }
 
@@ -71,7 +71,7 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
                 if(getDistanceText().length()==0)
                     Toast.makeText(RunForDistanceClickedMenu.this, "Please enter a valid distance.", Toast.LENGTH_SHORT).show();
                 else{
-                    Log.d("??",dist+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+   //                 Log.d("??",dist+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     rfdDB.addSettings(dist);
                     rfdNowClicked(runForDistanceNow_ib);
                 }

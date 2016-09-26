@@ -120,7 +120,7 @@ public class RunDBHelper extends SQLiteOpenHelper {
     public Cursor getDataByStartTimeEpoch(String startTime, long start){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "Select * from "+TABLE_NAME+" Where "+COLUMN_STARTTIME +" == " +startTime +" Order by "+COLUMN_ID;
-        Log.d("SEARCH QUERY",query);
+ //       Log.d("SEARCH QUERY",query);
         Cursor result = db.rawQuery(query, null);
 
 

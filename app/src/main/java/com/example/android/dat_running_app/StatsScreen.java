@@ -40,6 +40,7 @@ import static com.google.android.gms.analytics.internal.zzy.d;
 import static com.google.android.gms.analytics.internal.zzy.m;
 import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.google.android.gms.analytics.internal.zzy.s;
+import static com.google.android.gms.analytics.internal.zzy.v;
 import static java.lang.Integer.parseInt;
 //import static com.example.android.dat_running_app.R.id.timeIntervalButton;
 
@@ -72,13 +73,47 @@ public class StatsScreen extends AppCompatActivity{
         addRunSpinner();
 
 
-        chart = (LineChart) findViewById(startChart);
+        chart = (LineChart) findViewById(R.id.startChart);//was startChart
 
 
         Button rb = (Button)findViewById(R.id.drawChartButton);
-        drawChart(rb);
+
+        if(hasRun())
+            drawChart(rb);
+        else{
+            List<Entry> entries= new ArrayList<>();
+            entries.add(new Entry(2,0));
+            entries.add(new Entry(3,1));
+            entries.add(new Entry(7,2));
+            entries.add(new Entry(9,3));
+            entries.add(new Entry(5,4));
+            entries.add(new Entry(3,5));
+            entries.add(new Entry(5,6));
+            entries.add(new Entry(4,7));
+ //           entries.add(new Entry(10,8));
+
+            String[] labels = {"1","2","3","4","5","6","7","8"};
+            LineDataSet dataSet = new LineDataSet(entries,"Dat Running Chart");
+            dataSet.setColor(R.color.colorPrimary);
+            dataSet.setValueTextColor(R.color.colorAccent);
+            LineData lineData = new LineData(labels,dataSet);
+            chart.setData(lineData);
+            chart.setDescription("(sample data)\n You haven't been running yet!");
+            chart.getLegend().setEnabled(false);
+            chart.animateXY(500,1000);
+            chart.invalidate();
+        }
 
 
+    }
+
+    private boolean hasRun(){
+        RDB = new RunDBHelper(this);
+        Cursor c = RDB.getFRData();
+        if(c.getCount()>0)
+            return true;
+        else
+            return false;
     }
 
     @Override
@@ -220,8 +255,10 @@ public class StatsScreen extends AppCompatActivity{
 
                //     Date date = new Date(Long.parseLong(startTime[1]));
                //     runSpinnerList.add(date.toString());
-                }catch(CursorIndexOutOfBoundsException e){Log.d("EXCEPTION","CAUGHT"); i+=10;}
-                catch(SQLiteCantOpenDatabaseException d){Log.d("EXCEPTION","CAUGHT CAN'T OPEN"); i+=10;};
+                }catch(CursorIndexOutOfBoundsException e){i+=10;
+                    }
+                catch(SQLiteCantOpenDatabaseException d){i+=10;
+                };
             }
 
         RDB.close();
@@ -293,7 +330,7 @@ public class StatsScreen extends AppCompatActivity{
                 break;
             case "Elevation Change (m)": xGetStringIndex=8;
                 break;
-            default: Log.d("xAxisSelection default",""+xAxisSelection);
+            default:// Log.d("xAxisSelection default",""+xAxisSelection);
         }
 
         switch(yAxisSelection){
@@ -319,7 +356,7 @@ public class StatsScreen extends AppCompatActivity{
                 break;
             case "Elevation Change (m)": yGetStringIndex=8;
                 break;
-            default: Log.d("yAxisSelection default",""+yAxisSelection);
+            default:// Log.d("yAxisSelection default",""+yAxisSelection);
         }
 
         Cursor cursor = RDB.getFRData();//need to cycle through entries until i find the one that starts at the right time.  Then cycle through those (adding the data to the chart) until i find a run
@@ -349,24 +386,24 @@ public class StatsScreen extends AppCompatActivity{
                 boolean xMetric=false;
                 boolean yMetric=false;
 
-                for(int x = 0;x<yChoice.length;x++){
-                    Log.d("Metric",yChoice[x]);
-                }
+             //   for(int x = 0;x<yChoice.length;x++){
+             //       Log.d("Metric",yChoice[x]);
+            //    }
 
                 try {
                     if (xChoice[1].equals("(km)") || xChoice[1].equals("(m)") || xChoice[1].equals("(km/hr)"))
                         xMetric = true;
-                }catch(ArrayIndexOutOfBoundsException e){Log.d("Metric","CaughtX");};
+                }catch(ArrayIndexOutOfBoundsException e){};
 
                 try {
                     if (yChoice[1].equals("(km)") || yChoice[1].equals("(m)") || yChoice[1].equals("(km/hr)"))
                         yMetric = true;
                 }
-                catch (ArrayIndexOutOfBoundsException e){Log.d("Metric","CaughtY");};
+                catch (ArrayIndexOutOfBoundsException e){};
 
                 //       boolean rightRun=false;
 
-                Log.d("Metric",""+xMetric+" "+yMetric);
+
 
                 if(startTimeArray[1].equals(startTimeString)){
 
@@ -440,7 +477,7 @@ public class StatsScreen extends AppCompatActivity{
                                     xValue = 42;
                                     break;
                                 default: //xValue = Double.parseDouble(xValueString[1])/1000;
-                                    Log.d("DEFAULT X", "" + xValue + " " + xValueString[0] + " " + xValueString[1]);
+                              //      Log.d("DEFAULT X", "" + xValue + " " + xValueString[0] + " " + xValueString[1]);
                             }
                         }catch(ArrayIndexOutOfBoundsException e){};
                     }
@@ -480,12 +517,12 @@ public class StatsScreen extends AppCompatActivity{
                                 case "ELEVATION:": yValue = 42;
                                     break;
                                 default:// yValue = -9001;
-                                    Log.d("DEFAULT Y",""+yValue+" "+yValueString[0]+" "+yValueString[1]);
+                             //       Log.d("DEFAULT Y",""+yValue+" "+yValueString[0]+" "+yValueString[1]);
                             }
                     }
 
                     currentDistance+=Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000;
-                    Log.d("MYDISTANCE",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000);
+          //          Log.d("MYDISTANCE",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000);
 
 
                     if(currentDistance >= splitCounterKm){//this finds the splits in km.  I need another split section for miles because I can't just convert these values.
@@ -530,7 +567,7 @@ public class StatsScreen extends AppCompatActivity{
                     labelList.add((long)(xValue));
                     entries.add(new Entry((float) yValue, (int) xValue));
                     totalTime=Long.parseLong(cursor.getString(3).split(" ")[1]);
-                    Log.d("totalTime",""+cursor.getString(3));
+             //       Log.d("totalTime",""+cursor.getString(3));
                     avgCadence = (int)cadenceSum/(int)numUpdates;
                 }
             }
@@ -539,7 +576,7 @@ public class StatsScreen extends AppCompatActivity{
             updateTotalDistanceTV();
             updateTotalTimeTV(totalTime+"");
             double avgSpeed = sumOfSpeed/numUpdates;//in km/hr
-                           Log.d("sumOfSpeed",""+sumOfSpeed+" "+numUpdates);
+                      //     Log.d("sumOfSpeed",""+sumOfSpeed+" "+numUpdates);
             updateAvgSpeed(avgSpeed);
             double avgPaceKm = 1/avgSpeed*3600*1000;
             double avgPaceMi = avgPaceKm*1.609;
@@ -640,7 +677,7 @@ public class StatsScreen extends AppCompatActivity{
 
             int calsBurned = (int)Math.round(mets * mass * hours);
 
-            Log.d("cals",mets+" "+mass+" "+hours);
+        //    Log.d("cals",mets+" "+mass+" "+hours);
 
             textView.setText(" "+calsBurned);
         }else{
@@ -739,7 +776,7 @@ public class StatsScreen extends AppCompatActivity{
                 hmsm = delimedTime[1]+":"+delimedTime[2]+":"+delimedTime[3];
 
         }catch(NumberFormatException e){
-            Log.d("EXCEPTION","Number format exception in formatTime() in StatsScreen"+s);
+       //     Log.d("EXCEPTION","Number format exception in formatTime() in StatsScreen"+s);
         }
 
 

@@ -54,8 +54,8 @@ public class RunForTimeClickedMenu extends AppCompatActivity{
     private String getTimeText(){
         EditText editTextHR = (EditText)findViewById(R.id.rfTimeEditTextHR);
         EditText editTextMIN = (EditText)findViewById(R.id.rfTimeEditTextMIN);
-        Log.d("EDIT TEXT",editTextHR.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        Log.d("EDIT TEXT",editTextMIN.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  //      Log.d("EDIT TEXT",editTextHR.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  //      Log.d("EDIT TEXT",editTextMIN.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         int hr;
         int min;
         if(editTextHR.getText().toString().length()==0)
@@ -86,7 +86,7 @@ public class RunForTimeClickedMenu extends AppCompatActivity{
                 if(Long.parseLong(time) == 0)
                     Toast.makeText(RunForTimeClickedMenu.this, "Please enter a valid time.", Toast.LENGTH_LONG).show();
                 else{
-                    Log.d("??",time+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+   //                 Log.d("??",time+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     rftDB.addSettings(time);
                     rftNowClicked(runForTimeNow_ib);
                 }

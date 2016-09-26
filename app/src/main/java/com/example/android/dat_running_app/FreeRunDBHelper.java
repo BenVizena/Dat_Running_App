@@ -57,7 +57,7 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
         long success = db.insert(TABLE_NAME,null,values);
         db.close();
 
-        Log.d("debug", ""+success);
+ //       Log.d("debug", ""+success);
 
         if(success == -1)
             return false;

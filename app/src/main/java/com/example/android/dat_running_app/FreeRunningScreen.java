@@ -47,7 +47,7 @@ import static com.google.android.gms.analytics.internal.zzy.v;
 
 public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCallback{
 
-    private final String LOG_TAG = "running! activity";
+ //   private final String LOG_TAG = "running! activity";
 
     private double longitude=-1;
     private double latitude=-1;
@@ -88,7 +88,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
         if(runType.equals("RUN FOR DISTANCE")){
             String distString = new RfdDistanceDBHelper(this).getRunDistance();
-            Log.d("DEBUG","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+distString);
+ //           Log.d("DEBUG","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+distString);
             distanceToTravel=Double.parseDouble(distString);
         }else
             distanceToTravel=0;
@@ -248,7 +248,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     updateTime(delimedString[1]);
 
                     updateDistance(delimedDistance[2]);
-                    Log.d("UPDATE","S: passed that shit");
+        //            Log.d("UPDATE","S: passed that shit");
                     updatePace(paceKM);
                     updateCadence(delimedString[7]);
 
@@ -277,7 +277,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                          */
 
                         populateIntervalList();
-                        Log.d("MADE","SIZE: "+intervalList.size());
+       //                 Log.d("MADE","SIZE: "+intervalList.size());
                         interpretIntervals();
 
 
@@ -304,7 +304,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void updateDistance(String d){
-        Log.d("UPDATE","D: "+d);
+  //      Log.d("UPDATE","D: "+d);
         Double dd = Double.parseDouble(d);
         TextView textView = (TextView)findViewById(R.id.distanceOutputTV);
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
@@ -321,7 +321,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void updatePace(String s){
-        Log.d("UPDATE","S: "+s);
+   //     Log.d("UPDATE","S: "+s);
         TextView textView = (TextView)findViewById(R.id.paceOutputTV);
         textView.setText(formatTime(s.split(" ")[1]));
     }
@@ -372,7 +372,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
             Boolean time = false;
             String[] delimedString = Strings[0].split("");
             String unit = delimedString[delimedString.length-1]+delimedString[delimedString.length-2];
-            Log.d("UNIT",""+unit);
+ //           Log.d("UNIT",""+unit);
 
             if(unit.equals("im") || unit.equals("mk")){
                 time=false;
@@ -396,7 +396,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                 }
                 else{
                     distanceDouble*=1609.34;
-                    Log.d("UNIT",distanceTravelled+"   "+distanceDouble);
+    //                Log.d("UNIT",distanceTravelled+"   "+distanceDouble);
                     while(distanceTravelled<startDistance+distanceDouble){
                         try {
                             Thread.sleep(500);
@@ -410,7 +410,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
             else{
                 time=true;
                 try{
-                    Log.d("MADE","ASYNC MADE IT HERE");
+     //               Log.d("MADE","ASYNC MADE IT HERE");
                     Thread.sleep(Long.parseLong(Strings[0]));
 
                     MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
@@ -434,7 +434,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     if (isTime(delimedInterval[2]) && !locked) {
                         locked=true;
-                        Log.d("INTERNAL THREAD", "FIRST CONTAINS A TIME");
+         //               Log.d("INTERNAL THREAD", "FIRST CONTAINS A TIME");
                         //do time things by starting a different thread.
                         Long time = getTimeFromString(delimedInterval[2]);
 
@@ -453,7 +453,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
 
                     } else {
-                        Log.d("INTERNAL THREAD", "FIRST CONTAINS A DISTANCE");
+         //               Log.d("INTERNAL THREAD", "FIRST CONTAINS A DISTANCE");
                         interpretedIntervalList.add("DISTANCE " + delimedInterval[2]);
                         //do distance things
                         new AsyncInterval().execute(delimedInterval[2]);
@@ -464,7 +464,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     if (isTime(delimedInterval[4]) && !locked) {
                         locked=true;
-                        Log.d("INTERNAL THREAD", "FIRST CONTAINS A TIME");
+             //           Log.d("INTERNAL THREAD", "FIRST CONTAINS A TIME");
                         //do time things by starting a different thread.
                         Long time = getTimeFromString(delimedInterval[4]);
 
@@ -478,7 +478,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
               //          counter+=1;
 
                     } else {
-                        Log.d("INTERNAL THREAD", "SECOND CONTAINS A DISTANCE");
+            //            Log.d("INTERNAL THREAD", "SECOND CONTAINS A DISTANCE");
                         interpretedIntervalList.add("DISTANCE "+delimedInterval[4]);
                         //do distance things
                         new AsyncInterval().execute(delimedInterval[4]);
@@ -611,7 +611,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
             output.setText(str);
         }
         catch(NullPointerException e){
-            Log.d("TXTOUTPUT","NULL");
+ //           Log.d("TXTOUTPUT","NULL");
         }
 
 
