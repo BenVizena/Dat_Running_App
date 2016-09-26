@@ -154,7 +154,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
    //                                 Log.d("DEBUG","getting gps signal");
                                     counter=0;
                                 }
-                                if(counter>=50){//was 5
+                                if(counter>=40){//was 50
  //                                  Log.d("DEBUG","gps signal acquired");
                                     stable = true;
                                     t.interrupt();
@@ -403,7 +403,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-        Toast.makeText(FreeRunningScreenService.this, "service started", Toast.LENGTH_LONG).show();
+  //      Toast.makeText(FreeRunningScreenService.this, "service started", Toast.LENGTH_LONG).show();
         mGoogleApiClient.connect();
 
         mSensorManager.registerListener(this,mAcceleration,SensorManager.SENSOR_DELAY_GAME);
@@ -413,7 +413,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
     @Override
     public void onDestroy(){
-        Toast.makeText(FreeRunningScreenService.this, "service destroyed", Toast.LENGTH_LONG).show();
+  //      Toast.makeText(FreeRunningScreenService.this, "service destroyed", Toast.LENGTH_LONG).show();
         t.interrupt();
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();

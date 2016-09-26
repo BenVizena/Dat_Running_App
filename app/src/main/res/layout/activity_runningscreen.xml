@@ -70,7 +70,7 @@
             android:layout_below="@id/runningToolbar"/>
 
         <TextView android:text="TIME: "
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:id="@+id/timeOutputMarkerTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             android:layout_below="@+id/spacerView"/>
 
         <TextView android:text="DISTANCE: "
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:id="@+id/distanceOutputMarkerTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
             android:layout_below="@+id/timeOutputMarkerTV"/>
 
         <TextView android:text="PACE: "
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:id="@+id/paceOutputMarkerTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
             android:layout_below="@+id/distanceOutputMarkerTV"/>
 
         <TextView android:text="CADENCE: "
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:id="@+id/cadenceOutputMarkerTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
             android:id="@+id/timeOutputTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:visibility="gone"
             android:layout_toRightOf="@id/timeOutputMarkerTV"
             android:layout_below="@id/spacerView"
@@ -126,7 +126,7 @@
             android:id="@+id/distanceOutputTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:visibility="gone"
             android:layout_toRightOf="@id/distanceOutputMarkerTV"
             android:layout_below="@id/timeOutputTV"/>
@@ -136,7 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:visibility="gone"
             android:layout_toRightOf="@id/paceOutputMarkerTV"
             android:layout_below="@id/distanceOutputMarkerTV"
@@ -146,7 +146,7 @@
             android:id="@+id/cadenceOutputTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:layout_toRightOf="@id/cadenceOutputMarkerTV"
             android:layout_below="@id/paceOutputMarkerTV"
             android:layout_marginTop="8dp"
@@ -179,7 +179,7 @@
                 android:text="stop"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:background="@color/colorAccent"
+                android:background="@color/colorPrimary"
                 android:id="@+id/stopButton"
                 android:visibility="gone"
                 android:onClick="stopService"
