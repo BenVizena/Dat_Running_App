@@ -81,7 +81,14 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
 //           result.moveToFirst();
  //       Log.d("RESULTS",".getInt(0): "+result.getInt(0)+" .getString(1): "+result.getString(1)+" .getString(2): "+result.getString(2)+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //        db.close();
+
         result.moveToFirst();
-        return result.getString(1);
+        if(result.getCount()==0)
+            return "true";
+        else{
+            return result.getString(1);
+        }
+
+
     }
 }
