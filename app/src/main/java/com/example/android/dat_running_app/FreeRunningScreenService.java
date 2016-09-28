@@ -154,7 +154,7 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
    //                                 Log.d("DEBUG","getting gps signal");
                                     counter=0;
                                 }
-                                if(counter>=40){//was 50
+                                if(counter>=50){//was 50
  //                                  Log.d("DEBUG","gps signal acquired");
                                     stable = true;
                                     t.interrupt();
