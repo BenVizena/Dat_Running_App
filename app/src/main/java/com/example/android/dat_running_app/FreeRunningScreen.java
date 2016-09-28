@@ -69,6 +69,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private boolean irStarted;
     private ArrayList<String> intervalList;
     private IntervalDBHelper imdb;
+    private boolean soundPlayed;
 
     private MyReceiver myReceiver;
 //    private MyReceiver myReceiverIR;
@@ -89,6 +90,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        soundPlayed=false;
 
         setContentView(R.layout.activity_runningscreen);
 
@@ -279,16 +281,18 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     updateCadence(delimedString[7]);
 
 
-                    if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0){;
-                        goalReachedStopService();
+                    if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0 && !soundPlayed){;
+                    //    goalReachedStopService();   Not stopping the service when the activity is complete.
                         MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
                         mp.start();
+                        soundPlayed=true;
                     }
 
-                    if(Long.parseLong(delimedTime[1]) >= timeToRun && timeToRun>0){
-                        goalReachedStopService();
+                    if(Long.parseLong(delimedTime[1]) >= timeToRun && timeToRun>0 && !soundPlayed){
+                     //   goalReachedStopService(); not stopping the service when activity is complete.
                         MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
                         mp.start();
+                        soundPlayed=true;
                     }
 
                     if(runType.equals("INTERVAL RUN") && irStarted==false){
