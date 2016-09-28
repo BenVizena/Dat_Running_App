@@ -8,11 +8,8 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.android.dat_running_app.FreeRunningScreen">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
+
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -47,144 +44,153 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:layout_below="@id/runningToolbar"
-            android:id="@+id/spacerView"></View>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="500dp"
-            android:background="#ffffff"
-            android:layout_below="@id/spacerView">
 
-        </View>
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_weight="1"
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                class="com.google.android.gms.maps.SupportMapFragment" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/outputTextView"
-            android:textSize="24sp"
-            android:layout_margin="8dp"
-            android:layout_below="@id/runningToolbar"/>
-
-        <TextView android:text="TIME: "
-            android:textSize="24sp"
-            android:id="@+id/timeOutputMarkerTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:visibility="gone"
-            android:layout_below="@+id/spacerView"/>
-
-        <TextView android:text="DISTANCE: "
-            android:textSize="24sp"
-            android:id="@+id/distanceOutputMarkerTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:visibility="gone"
-            android:layout_below="@+id/timeOutputMarkerTV"/>
-
-        <TextView android:text="PACE: "
-            android:textSize="24sp"
-            android:id="@+id/paceOutputMarkerTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            android:layout_marginLeft="8dp"
-            android:layout_below="@+id/distanceOutputMarkerTV"/>
-
-        <TextView android:text="CADENCE: "
-            android:textSize="24sp"
-            android:id="@+id/cadenceOutputMarkerTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            android:layout_marginLeft="8dp"
-            android:layout_below="@+id/paceOutputMarkerTV"/>
-
-        <TextView
-            android:id="@+id/timeOutputTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:visibility="gone"
-            android:layout_toRightOf="@id/timeOutputMarkerTV"
-            android:layout_below="@id/spacerView"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:layout_marginTop="8dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/distanceOutputTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:visibility="gone"
-            android:layout_toRightOf="@id/distanceOutputMarkerTV"
-            android:layout_below="@id/timeOutputTV"/>
-
-        <TextView
-            android:id="@+id/paceOutputTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp"
-            android:visibility="gone"
-            android:layout_toRightOf="@id/paceOutputMarkerTV"
-            android:layout_below="@id/distanceOutputMarkerTV"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:id="@+id/cadenceOutputTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:layout_toRightOf="@id/cadenceOutputMarkerTV"
-            android:layout_below="@id/paceOutputMarkerTV"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            android:textColor="@color/colorPrimaryDark"/>
-
-        <Button
-            android:text="start"
-            android:background="@color/colorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/startButton"
-            android:onClick="startService"
-            android:layout_marginBottom="8dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            />
+            <RelativeLayout
+                android:id="@+id/runningScreenRL"
+                android:layout_weight="0"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
 
 
 
-            <Button
-                android:text="stop"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@color/colorPrimary"
-                android:id="@+id/stopButton"
-                android:visibility="gone"
-                android:onClick="stopService"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/outputTextView"
+                    android:textSize="24sp"
+                    android:layout_margin="8dp"/>
+
+                <TextView android:text="TIME: "
+                    android:textSize="24sp"
+                    android:id="@+id/timeOutputMarkerTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:visibility="gone"/>
+
+                <TextView android:text="DISTANCE: "
+                    android:textSize="24sp"
+                    android:id="@+id/distanceOutputMarkerTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:visibility="gone"
+                    android:layout_below="@+id/timeOutputMarkerTV"/>
+
+                <TextView android:text="PACE: "
+                    android:textSize="24sp"
+                    android:id="@+id/paceOutputMarkerTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    android:layout_marginLeft="8dp"
+                    android:layout_below="@+id/distanceOutputMarkerTV"/>
+
+                <TextView android:text="CADENCE: "
+                    android:textSize="24sp"
+                    android:id="@+id/cadenceOutputMarkerTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    android:layout_marginLeft="8dp"
+                    android:layout_below="@+id/paceOutputMarkerTV"/>
+
+                <TextView
+                    android:id="@+id/timeOutputTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:visibility="gone"
+                    android:layout_toRightOf="@id/timeOutputMarkerTV"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_marginTop="8dp"/>
+
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:id="@+id/distanceOutputTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:visibility="gone"
+                    android:layout_toRightOf="@id/distanceOutputMarkerTV"
+                    android:layout_below="@id/timeOutputTV"/>
+
+                <TextView
+                    android:id="@+id/paceOutputTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="24sp"
+                    android:visibility="gone"
+                    android:layout_toRightOf="@id/paceOutputMarkerTV"
+                    android:layout_below="@id/distanceOutputMarkerTV"
+                    android:layout_marginTop="8dp"/>
+
+                <TextView
+                    android:id="@+id/cadenceOutputTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:layout_toRightOf="@id/cadenceOutputMarkerTV"
+                    android:layout_below="@id/paceOutputMarkerTV"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    android:textColor="@color/colorPrimaryDark"/>
+
+                <Button
+                    android:text="start"
+                    android:background="@color/colorPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/startButton"
+                    android:onClick="startService"
+                    android:layout_marginBottom="8dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    />
 
 
+
+                <Button
+                    android:text="stop"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@color/colorPrimary"
+                    android:id="@+id/stopButton"
+                    android:visibility="gone"
+                    android:onClick="stopService"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
+
+        </LinearLayout>
 
 
     </RelativeLayout>
+
+
+
+
 
 
 

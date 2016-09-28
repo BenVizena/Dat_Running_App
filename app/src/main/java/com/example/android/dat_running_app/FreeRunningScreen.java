@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,6 +40,8 @@ import java.util.concurrent.TimeUnit;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 //import static com.example.android.dat_running_app.R.id.txtOutput;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import static com.google.android.gms.analytics.internal.zzy.B;
 import static com.google.android.gms.analytics.internal.zzy.e;
 import static com.google.android.gms.analytics.internal.zzy.r;
 import static com.google.android.gms.analytics.internal.zzy.s;
@@ -106,7 +110,9 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
         irStarted=false;
         interpretedIntervalList = new ArrayList<>();
+///////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////
         intervalList = new ArrayList<>();
 
         SupportMapFragment mapFragment =
@@ -120,7 +126,22 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         else
             metric=false;
 
+//////////////////////////////////////////////////
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
 
+        int width = dm.widthPixels;
+        int height=dm.heightPixels;
+
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 168, r.getDisplayMetrics());//248
+
+        View view = (View)findViewById(R.id.runningScreenRL);
+        ViewGroup.LayoutParams p=view.getLayoutParams();
+        p.height=(int)(px);//height-px
+        p.width=width;
+        view.setLayoutParams(p);
+        //////////////////////////////////////
 
 
         outputString="";
@@ -131,20 +152,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         permissionRequest();
 
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        int width = dm.widthPixels;
-        int height = dm.heightPixels;
-
-        Resources r = getResources();
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 248, r.getDisplayMetrics());
-
-        View view = (View)findViewById(R.id.spacerView);
-        ViewGroup.LayoutParams p = view.getLayoutParams();
-        p.height=(int)(height-px);//height*.65
-        p.width=width;
-        view.setLayoutParams(p);
 
 
     }
@@ -229,7 +237,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                 }
                 else {//0 is coords, 1 is time (ms) , 2 is altitude (?), 3 is distance travelled (m), 4 is deltaD (m), 5 is velocity (m/s), 6 is start time (epoch), 7 is cadence
                     dbUpdateTimer+=1;
-
+                    changeVisibilities();
 
 
                     String t[] = delimedString[1].split(" ");
@@ -559,7 +567,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         runType = new WhichRunDBHelper(this).getRunType();
 
 
-        changeVisibilities();
+        makeStartButtonGoAway();
 
         /*
         if(runType.equals("INTERVAL RUN")){
@@ -584,6 +592,11 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         finish();
 
 
+    }
+
+    private void makeStartButtonGoAway(){
+        Button b1 = (Button)findViewById(R.id.startButton);
+        b1.setVisibility(View.GONE);
     }
 
     private void changeVisibilities(){
