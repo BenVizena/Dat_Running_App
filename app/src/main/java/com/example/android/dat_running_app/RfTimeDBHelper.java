@@ -62,6 +62,7 @@ public class RfTimeDBHelper extends SQLiteOpenHelper {
         String query = "select * from "+TABLE_NAME;
         Cursor result = db.rawQuery(query,null);
         result.moveToFirst();
+        db.close();
         return result.getString(1);
     }
 

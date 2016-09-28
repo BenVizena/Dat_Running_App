@@ -57,6 +57,7 @@ public class MainSettingsDBHelper extends SQLiteOpenHelper {
         String query = "select * from "+TABLE_NAME;
         Cursor result = db.rawQuery(query,null);
         result.moveToFirst();
+        db.close();
         return result.getString(1);
     }
 
@@ -71,6 +72,9 @@ public class MainSettingsDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "select * from "+TABLE_NAME;
         Cursor result = db.rawQuery(query,null);
-        return result.moveToFirst();
+   //     db.close();
+        boolean r = result.moveToFirst();
+        db.close();
+        return r;
     }
 }

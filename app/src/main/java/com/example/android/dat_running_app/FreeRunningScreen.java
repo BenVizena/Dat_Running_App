@@ -70,6 +70,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private ArrayList<String> intervalList;
     private IntervalDBHelper imdb;
     private boolean soundPlayed;
+    private boolean stopPressed;
 
     private MyReceiver myReceiver;
 //    private MyReceiver myReceiverIR;
@@ -91,24 +92,33 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         soundPlayed=false;
+        stopPressed=false;
 
         setContentView(R.layout.activity_runningscreen);
 
         RDB = new RunDBHelper(this);
-        runType = new WhichRunDBHelper(this).getRunType();
+        WhichRunDBHelper wr = new WhichRunDBHelper(this);
+        runType = wr.getRunType();
+        RDB.close();
 
         if(runType.equals("RUN FOR DISTANCE")){
-            String distString = new RfdDistanceDBHelper(this).getRunDistance();
+            RfdDistanceDBHelper temp = new RfdDistanceDBHelper(this);
+            String distString = temp.getRunDistance();
  //           Log.d("DEBUG","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+distString);
             distanceToTravel=Double.parseDouble(distString);
+            temp.close();
         }else
             distanceToTravel=0;
 
         if(runType.equals("RUN FOR TIME")){
-            String timeString = new RfTimeDBHelper(this).getRunTime();
+            RfTimeDBHelper temp = new RfTimeDBHelper(this);
+            String timeString = temp.getRunTime();
             timeToRun=Long.parseLong(timeString);
+            temp.close();
         }else
             timeToRun=0;
+
+        wr.close();
 
         irStarted=false;
         interpretedIntervalList = new ArrayList<>();
@@ -123,6 +133,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
         FreeRunDBHelper ui = new FreeRunDBHelper(this);
         String tempUnit = ui.getUnitSetting();
+        ui.close();
         if(tempUnit.equals("true"))
             metric=true;
         else
@@ -420,8 +431,11 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                             Thread.sleep(500);
                         } catch (InterruptedException e1) {}
                     }
-                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
-                    mp.start();
+                    if(!stopPressed){
+                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                        mp.start();
+                    }
+
                     result=true;
                 }
                 else{
@@ -432,8 +446,11 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                             Thread.sleep(500);
                         } catch (InterruptedException e1) {}
                     }
-                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
-                    mp.start();
+                    if(!stopPressed){
+                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                        mp.start();
+                    }
+
                     result=true;
                 }
             }
@@ -443,8 +460,11 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
      //               Log.d("MADE","ASYNC MADE IT HERE");
                     Thread.sleep(Long.parseLong(Strings[0]));
 
-                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
-                    mp.start();
+                    if(!stopPressed){
+                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
+                        mp.start();
+                    }
+
                     result = true;
                 }catch(InterruptedException e){
 
@@ -470,6 +490,8 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
 
                         interpretedIntervalList.add("TIME "+time);
+
+
 
                         new AsyncInterval().execute(time+"");
 
@@ -534,6 +556,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         } finally {
             dataCursor.close();
         }
+        imdb.close();
     }
 
     private String formatTime(String s){
@@ -567,8 +590,8 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         Intent intent = new Intent(this,FreeRunningScreenService.class);
         startService(intent);
 
-        RDB = new RunDBHelper(this);
-        runType = new WhichRunDBHelper(this).getRunType();
+     //   RDB = new RunDBHelper(this);
+     //   runType = new WhichRunDBHelper(this).getRunType();
 
 
         makeStartButtonGoAway();
@@ -590,6 +613,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         Intent intent = new Intent(this,FreeRunningScreenService.class);
         stopService(intent);
         unregisterReceiver(myReceiver);
+        stopPressed=true;
 
         Intent intent2 = new Intent(this,StatsScreen.class);
         startActivity(intent2);

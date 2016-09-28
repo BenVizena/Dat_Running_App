@@ -65,6 +65,7 @@ public class IntervalDBHelper extends SQLiteOpenHelper {
         String query = "select * from "+TABLE_NAME;
         Cursor result = db.rawQuery(query,null);
         result.moveToFirst();
+        db.close();
         return result;
     }
 
@@ -72,6 +73,7 @@ public class IntervalDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "delete from "+ TABLE_NAME;
         db.execSQL(query);
+        db.close();
     }
 
 

@@ -105,6 +105,7 @@ public class RunDBHelper extends SQLiteOpenHelper {
   //      }
 
 //        db.close();
+        db.close();
         return result;
     }
 
@@ -114,6 +115,7 @@ public class RunDBHelper extends SQLiteOpenHelper {
         Cursor result = db.rawQuery(query, null);
 
         result.moveToFirst();
+        db.close();
         return result;
     }
 
@@ -123,7 +125,7 @@ public class RunDBHelper extends SQLiteOpenHelper {
  //       Log.d("SEARCH QUERY",query);
         Cursor result = db.rawQuery(query, null);
 
-
+        db.close();
 
 
         result.moveToFirst();
