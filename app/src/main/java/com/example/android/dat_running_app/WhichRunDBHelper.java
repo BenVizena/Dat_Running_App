@@ -12,6 +12,8 @@ import static com.google.android.gms.analytics.internal.zzy.b;
 
 /**
  * Created by Ben on 8/17/2016.
+ *
+ * records which of the four run buttons in RunOptionsMenuRoot was most recently clicked.  Used in RunningScreen
  */
 
 public class WhichRunDBHelper extends SQLiteOpenHelper {
