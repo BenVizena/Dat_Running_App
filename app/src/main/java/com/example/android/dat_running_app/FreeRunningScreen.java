@@ -52,11 +52,11 @@ import static com.google.android.gms.cast.internal.zzl.pa;
 
 /**
  * Created by Ben on 7/12/2016.
+ *
+ * controlls the running screen for all runs.
  */
 
 public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCallback{
-
- //   private final String LOG_TAG = "running! activity";
 
     private double longitude=-1;
     private double latitude=-1;
@@ -71,21 +71,16 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private IntervalDBHelper imdb;
     private boolean soundPlayed;
     private boolean stopPressed;
-
     private MyReceiver myReceiver;
-//    private MyReceiver myReceiverIR;
     private String outputString;
     private RunDBHelper RDB;
     private WhichRunDBHelper WRDB;
     private double distanceToTravel;//the distance specified in the Run For Distance menu.
     private long timeToRun;//the time in millis specified in the Run For Time mneu.
     private ArrayList<String> interpretedIntervalList;
-
     private int dbUpdateTimer=0;
-    private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update. //was 10. 10 is probably good. that is 1 update to db for every second. //100 works for debugging purposes.
+    private final int DBUPDATELIMIT=10;//this says that every x updates to the running screen, the db will get 1 update.
     private boolean metric;
-
-//    private TextView txtOutput;
     private int txtOutputId;
 
     @Override
@@ -104,7 +99,6 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         if(runType.equals("RUN FOR DISTANCE")){
             RfdDistanceDBHelper temp = new RfdDistanceDBHelper(this);
             String distString = temp.getRunDistance();
- //           Log.d("DEBUG","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+distString);
             distanceToTravel=Double.parseDouble(distString);
             temp.close();
         }else
@@ -118,19 +112,22 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         }else
             timeToRun=0;
 
+        //and then if timeToRun && distanceToTravel==0, then intervalRun==true.
+
         wr.close();
 
         irStarted=false;
         interpretedIntervalList = new ArrayList<>();
-///////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////
         intervalList = new ArrayList<>();
 
+        //map stuff
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+        //this section interprets the units for the running screen.
         FreeRunDBHelper ui = new FreeRunDBHelper(this);
         String tempUnit = ui.getUnitSetting();
         ui.close();
@@ -139,7 +136,8 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         else
             metric=false;
 
-//////////////////////////////////////////////////
+
+        //this section sets the information filled part of the screen to 168 pixels in height (so from height to height-168
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
@@ -147,36 +145,28 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         int height=dm.heightPixels;
 
         Resources r = getResources();
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 168, r.getDisplayMetrics());//248
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 168, r.getDisplayMetrics());
 
         View view = (View)findViewById(R.id.runningScreenRL);
         ViewGroup.LayoutParams p=view.getLayoutParams();
-        p.height=(int)(px);//height-px
+        p.height=(int)(px);
         p.width=width;
         view.setLayoutParams(p);
-        //////////////////////////////////////
 
 
         outputString="";
 
- //       txtOutput = (TextView) findViewById(R.id.txtOutput);
- //       Log.d("DEBUG Running Screen",startButtonId+" "+endButtonId);
-
         permissionRequest();
-
-
-
-
-
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-//        LatLng llStart = new LatLng()
- //       googleMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
+    /*
+        updates runner's position on the map.
+     */
     private void updateMarker(double lat, double lng){
         LatLng latLng = new LatLng(lat,lng);
         try{
@@ -189,8 +179,6 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         m = gMap.addMarker(mo);
         m.setPosition(latLng);
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,18));
-//        gMap.animateCamera(CameraUpdateFactory.zoomIn());
-//        gMap.animateCamera(CameraUpdateFactory.zoomTo(15),10000,null);//middle was 2000
     }
 
 
@@ -200,19 +188,17 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     private String milliToFinish(String speed, boolean metric){
         String delimedSpeed[] = speed.split(" ");
         double dubSpeed = Double.parseDouble(delimedSpeed[1]);
-//        Log.d("DUBSPEED",dubSpeed+"");
         double milliToFin = 0;
 
         if(metric && dubSpeed!=0) {
             milliToFin = 1 / dubSpeed * 1000 * 1000;
-  //          Log.d("metric","made it here "+ milliToFin);
         }
         else if(dubSpeed!=0)
             milliToFin = 1609.34 * 1000 / dubSpeed;
 
         Long result = (Long)Math.round(milliToFin);
 
-        return ""+result;
+        return ""+result;//time in milliseconds to finish 1 km or 1 mi.
     }
 
     /*
@@ -228,6 +214,10 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     }
 
 
+    /*
+        receives and interprets information from the service.
+        updates db with info from the service.
+     */
     private class MyReceiver extends BroadcastReceiver {
 
         @Override
@@ -239,7 +229,6 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
             try {
                 String[] delimedString = outputString.split("\n");
-         //       Log.d("DEBUG","MADE IT TO THE RECIEVER"+ outputString);
                 if(delimedString.length==1){
                     String[] delimedStringWithCoords = outputString.split(",");
                     double lat = Double.parseDouble(delimedStringWithCoords[1]);
@@ -255,6 +244,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     String t[] = delimedString[1].split(" ");
 
+                    //this big string of commands basically just gets and organizes information in to usable forms.
                     outputString = delimedString[0] + "\nTIME: " + formatTime(t[1]) + "\n" + delimedString[2] + "\n" + delimedString[3] + "\n" + delimedString[4];
                     String[] coords = delimedString[0].split(" ");
                     String speedKmHr = "Speed: "+getSpeed(delimedString[5],true);
@@ -269,7 +259,8 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                     updateMarker(lat,lng);
                     updateTextView("");
 
-                    if(dbUpdateTimer>=DBUPDATELIMIT){
+
+                    if(dbUpdateTimer>=DBUPDATELIMIT){//when condition is true, update db.
                         dbUpdateTimer=0;
                         RDB.addUpdate(runType,  delimedString[6],   delimedString[1],  delimedString[3],     paceKM   ,   speedKmHr,            delimedString[7],               "ELEVATION: 1337");
                         //              N/A      startTime (epoch)     time (ms)          distance (m)       pace (ms)         km/hr       cadence (strikes per minute)          no longer a thing
@@ -282,70 +273,49 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
                     distanceTravelled = Double.parseDouble(delimedDistance[2]);
 
-
-
                     updateTime(delimedString[1]);
-
                     updateDistance(delimedDistance[2]);
-        //            Log.d("UPDATE","S: passed that shit");
                     updatePace(paceKM);
                     updateCadence(delimedString[7]);
 
 
-                    if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0 && !soundPlayed){;
-                    //    goalReachedStopService();   Not stopping the service when the activity is complete.
+                    //beeps if goal distance is reached (run for distance)
+                    if(Double.parseDouble(delimedDistance[2]) >= distanceToTravel && distanceToTravel>0 && !soundPlayed){
                         MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
                         mp.start();
                         soundPlayed=true;
                     }
 
+                    //beeps if goal time is reached (run for time)
                     if(Long.parseLong(delimedTime[1]) >= timeToRun && timeToRun>0 && !soundPlayed){
-                     //   goalReachedStopService(); not stopping the service when activity is complete.
                         MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
                         mp.start();
                         soundPlayed=true;
                     }
 
-                    if(runType.equals("INTERVAL RUN") && irStarted==false){
+                    if(runType.equals("INTERVAL RUN") && irStarted==false){//starts interval run
                         irStarted=true;
-                        /*
-                        myReceiverIR = new MyReceiver();
-                        IntentFilter intentFilterIR = new IntentFilter();
-                        intentFilterIR.addAction(IntervalRunService.MY_ACTION);
-                        registerReceiver(myReceiverIR,intentFilterIR);
-                        Intent intentIR = new Intent(FreeRunningScreen.this,IntervalRunService.class);
-                        startService(intentIR);
-                         */
 
                         populateIntervalList();
-       //                 Log.d("MADE","SIZE: "+intervalList.size());
                         interpretIntervals();
-
-
-
                     }
-
-
                 }
             }catch(NullPointerException e){}
-
-
-
-
-
         }
-
-
-
     }
 
+    /*
+        update the time textview
+     */
     private void updateTime(String s){
         TextView textView = (TextView)findViewById(R.id.timeOutputTV);
         textView.setText(formatTime(s.split(" ")[1]));
     }
 
+    /*
+        update the distance textView.
+     */
     private void updateDistance(String d){
-  //      Log.d("UPDATE","D: "+d);
         Double dd = Double.parseDouble(d);
         TextView textView = (TextView)findViewById(R.id.distanceOutputTV);
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
@@ -361,12 +331,17 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    /*
+        updates the pace textview
+     */
     private void updatePace(String s){
-   //     Log.d("UPDATE","S: "+s);
         TextView textView = (TextView)findViewById(R.id.paceOutputTV);
         textView.setText(formatTime(s.split(" ")[1]));
     }
 
+    /*
+        updates the cadence textView
+     */
     private void updateCadence(String s){
         TextView textView = (TextView)findViewById(R.id.cadenceOutputTV);
         double d = Double.parseDouble(s.split(" ")[1]);
@@ -374,17 +349,20 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-
+    /*
+        determines if an interval is a time interval based on the number of colons the string has has.
+     */
     private boolean isTime(String maybeTime){
- //       Log.d("DelimedLength",""+maybeTime);
         String[] delimedMaybeTime = maybeTime.split(":");
- //       Log.d("DelimedLength",""+delimedMaybeTime.length);
         if(delimedMaybeTime.length==3)
             return true;
         else
             return false;
     }
 
+    /*
+        converts the time given by the interval (in h:m:s format) in to milliseconds
+     */
     private Long getTimeFromString(String timeString){
         String[] delimedTime = timeString.split(":");
 
@@ -400,33 +378,41 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         return hr+min+sec;
     }
 
+    /*
+        asynctask stuff. i think.
+     */
     public interface Runnable{
         public void run();
     }
 
+
+    /*
+        setting up asyncInterval class for handling intervals.
+     */
     private class AsyncInterval extends AsyncTask<String,Void,Boolean>{
 
-
+        /*
+            handles the intervals.
+         */
         @Override
         protected Boolean doInBackground(String... Strings) {
             Boolean result = false;
             Boolean time = false;
             String[] delimedString = Strings[0].split("");
             String unit = delimedString[delimedString.length-1]+delimedString[delimedString.length-2];
- //           Log.d("UNIT",""+unit);
 
-            if(unit.equals("im") || unit.equals("mk")){
+            if(unit.equals("im") || unit.equals("mk")){//checking to see if we are dealing with a distance by checking to see if the units are mi (miles) or km (kilometers)
                 time=false;
                 double startDistance = distanceTravelled;
                 String distanceString="";
-                for(int i = 0;i<delimedString.length-2;i++)
+                for(int i = 0;i<delimedString.length-2;i++)//reassembles the double
                     distanceString=distanceString+delimedString[i];
                 double distanceDouble = Double.parseDouble(distanceString);
 
                 if(unit.equals("mk")){
                     distanceDouble*=1000;
 
-                    while(distanceTravelled<startDistance+distanceDouble){
+                    while(distanceTravelled<startDistance+distanceDouble){//waits for distanceTravelled to reach the target distance.  (re checks every half second).
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException e1) {}
@@ -440,8 +426,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                 }
                 else{
                     distanceDouble*=1609.34;
-    //                Log.d("UNIT",distanceTravelled+"   "+distanceDouble);
-                    while(distanceTravelled<startDistance+distanceDouble){
+                    while(distanceTravelled<startDistance+distanceDouble){//waits for distanceTravelled to reach the target distance.  (re checks every half second).
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException e1) {}
@@ -457,8 +442,7 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
             else{
                 time=true;
                 try{
-     //               Log.d("MADE","ASYNC MADE IT HERE");
-                    Thread.sleep(Long.parseLong(Strings[0]));
+                    Thread.sleep(Long.parseLong(Strings[0]));//sleeps for a time equal to the target time, then beeps if stop hasn't been pressed.
 
                     if(!stopPressed){
                         MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
@@ -474,77 +458,55 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    /*
+        constructs a list of intervals
+     */
     private void interpretIntervals(){
             boolean locked = false;
-   //         int counter=0;
             for (int x = 0; x < intervalList.size(); x++) {
-      //          while(counter<intervalList.size()*3){
-                    String[] delimedInterval = intervalList.get(x).split(" ");
-                    //           Log.d("IMPORTANT", ""+intervalList.get(x));
+                String[] delimedInterval = intervalList.get(x).split(" ");
 
-                    if (isTime(delimedInterval[2]) && !locked) {
-                        locked=true;
-         //               Log.d("INTERNAL THREAD", "FIRST CONTAINS A TIME");
-                        //do time things by starting a different thread.
-                        Long time = getTimeFromString(delimedInterval[2]);
+                if (isTime(delimedInterval[2]) && !locked) {
+                    locked=true;
+                    //do time things by starting a different thread.
+                    Long time = getTimeFromString(delimedInterval[2]);
+                    interpretedIntervalList.add("TIME "+time);
 
+                    new AsyncInterval().execute(time+"");
 
-                        interpretedIntervalList.add("TIME "+time);
-
+                    locked = false;
 
 
-                        new AsyncInterval().execute(time+"");
+                } else {
+                    interpretedIntervalList.add("DISTANCE " + delimedInterval[2]);
+                    //do distance things
+                    new AsyncInterval().execute(delimedInterval[2]);
+                }
+
+                if (isTime(delimedInterval[4]) && !locked) {
+                    locked=true;
+                    //do time things by starting a different thread.
+                    Long time = getTimeFromString(delimedInterval[4]);
 
 
+                    interpretedIntervalList.add("TIME "+time);
 
-            //            MediaPlayer mp = MediaPlayer.create(getApplicationContext(),R.raw.chimesteady);
-             //           mp.start();
+                    new AsyncInterval().execute(time+"");
 
-                        locked = false;
-              //          counter+=1;
+                    locked = false;
 
-
-                    } else {
-         //               Log.d("INTERNAL THREAD", "FIRST CONTAINS A DISTANCE");
-                        interpretedIntervalList.add("DISTANCE " + delimedInterval[2]);
-                        //do distance things
-                        new AsyncInterval().execute(delimedInterval[2]);
-
-
-
-                    }
-
-                    if (isTime(delimedInterval[4]) && !locked) {
-                        locked=true;
-             //           Log.d("INTERNAL THREAD", "FIRST CONTAINS A TIME");
-                        //do time things by starting a different thread.
-                        Long time = getTimeFromString(delimedInterval[4]);
-
-                        interpretedIntervalList.add("TIME "+time);
-
-                        new AsyncInterval().execute(time+"");
-
-
-
-                        locked = false;
-              //          counter+=1;
-
-                    } else {
-            //            Log.d("INTERNAL THREAD", "SECOND CONTAINS A DISTANCE");
-                        interpretedIntervalList.add("DISTANCE "+delimedInterval[4]);
-                        //do distance things
-                        new AsyncInterval().execute(delimedInterval[4]);
-
-
-                    }
-         //       }
-
+                } else {
+                    interpretedIntervalList.add("DISTANCE "+delimedInterval[4]);
+                    //do distance things
+                    new AsyncInterval().execute(delimedInterval[4]);
+                }
             }
-
     }
 
 
-
+    /*
+        takes the stored intervals and puts them in to intervalList so that they can be properly processed.
+     */
     private void populateIntervalList(){
         imdb = new IntervalDBHelper(this);
         Cursor dataCursor = imdb.getDataCursor();
@@ -559,6 +521,9 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         imdb.close();
     }
 
+    /*
+        takes in milliseconds (in String format) and outputs the time in hours:minutes:seconds:milliseconds format (as a String).
+     */
     private String formatTime(String s){
         String hmsm="";
         try {
@@ -573,60 +538,54 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
             if(delimedTime[0].equals("00"))
                 hmsm = delimedTime[1]+":"+delimedTime[2]+":"+delimedTime[3];
 
-        }catch(NumberFormatException e){
-
-        }
-
+        }catch(NumberFormatException e){}
 
         return ""+hmsm;
     }
 
+    /*
+        starts the service when start button is pressed.
+        also sets up receiver for the service.
+     */
     public void startService(View view){
         myReceiver = new MyReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(FreeRunningScreenService.MY_ACTION);
         registerReceiver(myReceiver, intentFilter);
- //       Log.d("SDKLFJSL","!!!!MADE IT HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         Intent intent = new Intent(this,FreeRunningScreenService.class);
         startService(intent);
 
-     //   RDB = new RunDBHelper(this);
-     //   runType = new WhichRunDBHelper(this).getRunType();
-
-
         makeStartButtonGoAway();
-
-        /*
-        if(runType.equals("INTERVAL RUN")){
-            myReceiverIR = new MyReceiver();
-            IntentFilter intentFilterIR = new IntentFilter();
-            intentFilterIR.addAction(IntervalRunService.MY_ACTION);
-            registerReceiver(myReceiverIR,intentFilterIR);
-            Intent intentIR = new Intent(this,IntervalRunService.class);
-            startService(intentIR);
-        }
-*/
     }
 
+    /*
+        stops the service when "stop" button is pressed.
+        sends user directly to stats screen.  they do not pass go. they do not collect $200
+     */
     public void stopService(View view){
-  //      myReceiver = new MyReceiver();
         Intent intent = new Intent(this,FreeRunningScreenService.class);
-        stopService(intent);
+        stopService(intent);//stops freeRunningScreenService
         unregisterReceiver(myReceiver);
-        stopPressed=true;
+        stopPressed=true;//this variable is used to stop beeps from happening after the user has left the screen
 
         Intent intent2 = new Intent(this,StatsScreen.class);
-        startActivity(intent2);
+        startActivity(intent2);//sends user to statsscreen
         finish();
 
 
     }
 
+    /*
+        after start button is pressed, make the start button go away.
+     */
     private void makeStartButtonGoAway(){
         Button b1 = (Button)findViewById(R.id.startButton);
         b1.setVisibility(View.GONE);
     }
 
+    /*
+        after gps is found, make all of the relevant views visible.
+     */
     private void changeVisibilities(){
         Button b1 = (Button)findViewById(R.id.stopButton);
         Button b2 = (Button)findViewById(R.id.startButton);
@@ -652,56 +611,26 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
         tv8.setVisibility(View.VISIBLE);
     }
 
-
-    public void goalReachedStopService(){
-        Intent intent = new Intent(this,FreeRunningScreenService.class);
-        stopService(intent);
-        unregisterReceiver(myReceiver);
-    }
-
+    /*
+        this displays "looking for gps" or whatever that message is.
+     */
     private void updateTextView(String str){
- //       try{
- //       Log.d("DEBUG","SDFJKLSDFJLSKDJFSDKLFJSDLKFJSKLDFJSLDKFJSKDLFJSLKDFJSLKFJ"+str);
         TextView output = new TextView(this);
         try {
             output = (TextView) findViewById(R.id.outputTextView);
- //           Log.d("TXTOUTPUT IDDDDDDDDDDDD","ID: "+output.getId());
-//        Log.d("sdkfsklfdjsklfjfkl",txtOutput.toString()+"");
             output.setText(str);
         }
-        catch(NullPointerException e){
- //           Log.d("TXTOUTPUT","NULL");
-        }
-
-
- //       catch(NullPointerException e){
-
-//        }
-
+        catch(NullPointerException e){}
     }
 
     public void permissionRequest(){
-  //      Log.d("DEBUG","made it to permissionRequest");
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
             } else {
-
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         10);
 
-  //              Log.d("DEBUG","Requesting Permission...");
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
 
 
@@ -714,18 +643,13 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-              //      Log.d("DEBUG","permission granted!");
-               //     Intent intent = new Intent(this,FreeRunningScreen.class);
-               //     startActivity(intent);
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+                    // permission was granted, yay!
 
                 } else {
 
                     permissionRequest();
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    // permission denied, boo! Request permission
                 }
                 return;
             }
@@ -734,11 +658,5 @@ public class FreeRunningScreen extends AppCompatActivity implements OnMapReadyCa
             // permissions this app might request
         }
     }
-
-
-
-
-
-
 
 }

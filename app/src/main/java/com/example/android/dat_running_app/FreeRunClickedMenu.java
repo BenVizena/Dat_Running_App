@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 
 /**
  * Created by Ben on 7/11/2016.
+ *
+ * displays "Run Now" and "Change UI" buttons.
  */
 
 public class FreeRunClickedMenu extends AppCompatActivity{
@@ -28,8 +30,7 @@ public class FreeRunClickedMenu extends AppCompatActivity{
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width * .8), (int) (height * .5));//was .8
-        // getWindow().setLayout(270,270);
+        getWindow().setLayout((int) (width * .8), (int) (height * .5));//setting the size of the window.
 
         addMainButtons();
     }
@@ -38,15 +39,17 @@ public class FreeRunClickedMenu extends AppCompatActivity{
         Intent intent = new Intent(this,FreeRunningScreen.class);
         startActivity(intent);
         finish();
-      //  Toast.makeText(FreeRunClickedMenu.this, "ChangeUI Button was clicked!", Toast.LENGTH_SHORT).show();
     }
-
+    
     public void freeRunChangeUIClicked(View view){
         Intent intent = new Intent(this,FreeRunChangeUI.class);
         startActivity(intent);
         finish();
     }
 
+    /*
+        sets the onClickListeners for the buttons
+     */
     public void addMainButtons(){
 
         freeRunNow_ib=(ImageButton) findViewById(R.id.freerunnow_ib);

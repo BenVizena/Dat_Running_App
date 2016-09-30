@@ -5,13 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import static android.R.attr.version;
 
 
 /**
  * Created by Ben on 7/27/2016.
+ *
+ * holds the settings for runningscreen display units.
  */
 
 public class FreeRunDBHelper extends SQLiteOpenHelper{
@@ -23,7 +22,7 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
     private static final String COLUMN_METRIC = "METRIC";
 
 
-    public FreeRunDBHelper(Context context) {//, String name, SQLiteDatabase.CursorFactory factory, int version
+    public FreeRunDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -46,7 +45,7 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
         ContentValues v = new ContentValues();
         v.put(COLUMN_METRIC,""+"true");
         SQLiteDatabase dbt = getWritableDatabase();
-        long tempSuccess = dbt.insert(TABLE_NAME,null,v);
+        dbt.insert(TABLE_NAME,null,v);
         dbt.close();
         //the above db entry is to ensure that i don't try to delete on an empty database.
 
@@ -57,7 +56,6 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
         long success = db.insert(TABLE_NAME,null,values);
         db.close();
 
- //       Log.d("debug", ""+success);
 
         if(success == -1)
             return false;
@@ -77,10 +75,6 @@ public class FreeRunDBHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+ TABLE_NAME;
         Cursor result = db.rawQuery(query, null);
-//        if (!result.moveToFirst())
-//           result.moveToFirst();
- //       Log.d("RESULTS",".getInt(0): "+result.getInt(0)+" .getString(1): "+result.getString(1)+" .getString(2): "+result.getString(2)+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//        db.close();
 
         result.moveToFirst();
         if(result.getCount()==0)
