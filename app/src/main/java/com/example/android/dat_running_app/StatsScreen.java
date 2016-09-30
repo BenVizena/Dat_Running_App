@@ -47,6 +47,8 @@ import static java.lang.Integer.parseInt;
 
 /**
  * Created by Ben on 8/11/2016.
+ *
+ * does everything on statsScreen.
  */
 
 public class StatsScreen extends AppCompatActivity{
@@ -78,9 +80,9 @@ public class StatsScreen extends AppCompatActivity{
 
         Button rb = (Button)findViewById(R.id.drawChartButton);
 
-        if(hasRun())
+        if(hasRun())//if there is a previous run, show the most recent run's data.
             drawChart(rb);
-        else{
+        else{//else, show a chart with some made up values.
             List<Entry> entries= new ArrayList<>();
             entries.add(new Entry(2,0));
             entries.add(new Entry(3,1));
@@ -107,6 +109,9 @@ public class StatsScreen extends AppCompatActivity{
 
     }
 
+    /*
+        checks to see if there has ever been a run.
+     */
     private boolean hasRun(){
         RDB = new RunDBHelper(this);
         Cursor c = RDB.getFRData();
@@ -127,11 +132,12 @@ public class StatsScreen extends AppCompatActivity{
 
 
     public void refreshSpinners(View view){
-
         drawChart(view);
     }
 
-
+    /*
+        populate the spinners.
+     */
     private void populateSpinnersIndividualRun(){
         xAxisSpinner = (Spinner) findViewById(R.id.xAxisSpinner);
         yAxisSpinner = (Spinner) findViewById(R.id.yAxisSpinner);
@@ -147,10 +153,6 @@ public class StatsScreen extends AppCompatActivity{
         xAxisSpinnerList.add("Speed (mi/hr)");
         xAxisSpinnerList.add("Speed (km/hr)");
         xAxisSpinnerList.add("Cadence (strikes/min)");
-   //     xAxisSpinnerList.add("Elevation Change (ft)");
-   //     xAxisSpinnerList.add("Elevation Change (m)");
-
-        //need to add spinner with a list of all runs in last-to-first order.
 
         yAxisSpinnerList.add("Distance (mi)");
         yAxisSpinnerList.add("Distance (km)");
@@ -159,8 +161,6 @@ public class StatsScreen extends AppCompatActivity{
         yAxisSpinnerList.add("Speed (mi/hr)");
         yAxisSpinnerList.add("Speed (km/hr)");
         yAxisSpinnerList.add("Cadence (strikes/min)");
-   //     yAxisSpinnerList.add("Elevation Change (ft)");
-   //     yAxisSpinnerList.add("Elevation Change (m)");
 
         ArrayAdapter<String> xDataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, xAxisSpinnerList);
         xAxisSpinner.setAdapter(xDataAdapter);
@@ -170,11 +170,10 @@ public class StatsScreen extends AppCompatActivity{
 
     }
 
+    /*
+        add the runSpinner
+     */
     private void addRunSpinner(){
-
-
-
-
         RelativeLayout rl = (RelativeLayout)findViewById((R.id.chartAndSpinnerRelLayout));
 
 
@@ -203,8 +202,6 @@ public class StatsScreen extends AppCompatActivity{
         //populate runSpinner
         populateRunSpinner();
 
-
-
         runSpinnerLayout.addView(runSpinner);
 
 
@@ -214,11 +211,14 @@ public class StatsScreen extends AppCompatActivity{
         params.addRule(RelativeLayout.BELOW, R.id.yAxisLinearLayout);
 
         runSpinnerLayout.setLayoutParams(params);
-
-
     }
 
 
+    /*
+        add spinner with previous runs to pick from.
+
+        this needs work.  use recyclerview to view all runs.
+    */
     private void populateRunSpinner(){
         List<String> runSpinnerList = new ArrayList<>();
 
@@ -237,12 +237,10 @@ public class StatsScreen extends AppCompatActivity{
 
                     Long epochTime = Long.parseLong(startTime[1]);
 
-                    if(!startTimes.contains(epochTime)&&epochTime>1471057640){
+                    if(!startTimes.contains(epochTime)&&epochTime>1471057640){//idk why, but it really wanted to put in 3 runs from the 70's, so this is here...
                         startTimes.add(epochTime);
-             //           Log.d("ADDED",""+epochTime);
                         Date date = new Date(epochTime);
                         String strDate = date.toString();
-       //                 Log.d("date", strDate);
                         String[] dateArray = strDate.split(" ");
                         String spinnerFormatDate = dateArray[0]+" "+dateArray[1]+" "+dateArray[2]+" "+dateArray[5]+" "+dateArray[3]+" "+cursor.getString(1);//dateArray[3] needs to be here to
                                                                                                                                                             // differentiate the start times.
@@ -252,17 +250,12 @@ public class StatsScreen extends AppCompatActivity{
                     }
                     else
                         increment+=1;
-
-               //     Date date = new Date(Long.parseLong(startTime[1]));
-               //     runSpinnerList.add(date.toString());
                 }catch(CursorIndexOutOfBoundsException e){i+=10;
                     }
                 catch(SQLiteCantOpenDatabaseException d){i+=10;
                 };
             }
-
         RDB.close();
-
 
         ArrayAdapter<String> runSpinnerDataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,runSpinnerList);
         runSpinner.setAdapter(runSpinnerDataAdapter);
@@ -291,7 +284,6 @@ public class StatsScreen extends AppCompatActivity{
                 }
                 else {
                     tempIndex++;
-                    //                      Log.d("StatsScreen DrawChart", "Still going...");
                 }
             }
         }
@@ -304,9 +296,6 @@ public class StatsScreen extends AppCompatActivity{
         int yGetStringIndex=0;//these are the indices that database.getString() will use, i.e. db.getString(yGetStringIndex);
 
 
-
-
-        //         Log.d("xAxisSelection log",""+xAxisSelection);
         switch(xAxisSelection){
             case "Run Type": xGetStringIndex=1;
                 break;
@@ -376,8 +365,6 @@ public class StatsScreen extends AppCompatActivity{
 
                 double currentDistance=0;
 
-
-
                 String startTimeString = startTimes.get(index)+"";
                 String[] startTimeArray = cursor.getString(2).split(" ");
                 String[] xChoice = xAxisSelection.split(" ");
@@ -385,10 +372,6 @@ public class StatsScreen extends AppCompatActivity{
 
                 boolean xMetric=false;
                 boolean yMetric=false;
-
-             //   for(int x = 0;x<yChoice.length;x++){
-             //       Log.d("Metric",yChoice[x]);
-            //    }
 
                 try {
                     if (xChoice[1].equals("(km)") || xChoice[1].equals("(m)") || xChoice[1].equals("(km/hr)"))
@@ -401,9 +384,6 @@ public class StatsScreen extends AppCompatActivity{
                 }
                 catch (ArrayIndexOutOfBoundsException e){};
 
-                //       boolean rightRun=false;
-
-
 
                 if(startTimeArray[1].equals(startTimeString)){
 
@@ -414,17 +394,13 @@ public class StatsScreen extends AppCompatActivity{
                     String cadenceString = cursor.getString(7).split(" ")[1];
                     numUpdates++;
                     cadenceSum+=Float.parseFloat(cadenceString);
-             //       Log.d("cadence",cadenceString);
 
                     String partialSpeedStr[] = cursor.getString(6).split(" ");
                     sumOfSpeed += Double.parseDouble(partialSpeedStr[1]);
-                    //             Log.d("PLS",""+Double.parseDouble(partialSpeedStr[1])+" "+sumOfSpeed+" "+numUpdates+1);
                     numUpdates+=1;
 
-                    //       rightRun=true;
                     String[] xValueString = cursor.getString(xGetStringIndex).split(" ");
                     String[] yValueString = cursor.getString(yGetStringIndex).split(" ");
-                    //                Log.d("x and y cursor String","["+cursor.getString(xGetStringIndex)+", "+cursor.getString(yGetStringIndex)+"]");
                     double xValue = 0;
                     double yValue = 0;
                     String[] timeStr = cursor.getString(3).split(" ");
@@ -444,7 +420,6 @@ public class StatsScreen extends AppCompatActivity{
                             case "Speed:": xValue = Double.parseDouble(xValueString[1]);
                                 break;
                             case "Time:": xValue = Double.parseDouble(xValueString[1])/1000;
-                                //                  Log.d("IVE GOT THE NEED","FOR TIME... in metric");
                                 break;
                             case "Cadence:": xValue = Double.parseDouble(xValueString[1]);
                                 break;
@@ -454,8 +429,6 @@ public class StatsScreen extends AppCompatActivity{
                         }
                     }else{
                         try {
-                            //           for (int p = 0; p < xValueString.length; p++)
-                            //               Log.d("ARRAY THINGY X", "" + xValueString[p]);
                             switch (xValueString[0]) {
                                 case "DISTANCE":
                                     xValue = Double.parseDouble(xValueString[2]) * .000621371;
@@ -468,7 +441,6 @@ public class StatsScreen extends AppCompatActivity{
                                     break;
                                 case "Time:":
                                     xValue = Double.parseDouble(xValueString[1])/1000;
-                                    //              Log.d("IVE GOT THE NEED","FOR TIME");
                                     break;
                                 case "Cadence:":
                                     xValue = Double.parseDouble(xValueString[1]);;
@@ -476,8 +448,7 @@ public class StatsScreen extends AppCompatActivity{
                                 case "ELEVATION:":
                                     xValue = 42;
                                     break;
-                                default: //xValue = Double.parseDouble(xValueString[1])/1000;
-                              //      Log.d("DEFAULT X", "" + xValue + " " + xValueString[0] + " " + xValueString[1]);
+                                default:
                             }
                         }catch(ArrayIndexOutOfBoundsException e){};
                     }
@@ -501,7 +472,6 @@ public class StatsScreen extends AppCompatActivity{
                         }
                     }else{
                         for(int p = 0;p<yValueString.length;p++)
-                            //                    Log.d("ARRAY THINGY Y",""+yValueString[p]);
                             switch(yValueString[0]){
                                 case "DISTANCE":
                                     yValue=Double.parseDouble(yValueString[2])*.000621371;
@@ -516,14 +486,11 @@ public class StatsScreen extends AppCompatActivity{
                                     break;
                                 case "ELEVATION:": yValue = 42;
                                     break;
-                                default:// yValue = -9001;
-                             //       Log.d("DEFAULT Y",""+yValue+" "+yValueString[0]+" "+yValueString[1]);
+                                default:
                             }
                     }
 
                     currentDistance+=Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000;
-          //          Log.d("MYDISTANCE",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000);
-
 
                     if(currentDistance >= splitCounterKm){//this finds the splits in km.  I need another split section for miles because I can't just convert these values.
                         if(splitsKm.size()>0){
@@ -534,14 +501,10 @@ public class StatsScreen extends AppCompatActivity{
                             }
                             long t3 = t1-t2;
                             splitsKm.add(""+t3);
-                 //           Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+ splitCounterKm);
                         }else{
                             splitsKm.add(cursor.getString(3).split(" ")[1]);
-                  //          Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+ splitCounterKm);
-
                         }
                         splitCounterKm++;
-                        //    currentDistance=0;
                     }
 
                     if(currentDistance/1.609 >= splitCounterMi){//this finds the splits in mi.  I need another split section for miles because I can't just convert these values.
@@ -553,21 +516,16 @@ public class StatsScreen extends AppCompatActivity{
                             }
                             long t3 = t1-t2;
                             splitsMi.add(""+t3);
-                    //        Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+ splitCounterMi);
                         }else{
                             splitsMi.add(cursor.getString(3).split(" ")[1]);
-                   //         Log.d("WTF",""+Double.parseDouble(cursor.getString(4).split(":")[1].trim())/1000+" "+ splitCounterMi);
-
                         }
                         splitCounterMi++;
-                        //    currentDistance=0;
                     }
 
 
                     labelList.add((long)(xValue));
                     entries.add(new Entry((float) yValue, (int) xValue));
                     totalTime=Long.parseLong(cursor.getString(3).split(" ")[1]);
-             //       Log.d("totalTime",""+cursor.getString(3));
                     avgCadence = (int)cadenceSum/(int)numUpdates;
                 }
             }
@@ -576,15 +534,11 @@ public class StatsScreen extends AppCompatActivity{
             updateTotalDistanceTV();
             updateTotalTimeTV(totalTime+"");
             double avgSpeed = sumOfSpeed/numUpdates;//in km/hr
-                      //     Log.d("sumOfSpeed",""+sumOfSpeed+" "+numUpdates);
             updateAvgSpeed(avgSpeed);
             double avgPaceKm = 1/avgSpeed*3600*1000;
             double avgPaceMi = avgPaceKm*1.609;
             updateCalsBurned(avgSpeed,totalTime);
             updateCadence(avgCadence);
-
-      //      Log.d("avgPace",(1/avgSpeed)*3600*Math.pow(10,9)+" "+formatTime((long)((1/avgSpeed)*3600*Math.pow(10,9)/1000000)+""));
-
 
             updateAvgPaceTV(formatTime((long)avgPaceKm+""),formatTime((long)avgPaceMi+""));//time it takes to finish a km
 
@@ -596,18 +550,10 @@ public class StatsScreen extends AppCompatActivity{
 
         String[] labels = new String[labelList.size()];
 
-
-
         for(int x=0;x<labelList.size();x++){
             String temp = ""+labelList.get(x);
             labels[x]=formatTime(temp);
         }
-
-        //           Log.d("DEBUG...",labelList.size()+" "+labels.length);
-
-
-
-
 
         LineDataSet dataSet = new LineDataSet(entries,"Dat Running Chart");
         dataSet.setColor(R.color.colorPrimary);
@@ -776,10 +722,7 @@ public class StatsScreen extends AppCompatActivity{
                 hmsm = delimedTime[1]+":"+delimedTime[2]+":"+delimedTime[3];
 
         }catch(NumberFormatException e){
-       //     Log.d("EXCEPTION","Number format exception in formatTime() in StatsScreen"+s);
         }
-
-
         return ""+hmsm;
     }
 }
