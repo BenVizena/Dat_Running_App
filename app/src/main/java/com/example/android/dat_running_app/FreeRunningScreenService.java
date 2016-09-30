@@ -15,7 +15,6 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -27,14 +26,10 @@ import android.os.Handler;
 
 import java.util.Date;
 
-import static com.google.android.gms.analytics.internal.zzy.a;
-import static com.google.android.gms.analytics.internal.zzy.l;
-import static com.google.android.gms.analytics.internal.zzy.n;
 
 
 public class FreeRunningScreenService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, SensorEventListener{
 
- //   private final String LOG_TAG = "running! activity";
     final static String MY_ACTION = "MY_ACTION";
 
     private GoogleApiClient mGoogleApiClient;
@@ -43,7 +38,6 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     private Location mCurrentLocation;
     private static String mLatitudeText;
     private String mLongitudeText;
-//    private long startTime = android.os.SystemClock.elapsedRealtime();
     long startTime = new Date().getTime();
 
     private long elapsedTime = 0;
@@ -53,11 +47,11 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     private String outputText;
     private boolean stable;
 
-    private final int THREAD_MILLI = 100;
+    private final int THREAD_MILLI = 100;//puts a delay in the update intervals.
 
     private double velocity=0;
     private int velocityCounter=0;
-    private final int MAX_VELOCITY_COUNTER=10;
+    private final int MAX_VELOCITY_COUNTER=10;//velocity counter gets incremented this many times.  when velocityCounter == this, the position at velocityCounter=0 is compared to the position at velocityCounter = 10 to get the velocity at that point.
     private Location startVelocityLocation;
     private Location endVelocityLocation;
 
@@ -65,11 +59,8 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     private int stepInterval=0;//when this number is 100, the current steps per minute will update. e.g. after 10 seconds we will update the current steps per minute.
     private double stepsPerMinute = 0;//last steps per minute reading.
     private boolean stepLocked = false;//forces the accelerometer to wait between steps.  Otherwise it records several steps for each step because the acceleration is higher than the threshold for more than an instant.
- //   private int numSteps = 0; //number of steps in the current interval.
-
 
     private static Handler handler;
-
     private SensorManager mSensorManager;
     private Sensor mAcceleration;
 
@@ -77,39 +68,29 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     public void onCreate(){
         handler = new Handler();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)//sets up Google Maps stuff.
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);//getting ready to
+        mAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);//use accelerometer.
 
-   //     Log.d("StartTime!",""+startTime);
-  //      elapsedTime = android.os.SystemClock.elapsedRealtime()-startTime;
-
-
-//        Log.d("DEBUG","onCreate()");
         waitForStableGPS();
-
-
-
-
     }
 
+    /*
+        sets up a thread to update at certain intervals.
+     */
     private void runGPS(){
-//        Log.d("DEBUG runGPS entry","Running this shit.");
-
-
-
         t = new Thread() {
 
             @Override
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(THREAD_MILLI);//500
+                        Thread.sleep(THREAD_MILLI);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -127,12 +108,13 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
                 }
             }
         };
-
         t.start();
     }
 
+    /*
+        waits for 50 consecutive intervals without gps detecting movement. after that, it starts the runGPS method.
+     */
     private void waitForStableGPS(){
-  //      Log.d("DEBUG","starting waitForStableGPS()");
         t = new Thread() {
             int counter = 0;
 
@@ -140,45 +122,36 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(THREAD_MILLI);//500
+                        Thread.sleep(THREAD_MILLI);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 update();
 
-                                if(deltaD==0){
-  //                                  Log.d("DEBUG","getting gps signal");
+                                if(deltaD==0){//getting gps signal
                                     counter+=1;
                                 }
-                                else{
-   //                                 Log.d("DEBUG","getting gps signal");
+                                else{//still getting gps signal. (reset because gps detected that we moved.)
                                     counter=0;
                                 }
-                                if(counter>=50){//was 50
- //                                  Log.d("DEBUG","gps signal acquired");
+                                if(counter>=50){//if we didn't move for fifty updates, we have a good gps lock.  start running.
                                     stable = true;
                                     t.interrupt();
                                     startTime = new Date().getTime();
                                     elapsedTime=0;
-                                    runGPS();
+                                    runGPS();//starts runGPS.
                                 }
 
                                 distanceTravelled=0;
 
                                 Intent intent = new Intent();
                                 intent.setAction(MY_ACTION);
-
                                 try{
-                                    intent.putExtra("outputString","GETTING GPS SIGNAL,"+mLastLocation.getLatitude()+","+mLastLocation.getLongitude());
+                                    intent.putExtra("outputString","GETTING GPS SIGNAL,"+mLastLocation.getLatitude()+","+mLastLocation.getLongitude());//signals freeRunningScreen that run is starting.
                                 }catch(NullPointerException e){
 
                                 }
-
-
                                 sendBroadcast(intent);
-  //                              Log.d("DEBUG","intent broadcasted");
-
-
                             }
                         });
                     }
@@ -187,7 +160,6 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
                 }
             }
         };
-
         t.start();
     }
 
@@ -199,16 +171,10 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
- //       Log.d("DEBUG","onConnected");
 
         if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
-  //          Log.d("DEBUG","PERMISSION CHECK IN SERVICE ON CONNECTED");
-
             return;
         }
- //       Log.d("DEBUG","PASSED ONCONNECTED CHECK");
-
-
 
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -229,6 +195,9 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
     }
 
+    /*
+        calculates deltaD from two locations.
+     */
     private double getDeltaD(Location start, Location end){
         double lat1 = start.getLatitude();
         double lon1 = start.getLongitude();
@@ -252,13 +221,13 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
             return 0;
     }
 
-
+    /*
+        finds velocities using velocityCounter
+     */
     private void findVelocity(){
-//        Log.d("STATUS","ENTERING POTENTIAL SNAFU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! VelocityCounter: "+velocityCounter +" STABLE: "+stable);
-        if(velocityCounter==0 && stable){
+        if(velocityCounter==0 && stable){//gets the starting point.
             try{startVelocityLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             velocityCounter++;
- //               Log.d("STATUS","AVOIDED SNAFU 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
             catch(final SecurityException e){}
         }
@@ -266,47 +235,45 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
             try{endVelocityLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 double distanceTravelled = getDeltaD(startVelocityLocation,endVelocityLocation);
                 int deltaT = THREAD_MILLI * 10/1000;//time 10 for the ten update intervals and div 1000 for milli to seconds conversion
-                if(distanceTravelled/deltaT<.1)
+                if(distanceTravelled/deltaT<.1)//trying to filter out noise.
                     velocity = 0;
                 else
                     velocity = distanceTravelled/deltaT;
                 velocityCounter=0;
- //               Log.d("STATUS","NOT IN A SNAFU2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
             catch(final SecurityException e){}
         }
         else if(stable) {
             velocityCounter++;
-//            Log.d("STATUS","EXITING A SNAFU HEAVY SITUATION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
 
+
+    /*
+        this is a big un'.  If runGPS is the brain of this service, update is the heart.
+        updates outputText, which is sent via intent to FreeRunningScreen.
+     */
     private void update(){
-
-
-        //  Log.d("DEBUG","PASSED ONCONNECTED CHECK");
         try {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (mLastLocation == null) {
+            if (mLastLocation == null) {//have we gotten a position yet? if not, we need to get our first one.
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
- //               Log.d("DEBUG","mLastLocation == null\n");
             }
             else{
-
                 if (mCurrentLocation != null)
-                    deltaD = getDeltaD(mLastLocation,mCurrentLocation);
+                    deltaD = getDeltaD(mLastLocation,mCurrentLocation);//get deltaD
 
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                distanceTravelled+=deltaD;
-                elapsedTime = new Date().getTime()-startTime;
+                distanceTravelled+=deltaD;//get distanceTravelled.
+                elapsedTime = new Date().getTime()-startTime;//get elapsedTime
 
                 try{
 
-                    findVelocity();
+                    findVelocity();//get velocity
 
 
                     if(stepInterval>=100){
-                        stepsPerMinute = stepCounter*6;
+                        stepsPerMinute = stepCounter*6;//get stepsPerMinute (cadence)
                         stepInterval=0;
                         stepCounter=0;
                     }else{
@@ -322,19 +289,12 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
                         +"\nVelocity: "+velocity
                         +"\nStartTime: "+startTime
                         +"\nCadence: "+stepsPerMinute;
-                //txtOutput.setText(outputString);
                 }catch(NullPointerException e){
                     outputText="";
                 }
-                //outputText=outputString;
-                //if FreeRunningScreen is in the foreground
-
- //               Log.d("DEBUG",outputText);
             }
         }
-        catch(final SecurityException ex){
-  //          Log.d("DEBUG","Bad Permissions Setup");
-        }
+        catch(final SecurityException ex){}
     }
 
     public long getElapsedTime(){
@@ -403,26 +363,18 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-  //      Toast.makeText(FreeRunningScreenService.this, "service started", Toast.LENGTH_LONG).show();
         mGoogleApiClient.connect();
-
         mSensorManager.registerListener(this,mAcceleration,SensorManager.SENSOR_DELAY_GAME);
-
         return START_STICKY;
     }
 
     @Override
     public void onDestroy(){
-  //      Toast.makeText(FreeRunningScreenService.this, "service destroyed", Toast.LENGTH_LONG).show();
         t.interrupt();
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
-
         mSensorManager.unregisterListener(this);
-
-
-
     }
 
     @Nullable
@@ -432,6 +384,11 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
     }
 
 
+    /*
+        accelerometer stuff for cadence.
+        if resultant acceleration from all three directions is over a threshold, call that a step.  Don't allow any other steps to be counted until the resultant acceleration is
+        below a certain threshold (to differentiate steps.  Then look for a step again.
+     */
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
@@ -446,11 +403,6 @@ public class FreeRunningScreenService extends Service implements GoogleApiClient
         }
         if(stepLocked && net<5)
             stepLocked=false;
-
-
- //       Log.d("ACCELERATION","NET: "+net+"");
-  //      Log.d("ACCELERATION","STEPCOUNTER:" +stepCounter+"");
-  //      Log.d("ACCELERATION","STEPS PER MINUTE: "+stepsPerMinute);
     }
 
     @Override
