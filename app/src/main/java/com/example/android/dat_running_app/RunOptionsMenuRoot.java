@@ -28,6 +28,10 @@ import static com.example.android.dat_running_app.R.id.stats_ib;
 
 /**
  * Created by Ben on 7/9/2016.
+ *
+ * allows user to pick which type of run they want.
+ *
+ * shows freeRun, runForTime, runForDistance, and IntervalRun buttons.
  */
 
 
@@ -53,8 +57,7 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
         int width=dm.widthPixels;
         int height=dm.heightPixels;
 
-        getWindow().setLayout((int)(width*.8),(int)(height*.5));//was .8
-       // getWindow().setLayout(270,270);
+        getWindow().setLayout((int)(width*.8),(int)(height*.5));
 
 
         addMainButtons();
@@ -126,7 +129,6 @@ public class RunOptionsMenuRoot extends AppCompatActivity {
             @Override
             public void onClick(View arg0){
                 irClicked(intervalrun_ib);
-             //   Toast.makeText(RunOptionsMenuRoot.this, "Interval Run Button was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
 

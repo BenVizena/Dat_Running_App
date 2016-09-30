@@ -12,6 +12,7 @@ import android.util.Log;
 
 /**
  * Created by Ben on 8/17/2016.
+ * stores goal time for runForTime.
  */
 
 public class RfTimeDBHelper extends SQLiteOpenHelper {

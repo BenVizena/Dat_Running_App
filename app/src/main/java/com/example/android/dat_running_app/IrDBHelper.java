@@ -12,6 +12,8 @@ import android.util.Log;
 
 /**
  * Created by Ben on 8/19/2016.
+ *
+ * holds the goal time for runfortime.
  */
 
 public class IrDBHelper extends SQLiteOpenHelper {

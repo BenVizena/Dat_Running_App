@@ -15,6 +15,8 @@ import android.widget.RadioButton;
 
 /**
  * Created by Ben on 7/24/2016.
+ *
+ * allows user to change units displayed in running screen.
  */
 
 public class RFDChangeUI extends AppCompatActivity {

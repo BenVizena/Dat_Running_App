@@ -18,9 +18,6 @@
         <service
             android:name=".FreeRunningScreenService"
             android:exported="true" />
-        <service
-            android:name=".IntervalRunService"
-            android:exported="true" />
 
         <activity
             android:name=".MainActivity"

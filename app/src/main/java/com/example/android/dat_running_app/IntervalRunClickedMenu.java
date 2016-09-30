@@ -27,6 +27,10 @@ import static com.google.android.gms.analytics.internal.zzy.i;
 
 /**
  * Created by Ben on 8/19/2016.
+ *
+ * displays run now and change ui buttons
+ * allows the selection of interval constraints and interval units.
+ * allows the user to enter intervals.
  */
 
 public class IntervalRunClickedMenu extends AppCompatActivity{
@@ -72,8 +76,6 @@ public class IntervalRunClickedMenu extends AppCompatActivity{
     private String getIntervalText(){
         EditText editTextHR = (EditText)findViewById(R.id.rfTimeEditTextHR);
         EditText editTextMIN = (EditText)findViewById(R.id.rfTimeEditTextMIN);
-        Log.d("EDIT TEXT",editTextHR.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        Log.d("EDIT TEXT",editTextMIN.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         int hr;
         int min;
         if(editTextHR.getText().toString().length()==0)

@@ -15,6 +15,8 @@ import android.widget.RadioButton;
 
 /**
  * Created by Ben on 7/24/2016.
+ *
+ * allows user to enter preferred units for run screen.
  */
 
 public class IRChangeUI extends AppCompatActivity {

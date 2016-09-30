@@ -14,6 +14,9 @@ import static com.google.android.gms.analytics.internal.zzy.s;
 
 /**
  * Created by Ben on 8/4/2016.
+ *
+ * the main db of the app.  Stores all of the information about the runs.
+ * runs are differentiated by their start time.
  */
 
 public class RunDBHelper extends SQLiteOpenHelper {
@@ -98,13 +101,6 @@ public class RunDBHelper extends SQLiteOpenHelper {
         Cursor result = db.rawQuery(query, null);
 
         result.moveToFirst();
-    //    while (!result.isAfterLast()) {
-  //          Log.d("RESULTS",".getInt(0): "+result.getInt(0)+" .getString(1): "+result.getString(1)+" .getString(2): "+result.getString(2)+" .getString(3): "+result.getString(3)+" .getString(4): "+result.getString(4)
-   //         +" .getString(5): "+result.getString(5));
-  //          result.moveToNext();
-  //      }
-
-//        db.close();
         db.close();
         return result;
     }
@@ -122,14 +118,10 @@ public class RunDBHelper extends SQLiteOpenHelper {
     public Cursor getDataByStartTimeEpoch(String startTime, long start){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "Select * from "+TABLE_NAME+" Where "+COLUMN_STARTTIME +" == " +startTime +" Order by "+COLUMN_ID;
- //       Log.d("SEARCH QUERY",query);
         Cursor result = db.rawQuery(query, null);
 
         db.close();
-
-
         result.moveToFirst();
-
         return result;
     }
 }

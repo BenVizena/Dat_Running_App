@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 /**
  * Created by Ben on 9/16/2016.
+ *
+ * holds user's mass or wieght. (used for calculating calories burned).
  */
 
 public class MainSettings extends AppCompatActivity{

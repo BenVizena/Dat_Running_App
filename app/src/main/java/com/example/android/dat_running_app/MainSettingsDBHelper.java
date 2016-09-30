@@ -10,6 +10,8 @@ import static com.google.android.gms.analytics.internal.zzy.l;
 
 /**
  * Created by Ben on 9/16/2016.
+ *
+ * holds the user's mass.  if they entered a weight, it was converted to kg then sent here.
  */
 
 public class MainSettingsDBHelper extends SQLiteOpenHelper {

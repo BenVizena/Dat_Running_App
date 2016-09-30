@@ -5,16 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.design.widget.TabLayout;
-import android.util.Log;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-
-//import static android.R.attr.value;
-//import static android.R.attr.version;
 
 /**
  * Created by Ben on 8/17/2016.
+ *
+ * keeps track of intervals entered by user.
  */
 
 public class IntervalDBHelper extends SQLiteOpenHelper {
@@ -24,8 +20,6 @@ public class IntervalDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "interval";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_INTERVALSTRING = "INTERVAL_STRING";
-
-
 
 
     public IntervalDBHelper(Context context) {

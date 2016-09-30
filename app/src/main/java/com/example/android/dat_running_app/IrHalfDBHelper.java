@@ -12,6 +12,8 @@ import android.util.Log;
 
 /**
  * Created by Ben on 8/17/2016.
+ *
+ * holds the users selections for the interval constraints (e.g. Distance, then Time)
  */
 
 public class IrHalfDBHelper extends SQLiteOpenHelper {

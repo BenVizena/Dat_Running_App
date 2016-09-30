@@ -15,6 +15,7 @@ import static com.google.android.gms.fitness.data.Application.My;
 
 /**
  * Created by Ben on 8/14/2016.
+ * this is a class to help format the chart in statsScreen.
  */
 
 public class MyValueFormatter implements ValueFormatter {

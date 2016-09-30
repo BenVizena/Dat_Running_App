@@ -12,6 +12,8 @@ import android.util.Log;
 
 /**
  * Created by Ben on 8/17/2016.
+ *
+ * stores goal distance for runForDistance.
  */
 
 public class RfdDistanceDBHelper extends SQLiteOpenHelper {

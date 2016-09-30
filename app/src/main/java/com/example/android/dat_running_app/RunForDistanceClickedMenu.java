@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 /**
  * Created by Ben on 8/17/2016.
+ *
+ * shows run now and change ui buttons.
+ * allows user to enter goal distance for runForDistance.
  */
 
 public class RunForDistanceClickedMenu extends AppCompatActivity{
@@ -32,8 +35,7 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width * .8), (int) (height * .5));//was .8
-        // getWindow().setLayout(270,270);
+        getWindow().setLayout((int) (width * .8), (int) (height * .5));
 
         addMainButtons();
     }
@@ -42,7 +44,6 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
         Intent intent = new Intent(this,FreeRunningScreen.class);
         startActivity(intent);
         finish();
-        //  Toast.makeText(FreeRunClickedMenu.this, "ChangeUI Button was clicked!", Toast.LENGTH_SHORT).show();
     }
 
     public void rfdChangeUIClicked(View view){
@@ -53,7 +54,6 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
 
     private String getDistanceText(){
         EditText editText = (EditText)findViewById(R.id.rfdDistanceEditText);
-//        Log.d("EDIT TEXT",editText.getText()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return editText.getText().toString();
     }
 
@@ -71,7 +71,6 @@ public class RunForDistanceClickedMenu extends AppCompatActivity{
                 if(getDistanceText().length()==0)
                     Toast.makeText(RunForDistanceClickedMenu.this, "Please enter a valid distance.", Toast.LENGTH_SHORT).show();
                 else{
-   //                 Log.d("??",dist+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     rfdDB.addSettings(dist);
                     rfdNowClicked(runForDistanceNow_ib);
                 }
